@@ -1,9 +1,183 @@
 @import 'tailwindcss';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+
+    /* Terracotta brand palette */
+    --color-brand-50: #fdf3ee;
+    --color-brand-100: #f9e4da;
+    --color-brand-200: #f0c9b9;
+    --color-brand-300: #e3a68d;
+    --color-brand-400: #d68767;
+    --color-brand-500: #c86d51;
+    --color-brand-600: #a8543b;
+    --color-brand-700: #8b4430;
+    --color-brand-800: #703628;
+    --color-brand-900: #5a2c20;
+
+    /* Warm neutral compatibility ramp, replacing Tailwind's cool slate */
+    --color-slate-50: #fbf5ef;
+    --color-slate-100: #faf7f2;
+    --color-slate-200: #e0ddd8;
+    --color-slate-300: #d3c9c1;
+    --color-slate-400: #a99e96;
+    --color-slate-500: #7a6f68;
+    --color-slate-600: #5e5449;
+    --color-slate-700: #453c34;
+    --color-slate-800: #39302a;
+    --color-slate-900: #2c2420;
+
+    /* Semantic colours from the mockup */
+    --color-cream: #faf7f2;
+    --color-peach: #f5e3c4;
+    --color-ink: #2c2420;
+    --color-muted: #7a6f68;
+    --color-line: #e0ddd8;
+    --color-edit: #efbf6c;
+    --color-danger: #d94648;
+    --color-success-soft: #eaf0e7;
+    --color-success-ink: #5a7355;
+}
+
+@layer base {
+    body {
+        @apply bg-cream text-ink antialiased;
+    }
+
+    ::selection {
+        @apply bg-brand-200 text-ink;
+    }
+
+    input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='hidden']),
+    select,
+    textarea {
+        @apply border border-line bg-white text-ink shadow-sm;
+    }
+
+    input:not([type='checkbox']):not([type='radio']):not([type='file']):not([type='hidden']):focus,
+    select:focus,
+    textarea:focus {
+        @apply border-brand-500 outline-none ring-2 ring-brand-200;
+    }
+
+    input[type='checkbox'],
+    input[type='radio'] {
+        @apply border-line text-brand-600 focus:ring-brand-200;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        @apply text-slate-400;
+    }
+
+    summary {
+        list-style: none;
+    }
+
+    summary::-webkit-details-marker {
+        display: none;
+    }
+}
+
+@layer components {
+    .admin-card {
+        @apply rounded-2xl border border-line bg-white p-5;
+    }
+
+    .admin-card-peach {
+        @apply rounded-2xl border border-brand-300/70 bg-peach p-5;
+    }
+
+    .admin-table {
+        @apply min-w-full divide-y divide-line text-sm;
+    }
+
+    .admin-table thead {
+        @apply text-left text-xs font-semibold uppercase tracking-wide text-white;
+    }
+
+    .admin-table thead th {
+        @apply bg-brand-600;
+    }
+
+    .admin-table thead th:first-child {
+        border-top-left-radius: 1rem;
+    }
+
+    .admin-table thead th:last-child {
+        border-top-right-radius: 1rem;
+    }
+
+    .admin-table tbody {
+        @apply divide-y divide-brand-100;
+    }
+
+    .admin-table tbody tr {
+        @apply transition-colors hover:bg-brand-50/70;
+    }
+
+    .admin-table tfoot {
+        @apply bg-brand-50 font-semibold text-ink;
+    }
+
+    .admin-table th {
+        @apply px-5 py-3;
+    }
+
+    .admin-table td {
+        @apply px-5 py-3;
+    }
+
+    .admin-table-compact th,
+    .admin-table-compact td {
+        @apply px-3 py-2;
+    }
+
+    .admin-input {
+        @apply w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200;
+    }
+
+    .admin-btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-300 focus-visible:ring-offset-2;
+    }
+
+    .admin-btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-white px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-200 focus-visible:ring-offset-2;
+    }
+
+    .admin-btn-danger {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg bg-danger px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-danger/40 focus-visible:ring-offset-2;
+    }
+
+    .admin-icon-btn {
+        @apply inline-flex h-8 w-8 items-center justify-center rounded-md text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+    }
+
+    .admin-icon-btn-edit {
+        @apply bg-edit hover:bg-amber-500 focus-visible:ring-edit;
+    }
+
+    .admin-icon-btn-danger {
+        @apply bg-danger hover:bg-red-700 focus-visible:ring-danger;
+    }
+
+    .admin-icon-btn-neutral {
+        @apply bg-brand-500 hover:bg-brand-600 focus-visible:ring-brand-500;
+    }
+
+    .admin-badge {
+        @apply inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium;
+    }
+
+    .admin-badge-success {
+        @apply bg-success-soft text-success-ink;
+    }
+
+    .admin-badge-muted {
+        @apply bg-slate-100 text-slate-600;
+    }
+}
+
+[x-cloak] {
+    display: none !important;
 }

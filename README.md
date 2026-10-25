@@ -1,58 +1,107 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Decak Handmade — Admin Panel v1
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Panel admin untuk mengelola katalog produk handmade, pesanan manual, stok, laporan penjualan, banner promosi, dan pengaturan toko.
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Laravel 13, PHP 8.3+ (diuji pada PHP 8.5)
+- MySQL/MariaDB (InnoDB, `utf8mb4`)
+- Blade + Tailwind CSS v4 + Alpine.js
+- Autentikasi session dengan guard `admin`
+- Penyimpanan gambar lokal (`storage/app/public`, disk `public`)
+- Export laporan: PDF (DomPDF) dan XLSX (PhpSpreadsheet)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Setup
 
 ```bash
-composer require laravel/boost --dev
+composer install
+copy .env.example .env
+php artisan key:generate
 
-php artisan boost:install
+# Buat database MySQL
+# CREATE DATABASE decak_handmade CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+php artisan migrate:fresh --seed
+php artisan storage:link
+
+npm install
+npm run build
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Sesuaikan `.env`:
 
-## Contributing
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=decak_handmade
+DB_USERNAME=root
+DB_PASSWORD=
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+SESSION_DRIVER=database
+FILESYSTEM_DISK=public
+QUEUE_CONNECTION=sync
+CACHE_STORE=file
+APP_URL=http://localhost:8000
+```
 
-## Code of Conduct
+## Menjalankan
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan serve
+```
 
-## Security Vulnerabilities
+Buka `http://localhost:8000/admin`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Akun admin awal
 
-## License
+- Email: `admin@decakhandmade.test`
+- Kata sandi: `DecakAdmin2026!`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Segera ganti kata sandi melalui menu **Profil** setelah login pertama.
+
+## Modul
+
+- **Dashboard** — penjualan hari ini, pesanan baru, pesanan Diproses, stok menipis, grafik 7 hari, pesanan terbaru.
+- **Produk** — CRUD produk, galeri (JPG/PNG → WebP), variasi warna/motif, opsi personalisasi, penyesuaian stok dengan riwayat.
+- **Kategori** — CRUD kategori; kategori yang masih dipakai produk tidak dapat dihapus.
+- **Pesanan** — pencatatan pesanan manual, snapshot harga/nama produk, pemotongan stok, perubahan status, pembatalan dengan pengembalian stok, riwayat status.
+- **Rekap Penjualan** — ringkasan, grafik harian, rincian harian, produk terlaris, export PDF/XLSX (sheet Ringkasan, Penjualan Harian, Produk Terlaris).
+- **Promosi & Banner** — CRUD banner, jadwal tayang, status aktif, validasi tautan http/https atau path internal.
+- **Pengaturan** — identitas toko, prefix pesanan, ambang stok.
+- **Admin** — tambah/ubah/nonaktifkan admin; tidak dapat menonaktifkan akun sendiri.
+
+## Aturan bisnis utama
+
+- Status pesanan: **Diproses → Dikirim → Selesai**, atau **Dibatalkan**.
+- Pesanan dibuat langsung berstatus `processing`; stok dipotong saat pesanan dibuat.
+- Koreksi `Dikirim → Diproses` diperbolehkan dengan catatan.
+- Pembatalan dari `Dikirim` memerlukan konfirmasi barang kembali/gagal kirim.
+- Penjualan diakui dari pesanan **Selesai** berdasarkan `completed_at` (WIB).
+- Nilai penjualan = **subtotal produk**, tanpa ongkos kirim. `grand_total` hanya total pembayaran.
+- Harga selalu dihitung ulang di server; tidak menerima harga dari klien.
+- Stok hanya berubah melalui `InventoryService` dengan `lockForUpdate` dan pergerakan stok idempoten.
+- Nomor pesanan: `ORD-000001` (prefix dapat diubah di Pengaturan).
+- Satu item hanya boleh memakai satu opsi personalisasi bertipe teks.
+- Produk tidak dapat diarsipkan jika masih dipakai pesanan Diproses/Dikirim.
+- Audit log bersifat append-only.
+
+## Pengujian
+
+Tes menggunakan database MySQL terpisah `decak_handmade_test` (lihat `phpunit.xml`).
+
+```bash
+# Buat database test
+# CREATE DATABASE decak_handmade_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+php artisan test
+```
+
+Cakupan tes: autentikasi, alur pesanan dan stok, transisi status, pembatalan, pricing server-side, laporan dan export, CRUD produk + gambar, banner, pengaturan, dan pengelolaan admin.
+
+## Catatan implementasi
+
+- Gambar produk disimpan sebagai WebP dengan tiga turunan: `full` (maks. 1600 px), `card` (800×800), `thumb` (400×400). Banner disimpan 1600×533.
+- Upload menerima JPG/PNG maksimal 2 MB.
+- Zona waktu aplikasi UTC; tanggal ditampilkan dan difilter dalam WIB (`Asia/Jakarta`).
+- `APP_URL` harus sesuai host agar URL gambar `storage/...` benar.
