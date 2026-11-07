@@ -15,7 +15,7 @@ use App\Http\Controllers\Admin\StockAdjustmentController;
 use App\Http\Controllers\Admin\VariantController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/admin');
+// Route::redirect('/', '/admin');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest:admin')->group(function () {
@@ -69,4 +69,40 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('admins/{admin}', [AdminController::class, 'update'])->name('admins.update');
         Route::delete('admins/{admin}', [AdminController::class, 'deactivate'])->name('admins.destroy');
     });
+});
+
+/*
+|--------------------------------------------------------------------------
+| User Dashboard Routes (Frontend Only)
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('user')->name('user.')->group(function () {
+    Route::get('/', function () {
+        return view('dashboard-user.profile');
+    })->name('dashboard');
+
+    Route::get('/addresses', function () {
+        return view('dashboard-user.addresses');
+    })->name('addresses');
+
+    Route::get('/orders', function () {
+        return view('dashboard-user.orders');
+    })->name('orders');
+
+    Route::get('/wishlist', function () {
+        return view('dashboard-user.wishlist');
+    })->name('wishlist');
+
+    Route::get('/password', function () {
+        return view('dashboard-user.password');
+    })->name('password');
+
+    Route::get('/cart', function () {
+        return view('dashboard-user.cart');
+    })->name('cart');
+
+    Route::get('/checkout', function () {
+        return view('dashboard-user.checkout');
+    })->name('checkout');
 });
