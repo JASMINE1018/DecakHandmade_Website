@@ -3,28 +3,7 @@
 @section('title', 'Wishlist Saya - Decak Handmade')
 
 @section('content')
-<div x-data="{
-    wishlist: @json($wishlistItems),
-    formatRupiah(num) {
-        return 'Rp' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    },
-    async removeFromWishlist(id) {
-        try {
-            const res = await fetch(`/user/wishlist/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json'
-                }
-            });
-            if (res.ok) {
-                this.wishlist = this.wishlist.filter(item => item.id !== id);
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    }
-}">
+<div x-data="wishlistPage()">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-xs text-[#7a6f68] mb-3">
         <a href="{{ route('user.dashboard') }}" class="hover:text-[#2c2420]">Beranda</a>
@@ -127,3 +106,32 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function wishlistPage() {
+    return {
+        wishlist: @json($wishlistItems),
+        formatRupiah(num) {
+            return 'Rp' + Number(num || 0).toLocaleString('id-ID');
+        },
+        async removeFromWishlist(id) {
+            try {
+                const res = await fetch(`/user/wishlist/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+                if (res.ok) {
+                    this.wishlist = this.wishlist.filter(item => item.id !== id);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    };
+}
+</script>
+@endpush

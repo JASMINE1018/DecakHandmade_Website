@@ -72,12 +72,15 @@
 
         <div class="h-px bg-[#e5dfd8] my-4"></div>
 
-        <!-- Logout Link -->
-        <a href="#" class="flex items-center gap-3 px-3.5 py-2 text-sm font-medium text-[#c06547] hover:text-[#a8543b] transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-            </svg>
-            <span>Keluar</span>
-        </a>
+        <!-- Logout Form -->
+        <form method="POST" action="{{ route('user.logout') }}">
+            @csrf
+            <button type="submit" class="w-full flex items-center gap-3 px-3.5 py-2 text-sm font-medium text-[#c06547] hover:text-[#a8543b] transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+                <span>Keluar</span>
+            </button>
+        </form>
     </div>
 </aside>

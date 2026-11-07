@@ -76,14 +76,25 @@ use App\Http\Controllers\User\AddressController as UserAddressController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\User\WishlistController as UserWishlistController;
 use App\Http\Controllers\User\PasswordController as UserPasswordController;
+use App\Http\Controllers\User\AuthController as UserAuthController;
 
 /*
 |--------------------------------------------------------------------------
-| User Dashboard Routes (Integrated with Database)
+| User Dashboard & Authentication Routes
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('user')->name('user.')->group(function () {
+    // Auth Routes
+    Route::middleware('guest:customer')->group(function () {
+        Route::get('/login', [UserAuthController::class, 'showLogin'])->name('login');
+        Route::post('/login', [UserAuthController::class, 'login'])->name('login.store');
+        Route::get('/register', [UserAuthController::class, 'showRegister'])->name('register');
+        Route::post('/register', [UserAuthController::class, 'register'])->name('register.store');
+    });
+
+    Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout');
+
     // Profile
     Route::get('/', [UserProfileController::class, 'index'])->name('dashboard');
     Route::put('/profile', [UserProfileController::class, 'update'])->name('profile.update');

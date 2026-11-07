@@ -3,26 +3,7 @@
 @section('title', 'Pesanan Saya - Decak Handmade')
 
 @section('content')
-<div x-data="{
-    activeFilter: '{{ $status ?? 'all' }}',
-    trackingModal: false,
-    currentTracking: null,
-    orders: @json($orders),
-    formatRupiah(num) {
-        return 'Rp' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    },
-    openTracking(order) {
-        this.currentTracking = order;
-        this.trackingModal = true;
-    },
-    get filteredOrders() {
-        if (this.activeFilter === 'all') return this.orders;
-        if (this.activeFilter === 'shipping') {
-            return this.orders.filter(o => o.status === 'shipped');
-        }
-        return this.orders.filter(o => o.status === this.activeFilter);
-    }
-}">
+<div x-data="ordersPage()">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-xs text-[#7a6f68] mb-3">
         <a href="{{ route('user.dashboard') }}" class="hover:text-[#2c2420]">Beranda</a>
@@ -61,10 +42,8 @@
                 </button>
                 <button type="button" @click="activeFilter = 'shipping'"
                     :class="activeFilter === 'shipping' ? 'border-[#c06547] text-[#c06547] font-semibold bg-[#faf7f2]' : 'border-transparent text-[#7a6f68] hover:text-[#2c2420]'"
-                    class="px-4 py-2 border-b-2 text-sm whitespace-nowrap transition-colors flex items-center gap-1.5">
-                    <span>Dalam pengiriman</span>
-                    <span class="px-1.5 py-0.2 rounded-full bg-[#f0c9b9] text-[#703628] text-xs font-bold"
-                        x-text="orders.filter(o => o.status === 'shipped').length"></span>
+                    class="px-4 py-2 border-b-2 text-sm whitespace-nowrap transition-colors">
+                    Dalam pengiriman
                 </button>
                 <button type="button" @click="activeFilter = 'completed'"
                     :class="activeFilter === 'completed' ? 'border-[#c06547] text-[#c06547] font-semibold bg-[#faf7f2]' : 'border-transparent text-[#7a6f68] hover:text-[#2c2420]'"
@@ -220,3 +199,30 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function ordersPage() {
+    return {
+        activeFilter: '{{ $status ?? 'all' }}',
+        trackingModal: false,
+        currentTracking: null,
+        orders: @json($orders),
+        formatRupiah(num) {
+            return 'Rp' + Number(num || 0).toLocaleString('id-ID');
+        },
+        openTracking(order) {
+            this.currentTracking = order;
+            this.trackingModal = true;
+        },
+        get filteredOrders() {
+            if (this.activeFilter === 'all') return this.orders;
+            if (this.activeFilter === 'shipping') {
+                return this.orders.filter(o => o.status === 'shipped');
+            }
+            return this.orders.filter(o => o.status === this.activeFilter);
+        }
+    };
+}
+</script>
+@endpush
