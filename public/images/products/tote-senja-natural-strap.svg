@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img">
+    
+    <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#F9F4EB" />
+            <stop offset="1" stop-color="#EEE1CF" />
+        </linearGradient>
+        <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#F1E2C8" />
+            <stop offset="1" stop-color="#D9C3A0" />
+        </linearGradient>
+        <linearGradient id="pocket" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#F5E8D3" />
+            <stop offset="1" stop-color="#D9C3A0" />
+        </linearGradient>
+        <filter id="softShadow" x="-30%" y="-30%" width="160%" height="170%">
+            <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#8F7454" flood-opacity=".24" />
+        </filter>
+        <pattern id="weave" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <path d="M0 0H22M0 11H22" stroke="#BDA47D" stroke-width="1" opacity=".16" />
+        </pattern>
+        <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.2" fill="#8B7358" opacity=".13" />
+        </pattern>
+    </defs>
+    
+    <rect width="1200" height="1200" fill="url(#bg)" />
+    <rect width="1200" height="1200" fill="url(#dots)" opacity=".55" />
+    <circle cx="1010" cy="185" r="255" fill="#E7D7C0" opacity=".62" />
+    <circle cx="160" cy="1000" r="235" fill="#EFE3D2" opacity=".65" />
+    <circle cx="965" cy="995" r="120" fill="#E7D7C0" opacity=".38" />
+
+    <g filter="url(#softShadow)">
+        <!-- Body / hem at the bottom of the frame -->
+        <rect x="-80" y="760" width="1360" height="520" rx="60" fill="url(#body)" stroke="#BDA47D" stroke-width="6" />
+        <rect x="-80" y="760" width="1360" height="520" rx="60" fill="url(#weave)" opacity=".75" />
+        <rect x="-80" y="760" width="1360" height="104" fill="#E7D4B5" opacity=".85" />
+        <line x1="0" y1="864" x2="1200" y2="864" stroke="#A8865B" stroke-width="5" stroke-dasharray="14 11" opacity=".9" />
+
+        <!-- Strap loop, drawn behind the hem anchor -->
+        <path d="M190 900 C260 520 520 250 1000 170" fill="none" stroke="#AD8E65" stroke-width="118" stroke-linecap="round" />
+        <path d="M190 900 C260 520 520 250 1000 170" fill="none" stroke="#C9AF87" stroke-width="84" stroke-linecap="round" />
+        <path d="M190 900 C260 520 520 250 1000 170" fill="none" stroke="rgba(168,134,91,.55)" stroke-width="4" stroke-dasharray="14 14" stroke-linecap="round" />
+
+        <!-- Strap highlight -->
+        <path d="M202 866 C278 522 530 274 992 196" fill="none" stroke="#FFFFFF" stroke-width="12" opacity=".09" stroke-linecap="round" />
+
+        <!-- Strap anchor patch -->
+        <rect x="120" y="810" width="200" height="150" rx="34" fill="#F5E8D3" stroke="#C9AF89" stroke-width="4" />
+        <rect x="140" y="830" width="160" height="110" rx="24" fill="none" stroke="#A8865B" stroke-width="4" stroke-dasharray="11 9" opacity=".85" />
+
+        <!-- Pocket edge and label on the bag body -->
+        <line x1="0" y1="1052" x2="1200" y2="1052" stroke="#A8865B" stroke-width="4" stroke-dasharray="12 10" opacity=".65" />
+        
+    <rect x="800" y="950" width="180" height="112" rx="10" fill="#FBF3E4" stroke="#C9AF89" stroke-width="3" />
+    <text x="890" y="984" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="700" letter-spacing="3.5" fill="#7A5E40">DECAK</text>
+    <line x1="826" y1="995" x2="954" y2="995" stroke="#C9AF89" stroke-width="1.5" opacity=".7" />
+    <text x="890" y="1014" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="600" letter-spacing="2.4" fill="#7A5E40">HANDMADE</text>
+
+        <!-- Stitching at the strap base -->
+        <path d="M380 856 C430 826 510 812 590 816" fill="none" stroke="#A8865B" stroke-width="3.5" stroke-dasharray="9 9" opacity=".65" />
+    </g>
+
+    <!-- Measurement tag -->
+    <g transform="translate(985 620) rotate(8)">
+        <rect x="-60" y="-34" width="120" height="68" rx="14" fill="#FBF3E4" stroke="#C9AF89" stroke-width="2" opacity=".95" />
+        <text x="0" y="-4" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700" letter-spacing="1.6" fill="#7A5E40">STRAP</text>
+        <text x="0" y="18" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" letter-spacing="1.6" fill="#7A5E40">60 CM</text>
+    </g>
+
+</svg>
