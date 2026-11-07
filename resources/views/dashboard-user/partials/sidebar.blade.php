@@ -1,13 +1,26 @@
 <aside class="lg:col-span-4 xl:col-span-3">
     <div class="bg-[#f5eee6]/80 border border-[#e8dfd5] rounded-2xl p-5 shadow-xs sticky top-28">
         <!-- User Profile Intro -->
+        @php
+            $sidebarCustomer = $customer ?? ($currentUser ?? null);
+            $fullName = $sidebarCustomer->name ?? 'Pelanggan';
+            $words = explode(' ', trim($fullName));
+            $initials = '';
+            foreach (array_slice($words, 0, 2) as $w) {
+                $initials .= strtoupper(substr($w, 0, 1));
+            }
+            $joinedDate = $sidebarCustomer && $sidebarCustomer->created_at 
+                ? $sidebarCustomer->created_at->translatedFormat('F Y') 
+                : 'Oktober 2026';
+            $wishlistCount = $sidebarCustomer ? $sidebarCustomer->wishlists()->count() : 0;
+        @endphp
         <div class="flex items-center gap-3.5 mb-6">
             <div class="w-12 h-12 rounded-full bg-white border border-[#e0ddd8] flex items-center justify-center font-bold text-sm text-[#5a483e] shadow-2xs">
-                <span>AP</span>
+                <span>{{ $initials ?: 'DH' }}</span>
             </div>
-            <div>
-                <h2 class="font-semibold text-base text-[#2c2420] leading-tight">Ayu Pramesti</h2>
-                <p class="text-xs text-[#7a6f68] mt-0.5">Anggota sejak Oktober 2026</p>
+            <div class="min-w-0">
+                <h2 class="font-semibold text-base text-[#2c2420] leading-tight truncate">{{ $fullName }}</h2>
+                <p class="text-xs text-[#7a6f68] mt-0.5">Anggota sejak {{ $joinedDate }}</p>
             </div>
         </div>
 
@@ -45,7 +58,7 @@
                 <svg class="w-4 h-4 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                 </svg>
-                <span>Wishlist (4)</span>
+                <span>Wishlist ({{ $wishlistCount }})</span>
             </a>
 
             <a href="{{ route('user.password') }}" 

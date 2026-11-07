@@ -4,69 +4,10 @@
 
 @section('content')
 <div x-data="{
-    activeFilter: 'all',
+    activeFilter: '{{ $status ?? 'all' }}',
     trackingModal: false,
     currentTracking: null,
-    orders: [
-        {
-            id: 'DCK-20261020-018',
-            date: '20 Oktober 2026',
-            status: 'shipping',
-            statusLabel: 'Dalam pengiriman',
-            statusClass: 'bg-[#ede6dc] text-[#5e5449]',
-            total: 365000,
-            courier: 'JNE Regular',
-            trackingNumber: 'JNE-98231049281',
-            estimate: '23–24 Oktober 2026',
-            items: [
-                {
-                    title: 'Tote Senja',
-                    variant: 'Kanvas katun · Natural',
-                    qty: 1,
-                    price: 189000,
-                    image: '/images/products/tote-senja.png'
-                },
-                {
-                    title: 'Pouch Rami',
-                    variant: 'Linen katun · Oat',
-                    qty: 2,
-                    price: 79000,
-                    image: '/images/products/pouch-rami.png'
-                }
-            ],
-            history: [
-                { time: '21 Okt 2026 14:30', desc: 'Paket tiba di fasilitas sortir Hub Bandung' },
-                { time: '20 Okt 2026 18:00', desc: 'Paket telah diserahkan ke kurir JNE' },
-                { time: '20 Okt 2026 11:15', desc: 'Pesanan selesai dikemas di atelier Bandung' },
-                { time: '20 Okt 2026 09:00', desc: 'Pembayaran berhasil diverifikasi' }
-            ]
-        },
-        {
-            id: 'DCK-20260912-004',
-            date: '12 September 2026',
-            status: 'completed',
-            statusLabel: 'Selesai',
-            statusClass: 'bg-[#eaf0e7] text-[#5a7355]',
-            total: 189000,
-            courier: 'SiCepat BEST',
-            trackingNumber: 'SCP-7492019482',
-            estimate: 'Tiba 14 September 2026',
-            items: [
-                {
-                    title: 'Tote Senja',
-                    variant: 'Kanvas katun · Natural',
-                    qty: 1,
-                    price: 189000,
-                    image: '/images/products/tote-senja.png'
-                }
-            ],
-            history: [
-                { time: '14 Sep 2026 12:10', desc: 'Paket diterima oleh Ayu Pramesti' },
-                { time: '13 Sep 2026 09:20', desc: 'Paket dibawa kurir menuju alamat penerima' },
-                { time: '12 Sep 2026 16:00', desc: 'Pesanan dikirim dari atelier' }
-            ]
-        }
-    ],
+    orders: @json($orders),
     formatRupiah(num) {
         return 'Rp' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     },
@@ -76,6 +17,9 @@
     },
     get filteredOrders() {
         if (this.activeFilter === 'all') return this.orders;
+        if (this.activeFilter === 'shipping') {
+            return this.orders.filter(o => o.status === 'shipped');
+        }
         return this.orders.filter(o => o.status === this.activeFilter);
     }
 }">
@@ -119,7 +63,8 @@
                     :class="activeFilter === 'shipping' ? 'border-[#c06547] text-[#c06547] font-semibold bg-[#faf7f2]' : 'border-transparent text-[#7a6f68] hover:text-[#2c2420]'"
                     class="px-4 py-2 border-b-2 text-sm whitespace-nowrap transition-colors flex items-center gap-1.5">
                     <span>Dalam pengiriman</span>
-                    <span class="px-1.5 py-0.2 rounded-full bg-[#f0c9b9] text-[#703628] text-xs font-bold">1</span>
+                    <span class="px-1.5 py-0.2 rounded-full bg-[#f0c9b9] text-[#703628] text-xs font-bold"
+                        x-text="orders.filter(o => o.status === 'shipped').length"></span>
                 </button>
                 <button type="button" @click="activeFilter = 'completed'"
                     :class="activeFilter === 'completed' ? 'border-[#c06547] text-[#c06547] font-semibold bg-[#faf7f2]' : 'border-transparent text-[#7a6f68] hover:text-[#2c2420]'"
@@ -183,7 +128,7 @@
                             </div>
 
                             <div class="flex items-center gap-3">
-                                <template x-if="order.status === 'shipping'">
+                                <template x-if="order.status === 'shipped'">
                                     <button type="button" @click="openTracking(order)"
                                         class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-[#2c2420] text-[#2c2420] text-sm font-semibold hover:bg-[#f0e8dc] transition-colors">
                                         Lacak pesanan
@@ -247,7 +192,7 @@
                 <div class="mt-4 p-3.5 rounded-xl bg-[#faf7f2] border border-[#ebdcd0] text-xs text-[#5e5449] space-y-1">
                     <div>Kurir: <strong class="text-[#2c2420]" x-text="currentTracking?.courier"></strong></div>
                     <div>Nomor Resi: <strong class="text-[#2c2420]" x-text="currentTracking?.trackingNumber"></strong></div>
-                    <div>Estimasi tiba: <strong class="text-[#c06547]" x-text="currentTracking?.estimate"></strong></div>
+                    <div>Status Pesanan: <strong class="text-[#c06547]" x-text="currentTracking?.statusLabel"></strong></div>
                 </div>
 
                 <!-- Timeline -->

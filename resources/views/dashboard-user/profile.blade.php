@@ -7,26 +7,20 @@
     isEditOpen: false,
     activeTab: 'profile',
     user: {
-        name: 'Ayu Pramesti',
-        email: 'ayu.pramesti@email.com',
-        phone: '0812 3456 7890',
-        joined: 'Oktober 2026',
-        address: 'Jl. Melati No. 18, RT 02/RW 04, Sukajadi',
-        city: 'Kota Bandung',
-        province: 'Jawa Barat',
-        postalCode: '40162'
+        name: '{{ addslashes($customer->name ?? 'Pelanggan') }}',
+        email: '{{ addslashes($customer->email ?? '-') }}',
+        phone: '{{ addslashes($customer->phone ?? '-') }}',
+        joined: '{{ $customer->created_at ? $customer->created_at->translatedFormat('F Y') : '-' }}',
+        address: '{{ addslashes($primaryAddress->full_address ?? ($customer->address ?? 'Belum ada alamat tersimpan')) }}',
+        city: '{{ addslashes($primaryAddress->city ?? 'Bandung') }}',
+        province: '{{ addslashes($primaryAddress->province ?? 'Jawa Barat') }}',
+        postalCode: '{{ addslashes($primaryAddress->postal_code ?? '') }}'
     },
     editForm: {
-        name: 'Ayu Pramesti',
-        email: 'ayu.pramesti@email.com',
-        phone: '0812 3456 7890',
+        name: '{{ addslashes($customer->name ?? '') }}',
+        email: '{{ addslashes($customer->email ?? '') }}',
+        phone: '{{ addslashes($customer->phone ?? '') }}',
         agreeTerms: true
-    },
-    saveProfile() {
-        this.user.name = this.editForm.name;
-        this.user.email = this.editForm.email;
-        this.user.phone = this.editForm.phone;
-        this.isEditOpen = false;
     }
 }">
     <!-- Breadcrumb -->
@@ -39,12 +33,21 @@
     <!-- Header Greeting -->
     <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-8">
         <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#2c2420]">
-            Halo, <span x-text="user.name.split(' ')[0]">Ayu</span>.
+            Halo, <span>{{ explode(' ', $customer->name ?? 'Pelanggan')[0] }}</span>.
         </h1>
         <p class="text-sm text-[#7a6f68]">
             Ruang kecil untuk semua cerita belanja Anda.
         </p>
     </div>
+
+    @if(session('success'))
+    <div class="mb-6 p-4 rounded-xl bg-[#eaf0e7] border border-[#cfdfca] flex items-center gap-2 text-xs text-[#5a7355]">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span>{{ session('success') }}</span>
+    </div>
+    @endif
 
     <!-- Main Grid Content -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -62,20 +65,20 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Nama lengkap</label>
-                        <div class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] font-medium shadow-2xs" x-text="user.name">
-                            Ayu Pramesti
+                        <div class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] font-medium shadow-2xs">
+                            {{ $customer->name ?? '-' }}
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Email</label>
-                        <div class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] font-medium shadow-2xs truncate" x-text="user.email">
-                            ayu.pramesti@email.com
+                        <div class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] font-medium shadow-2xs truncate">
+                            {{ $customer->email ?? '-' }}
                         </div>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Nomor telepon</label>
-                        <div class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] font-medium shadow-2xs" x-text="user.phone">
-                            0812 3456 7890
+                        <div class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] font-medium shadow-2xs">
+                            {{ $customer->phone ?? '-' }}
                         </div>
                     </div>
                 </div>
@@ -89,36 +92,62 @@
 
             <!-- Section: Alamat Utama -->
             <div class="pt-2 border-t border-[#e8dfd5]/60">
-                <h2 class="text-xl font-bold text-[#2c2420] mb-3">Alamat utama</h2>
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-xl font-bold text-[#2c2420]">Alamat utama</h2>
+                    <a href="{{ route('user.addresses') }}" class="text-xs sm:text-sm font-medium text-[#c06547] hover:underline">
+                        Kelola semua alamat →
+                    </a>
+                </div>
+                
+                @if($primaryAddress)
                 <div class="text-sm text-[#4a4039] space-y-1">
                     <div class="font-semibold text-[#2c2420]">
-                        <span x-text="user.name">Ayu Pramesti</span> · <span x-text="user.phone">0812 3456 7890</span>
+                        <span>{{ $primaryAddress->recipient_name }}</span> · <span>{{ $primaryAddress->phone }}</span>
                     </div>
-                    <div class="text-[#5e5449]" x-text="user.address">Jl. Melati No. 18, RT 02/RW 04, Sukajadi</div>
-                    <div class="text-[#5e5449]"><span x-text="user.city">Kota Bandung</span>, <span x-text="user.province">Jawa Barat</span> <span x-text="user.postalCode">40162</span></div>
+                    <div class="text-[#5e5449]">{{ $primaryAddress->full_address }}</div>
+                    <div class="text-[#5e5449]">
+                        {{ $primaryAddress->city ? $primaryAddress->city . ', ' : '' }}
+                        {{ $primaryAddress->province ?? '' }} 
+                        {{ $primaryAddress->postal_code ?? '' }}
+                    </div>
                 </div>
+                @else
+                <p class="text-sm text-[#7a6f68]">Belum ada alamat utama yang ditentukan.</p>
+                @endif
             </div>
 
             <!-- Section: Pesanan Terbaru -->
             <div class="pt-2 border-t border-[#e8dfd5]/60">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold text-[#2c2420]">Pesanan terbaru</h2>
-                    <a href="{{ route('user.cart') }}" class="text-xs sm:text-sm font-medium text-[#5e5449] hover:text-[#c06547] transition-colors flex items-center gap-1 group">
+                    <a href="{{ route('user.orders') }}" class="text-xs sm:text-sm font-medium text-[#5e5449] hover:text-[#c06547] transition-colors flex items-center gap-1 group">
                         Lihat semua pesanan
                         <span class="group-hover:translate-x-0.5 transition-transform">→</span>
                     </a>
                 </div>
 
+                @if($latestOrder)
                 <!-- Order Card Box -->
                 <div class="rounded-2xl border border-[#dec9ba] bg-[#faf7f2] p-5 sm:p-6 transition-all shadow-xs">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-[#ebdcd0]">
                         <div>
-                            <div class="font-bold text-[#2c2420] text-base">DCK-20261020-018</div>
-                            <div class="text-xs text-[#7a6f68] mt-0.5">20 Oktober 2026 · 2 produk, 3 barang · Simulasi</div>
+                            <div class="font-bold text-[#2c2420] text-base">{{ $latestOrder->order_number }}</div>
+                            <div class="text-xs text-[#7a6f68] mt-0.5">
+                                {{ $latestOrder->created_at->translatedFormat('d F Y') }} · {{ $latestOrder->items->count() }} produk ({{ $latestOrder->items->sum('quantity') }} barang)
+                            </div>
                         </div>
                         <div class="self-start sm:self-auto">
-                            <span class="inline-flex items-center px-3 py-1 rounded-md bg-[#ede6dc] text-[#5e5449] text-xs font-medium">
-                                Dalam pengiriman
+                            @php
+                                $badgeClass = match($latestOrder->status) {
+                                    'processing' => 'bg-[#faf0eb] text-[#c06547]',
+                                    'shipped' => 'bg-[#ede6dc] text-[#5e5449]',
+                                    'completed' => 'bg-[#eaf0e7] text-[#5a7355]',
+                                    'cancelled' => 'bg-[#fdf3ee] text-[#b93826]',
+                                    default => 'bg-[#ede6dc] text-[#5e5449]',
+                                };
+                            @endphp
+                            <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium {{ $badgeClass }}">
+                                {{ $latestOrder->statusLabel() }}
                             </span>
                         </div>
                     </div>
@@ -127,22 +156,41 @@
                         <div class="flex items-center gap-4">
                             <!-- Product Thumbnails -->
                             <div class="flex items-center gap-2">
-                                <img src="/images/products/tote-senja.png" alt="Tote Senja" class="w-14 h-14 object-cover rounded-xl border border-[#e0ddd8] shadow-2xs">
-                                <img src="/images/products/pouch-rami.png" alt="Pouch Rami" class="w-14 h-14 object-cover rounded-xl border border-[#e0ddd8] shadow-2xs">
+                                @forelse($latestOrder->items->take(2) as $item)
+                                    @php
+                                        $imgUrl = ($item->product && is_array($item->product->gallery) && count($item->product->gallery) > 0)
+                                            ? '/storage/' . $item->product->gallery[0]
+                                            : '/images/products/tote-senja.png';
+                                    @endphp
+                                    <img src="{{ $imgUrl }}" alt="{{ $item->product_name }}" class="w-14 h-14 object-cover rounded-xl border border-[#e0ddd8] shadow-2xs">
+                                @empty
+                                    <div class="w-14 h-14 rounded-xl bg-[#ede6dc] flex items-center justify-center text-[#7a6f68] text-xs">Produk</div>
+                                @endforelse
                             </div>
                             <div>
-                                <div class="text-base font-bold text-[#2c2420]">Rp365.000</div>
-                                <div class="text-xs text-[#7a6f68]">Estimasi tiba 23–24 Oktober 2026</div>
+                                <div class="text-base font-bold text-[#2c2420]">Rp{{ number_format($latestOrder->grand_total, 0, ',', '.') }}</div>
+                                <div class="text-xs text-[#7a6f68]">
+                                    @if($latestOrder->courier)
+                                        {{ $latestOrder->courier }} (Resi: {{ $latestOrder->tracking_number ?? 'Menunggu kurir' }})
+                                    @else
+                                        Pesanan Anda sedang disiapkan
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
                         <div>
-                            <a href="#" class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg border border-[#2c2420] text-[#2c2420] text-sm font-semibold hover:bg-[#f0e8dc] transition-colors">
+                            <a href="{{ route('user.orders') }}" class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg border border-[#2c2420] text-[#2c2420] text-sm font-semibold hover:bg-[#f0e8dc] transition-colors">
                                 Lacak pesanan
                             </a>
                         </div>
                     </div>
                 </div>
+                @else
+                <div class="rounded-2xl border border-[#dec9ba] bg-[#faf7f2] p-8 text-center text-sm text-[#7a6f68]">
+                    Belum ada riwayat pesanan. Mulai belanja untuk melengkapi koleksi kerajinan Anda!
+                </div>
+                @endif
             </div>
 
         </section>
@@ -166,7 +214,7 @@
                 x-transition:enter="transform transition ease-in-out duration-300"
                 x-transition:enter-start="translate-x-full"
                 x-transition:enter-end="translate-x-0"
-                x-transition:leave="transform transition ease-in-out duration-300"
+                x-transition:leave="transform transition ease-in-out duration-200"
                 x-transition:leave-start="translate-x-0"
                 x-transition:leave-end="translate-x-full"
                 class="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between p-6 sm:p-8">
@@ -184,38 +232,36 @@
                     <div>
                         <p class="text-xs font-bold uppercase tracking-wider text-[#7a6f68] mb-1">JADI BAGIAN DARI CERITA KAMI</p>
                         <h2 class="text-2xl sm:text-3xl font-bold text-[#2c2420]">Edit informasi</h2>
-                        <p class="text-sm text-[#7a6f68] mt-1">Ganti informasi untuk kebenaran</p>
+                        <p class="text-sm text-[#7a6f68] mt-1">Ganti informasi untuk kebenaran data akun Anda</p>
                     </div>
 
                     <!-- Form -->
-                    <form @submit.prevent="saveProfile" class="space-y-4">
+                    <form method="POST" action="{{ route('user.profile.update') }}" class="space-y-4">
+                        @csrf
+                        @method('PUT')
+
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Nama lengkap</label>
-                            <input type="text" x-model="editForm.name" required
+                            <input type="text" name="name" x-model="editForm.name" required
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                         </div>
 
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Email</label>
-                            <input type="email" x-model="editForm.email" required
+                            <input type="email" name="email" x-model="editForm.email" required
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                         </div>
 
                         <div>
-                            <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Nomer telepon</label>
+                            <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Nomor telepon</label>
                             <div class="relative">
-                                <input type="text" x-model="editForm.phone" required
-                                    class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none pr-10">
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-[#7a6f68]">
-                                    <svg class="w-4 h-4 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>
-                                    </svg>
-                                </div>
+                                <input type="text" name="phone" x-model="editForm.phone" required
+                                    class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                             </div>
                         </div>
 
                         <div class="pt-2 flex items-center gap-2">
-                            <input type="checkbox" id="agreeTerms" x-model="editForm.agreeTerms" class="rounded border-[#dec9ba] text-[#c06547] focus:ring-[#c06547]/30">
+                            <input type="checkbox" id="agreeTerms" required class="rounded border-[#dec9ba] text-[#c06547] focus:ring-[#c06547]/30" checked>
                             <label for="agreeTerms" class="text-xs text-[#5e5449] select-none cursor-pointer">
                                 Saya menyetujui Syarat & Kebijakan Privasi.
                             </label>

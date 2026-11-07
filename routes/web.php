@@ -71,33 +71,43 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
+use App\Http\Controllers\User\ProfileController as UserProfileController;
+use App\Http\Controllers\User\AddressController as UserAddressController;
+use App\Http\Controllers\User\OrderController as UserOrderController;
+use App\Http\Controllers\User\WishlistController as UserWishlistController;
+use App\Http\Controllers\User\PasswordController as UserPasswordController;
+
 /*
 |--------------------------------------------------------------------------
-| User Dashboard Routes (Frontend Only)
+| User Dashboard Routes (Integrated with Database)
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('user')->name('user.')->group(function () {
-    Route::get('/', function () {
-        return view('dashboard-user.profile');
-    })->name('dashboard');
+    // Profile
+    Route::get('/', [UserProfileController::class, 'index'])->name('dashboard');
+    Route::put('/profile', [UserProfileController::class, 'update'])->name('profile.update');
 
-    Route::get('/addresses', function () {
-        return view('dashboard-user.addresses');
-    })->name('addresses');
+    // Addresses
+    Route::get('/addresses', [UserAddressController::class, 'index'])->name('addresses');
+    Route::post('/addresses', [UserAddressController::class, 'store'])->name('addresses.store');
+    Route::put('/addresses/{address}', [UserAddressController::class, 'update'])->name('addresses.update');
+    Route::patch('/addresses/{address}/primary', [UserAddressController::class, 'setPrimary'])->name('addresses.primary');
+    Route::delete('/addresses/{address}', [UserAddressController::class, 'destroy'])->name('addresses.destroy');
 
-    Route::get('/orders', function () {
-        return view('dashboard-user.orders');
-    })->name('orders');
+    // Orders
+    Route::get('/orders', [UserOrderController::class, 'index'])->name('orders');
 
-    Route::get('/wishlist', function () {
-        return view('dashboard-user.wishlist');
-    })->name('wishlist');
+    // Wishlist
+    Route::get('/wishlist', [UserWishlistController::class, 'index'])->name('wishlist');
+    Route::post('/wishlist/{product}/toggle', [UserWishlistController::class, 'toggle'])->name('wishlist.toggle');
+    Route::delete('/wishlist/{product}', [UserWishlistController::class, 'destroy'])->name('wishlist.destroy');
 
-    Route::get('/password', function () {
-        return view('dashboard-user.password');
-    })->name('password');
+    // Password
+    Route::get('/password', [UserPasswordController::class, 'edit'])->name('password');
+    Route::put('/password', [UserPasswordController::class, 'update'])->name('password.update');
 
+    // Cart & Checkout (Interactive simulation)
     Route::get('/cart', function () {
         return view('dashboard-user.cart');
     })->name('cart');

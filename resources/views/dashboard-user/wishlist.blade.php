@@ -4,49 +4,25 @@
 
 @section('content')
 <div x-data="{
-    wishlist: [
-        {
-            id: 1,
-            title: 'Tote Bag Senja Kanvas',
-            material: 'Kanvas katun organik · Natural',
-            price: 189000,
-            stockStatus: 'Tersedia',
-            stockBadge: 'bg-[#eaf0e7] text-[#5a7355]',
-            image: '/images/products/tote-senja.png'
-        },
-        {
-            id: 2,
-            title: 'Pouch Rami Serbaguna',
-            material: 'Linen serat rami · Oat',
-            price: 79000,
-            stockStatus: 'Tersedia',
-            stockBadge: 'bg-[#eaf0e7] text-[#5a7355]',
-            image: '/images/products/pouch-rami.png'
-        },
-        {
-            id: 3,
-            title: 'Sling Pouch Tenun Etnik',
-            material: 'Tenun lurik tradisional · Indigo',
-            price: 145000,
-            stockStatus: 'Tersisa 2 buah',
-            stockBadge: 'bg-[#fdf3ee] text-[#c06547]',
-            image: '/images/products/tote-senja.png'
-        },
-        {
-            id: 4,
-            title: 'Syal Lembut Pewarna Alami',
-            material: 'Serat nanas & katun mori',
-            price: 215000,
-            stockStatus: 'Tersedia',
-            stockBadge: 'bg-[#eaf0e7] text-[#5a7355]',
-            image: '/images/products/pouch-rami.png'
-        }
-    ],
+    wishlist: @json($wishlistItems),
     formatRupiah(num) {
         return 'Rp' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     },
-    removeFromWishlist(id) {
-        this.wishlist = this.wishlist.filter(item => item.id !== id);
+    async removeFromWishlist(id) {
+        try {
+            const res = await fetch(`/user/wishlist/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            });
+            if (res.ok) {
+                this.wishlist = this.wishlist.filter(item => item.id !== id);
+            }
+        } catch (e) {
+            console.error(e);
+        }
     }
 }">
     <!-- Breadcrumb -->
@@ -69,9 +45,18 @@
             </p>
         </div>
         <div class="text-xs font-semibold text-[#5e5449] bg-[#f5eee6] px-3 py-1.5 rounded-lg border border-[#e5dfd8]">
-            <span x-text="wishlist.length">4</span> kerajinan tersimpan
+            <span x-text="wishlist.length">0</span> kerajinan tersimpan
         </div>
     </div>
+
+    @if(session('success'))
+    <div class="mb-6 p-4 rounded-xl bg-[#eaf0e7] border border-[#cfdfca] flex items-center gap-2 text-xs text-[#5a7355]">
+        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span>{{ session('success') }}</span>
+    </div>
+    @endif
 
     <!-- Main Grid Content -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -109,7 +94,7 @@
                         <div class="p-5 flex-1 flex flex-col justify-between gap-4">
                             <div class="space-y-1">
                                 <h3 class="font-bold text-base text-[#2c2420] group-hover:text-[#c06547] transition-colors" x-text="item.title"></h3>
-                                <p class="text-xs text-[#7a6f68]" x-text="item.material"></p>
+                                <p class="text-xs text-[#7a6f68] line-clamp-2" x-text="item.material"></p>
                                 <div class="text-base font-bold text-[#2c2420] pt-1" x-text="formatRupiah(item.price)"></div>
                             </div>
 

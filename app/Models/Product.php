@@ -56,6 +56,16 @@ class Product extends Model
         return $this->hasMany(InventoryMovement::class);
     }
 
+    public function wishlists(): HasMany
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
+    public function wishlistedBy(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Customer::class, 'wishlists', 'product_id', 'customer_id')->withTimestamps();
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
