@@ -210,19 +210,39 @@
     </div>
 
     <!-- Simulation Success Modal -->
-    <div x-cloak x-show="orderSuccess" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#2c2420]/40 backdrop-blur-xs">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center shadow-xl space-y-4">
-            <div class="w-16 h-16 mx-auto rounded-full bg-[#fdf3ee] text-[#c06547] flex items-center justify-center text-2xl font-bold">
-                ✓
-            </div>
-            <h3 class="text-2xl font-bold text-[#2c2420]">Pesanan Berhasil Disimulasikan!</h3>
-            <p class="text-sm text-[#7a6f68]">
-                Nomor Pesanan: <strong class="text-[#2c2420]">DCK-20261020-018</strong>. Karena ini adalah antarmuka prototipe (frontend-only), pesanan ini telah dicatat dalam simulasi.
-            </p>
-            <div class="pt-2 flex flex-col gap-2">
-                <a href="{{ route('user.dashboard') }}" class="w-full py-2.5 px-4 rounded-xl bg-[#c06547] text-white font-semibold text-sm hover:bg-[#a8543b] transition-colors">
-                    Kembali ke Akun Saya
-                </a>
+    <div x-cloak x-show="orderSuccess" class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div x-show="orderSuccess"
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Modal Dialog Container -->
+        <div class="relative min-h-screen flex items-center justify-center p-4 text-center">
+            <div x-show="orderSuccess"
+                x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="relative bg-white rounded-2xl max-w-md w-full p-6 sm:p-8 text-center shadow-2xl space-y-4 z-10">
+                <div class="w-16 h-16 mx-auto rounded-full bg-[#fdf3ee] text-[#c06547] flex items-center justify-center text-2xl font-bold">
+                    ✓
+                </div>
+                <h3 class="text-2xl font-bold text-[#2c2420]">Pesanan Berhasil Disimulasikan!</h3>
+                <p class="text-sm text-[#7a6f68] leading-relaxed">
+                    Nomor Pesanan: <strong class="text-[#2c2420]">DCK-20261020-018</strong>. Karena ini adalah antarmuka prototipe (frontend-only), pesanan ini telah dicatat dalam simulasi.
+                </p>
+                <div class="pt-2 flex flex-col gap-2">
+                    <a href="{{ route('user.dashboard') }}" class="w-full py-2.5 px-4 rounded-xl bg-[#c06547] text-white font-semibold text-sm hover:bg-[#a8543b] transition-colors shadow-xs">
+                        Kembali ke Akun Saya
+                    </a>
+                </div>
             </div>
         </div>
     </div>

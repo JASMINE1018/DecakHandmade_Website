@@ -159,9 +159,9 @@
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
             @click="isEditOpen = false" 
-            class="fixed inset-0 bg-[#2c2420]/40 backdrop-blur-xs transition-opacity"></div>
+            class="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"></div>
 
-        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10 z-10">
             <div x-show="isEditOpen" 
                 x-transition:enter="transform transition ease-in-out duration-300"
                 x-transition:enter-start="translate-x-full"
