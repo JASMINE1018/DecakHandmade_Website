@@ -12,7 +12,7 @@ class OrderController extends Controller
 {
     protected function getCustomer(): Customer
     {
-        return Auth::guard('customer')->user() ?? Customer::first();
+        return Auth::guard('customer')->user() ?? Auth::user();
     }
 
     public function index(Request $request)

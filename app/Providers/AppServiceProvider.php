@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
 
         \Illuminate\Support\Facades\View::composer('dashboard-user.*', function ($view) {
             $customer = \Illuminate\Support\Facades\Auth::guard('customer')->user()
-                ?? \App\Models\Customer::first();
+                ?? \Illuminate\Support\Facades\Auth::user();
             $view->with('currentUser', $customer);
         });
     }

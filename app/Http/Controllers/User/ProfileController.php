@@ -11,8 +11,7 @@ class ProfileController extends Controller
 {
     protected function getCustomer(): Customer
     {
-        // Jika sudah ada session auth customer gunakan itu, jika belum gunakan default customer demo
-        return Auth::guard('customer')->user() ?? Customer::first();
+        return Auth::guard('customer')->user() ?? Auth::user();
     }
 
     public function index()

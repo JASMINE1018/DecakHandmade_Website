@@ -16,7 +16,13 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin.active' => \App\Http\Middleware\EnsureAdminIsActive::class,
         ]);
 
-        $middleware->redirectGuestsTo(fn () => route('admin.login'));
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if ($request->is('user') || $request->is('user/*')) {
+                return route('user.login');
+            }
+
+            return route('admin.login');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

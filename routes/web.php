@@ -93,37 +93,40 @@ Route::prefix('user')->name('user.')->group(function () {
         Route::post('/register', [UserAuthController::class, 'register'])->name('register.store');
     });
 
-    Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout');
+    // Protected Dashboard Routes (Protected by Sanctum / Customer Auth)
+    Route::middleware('auth:sanctum,customer')->group(function () {
+        Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
-    // Profile
-    Route::get('/', [UserProfileController::class, 'index'])->name('dashboard');
-    Route::put('/profile', [UserProfileController::class, 'update'])->name('profile.update');
+        // Profile
+        Route::get('/', [UserProfileController::class, 'index'])->name('dashboard');
+        Route::put('/profile', [UserProfileController::class, 'update'])->name('profile.update');
 
-    // Addresses
-    Route::get('/addresses', [UserAddressController::class, 'index'])->name('addresses');
-    Route::post('/addresses', [UserAddressController::class, 'store'])->name('addresses.store');
-    Route::put('/addresses/{address}', [UserAddressController::class, 'update'])->name('addresses.update');
-    Route::patch('/addresses/{address}/primary', [UserAddressController::class, 'setPrimary'])->name('addresses.primary');
-    Route::delete('/addresses/{address}', [UserAddressController::class, 'destroy'])->name('addresses.destroy');
+        // Addresses
+        Route::get('/addresses', [UserAddressController::class, 'index'])->name('addresses');
+        Route::post('/addresses', [UserAddressController::class, 'store'])->name('addresses.store');
+        Route::put('/addresses/{address}', [UserAddressController::class, 'update'])->name('addresses.update');
+        Route::patch('/addresses/{address}/primary', [UserAddressController::class, 'setPrimary'])->name('addresses.primary');
+        Route::delete('/addresses/{address}', [UserAddressController::class, 'destroy'])->name('addresses.destroy');
 
-    // Orders
-    Route::get('/orders', [UserOrderController::class, 'index'])->name('orders');
+        // Orders
+        Route::get('/orders', [UserOrderController::class, 'index'])->name('orders');
 
-    // Wishlist
-    Route::get('/wishlist', [UserWishlistController::class, 'index'])->name('wishlist');
-    Route::post('/wishlist/{product}/toggle', [UserWishlistController::class, 'toggle'])->name('wishlist.toggle');
-    Route::delete('/wishlist/{product}', [UserWishlistController::class, 'destroy'])->name('wishlist.destroy');
+        // Wishlist
+        Route::get('/wishlist', [UserWishlistController::class, 'index'])->name('wishlist');
+        Route::post('/wishlist/{product}/toggle', [UserWishlistController::class, 'toggle'])->name('wishlist.toggle');
+        Route::delete('/wishlist/{product}', [UserWishlistController::class, 'destroy'])->name('wishlist.destroy');
 
-    // Password
-    Route::get('/password', [UserPasswordController::class, 'edit'])->name('password');
-    Route::put('/password', [UserPasswordController::class, 'update'])->name('password.update');
+        // Password
+        Route::get('/password', [UserPasswordController::class, 'edit'])->name('password');
+        Route::put('/password', [UserPasswordController::class, 'update'])->name('password.update');
 
-    // Cart & Checkout (Interactive simulation)
-    Route::get('/cart', function () {
-        return view('dashboard-user.cart');
-    })->name('cart');
+        // Cart & Checkout (Interactive simulation)
+        Route::get('/cart', function () {
+            return view('dashboard-user.cart');
+        })->name('cart');
 
-    Route::get('/checkout', function () {
-        return view('dashboard-user.checkout');
-    })->name('checkout');
+        Route::get('/checkout', function () {
+            return view('dashboard-user.checkout');
+        })->name('checkout');
+    });
 });
