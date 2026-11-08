@@ -93,12 +93,14 @@ Route::prefix('user')->name('user.')->group(function () {
         Route::post('/register', [UserAuthController::class, 'register'])->name('register.store');
     });
 
+    // Public Dashboard / Home (Accessible by guests & customers)
+    Route::get('/', [UserProfileController::class, 'index'])->name('dashboard');
+
     // Protected Dashboard Routes (Protected by Sanctum / Customer Auth)
     Route::middleware('auth:sanctum,customer')->group(function () {
         Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
-        // Profile
-        Route::get('/', [UserProfileController::class, 'index'])->name('dashboard');
+        // Profile update
         Route::put('/profile', [UserProfileController::class, 'update'])->name('profile.update');
 
         // Addresses

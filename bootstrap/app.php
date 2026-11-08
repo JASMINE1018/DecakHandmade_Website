@@ -23,6 +23,14 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return route('admin.login');
         });
+
+        $middleware->redirectUsersTo(function (Request $request) {
+            if (\Illuminate\Support\Facades\Auth::guard('customer')->check() || $request->is('user') || $request->is('user/*')) {
+                return route('user.dashboard');
+            }
+
+            return route('admin.dashboard');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

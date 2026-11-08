@@ -3,16 +3,17 @@
         <!-- User Profile Intro -->
         @php
             $sidebarCustomer = $customer ?? ($currentUser ?? null);
-            $fullName = $sidebarCustomer->name ?? 'Pelanggan';
+            $isLoggedIn = !empty($sidebarCustomer);
+            $fullName = $isLoggedIn ? $sidebarCustomer->name : 'Tamu Pengunjung';
             $words = explode(' ', trim($fullName));
             $initials = '';
             foreach (array_slice($words, 0, 2) as $w) {
                 $initials .= strtoupper(substr($w, 0, 1));
             }
-            $joinedDate = $sidebarCustomer && $sidebarCustomer->created_at 
+            $joinedDate = $isLoggedIn && $sidebarCustomer->created_at 
                 ? $sidebarCustomer->created_at->translatedFormat('F Y') 
-                : 'Oktober 2026';
-            $wishlistCount = $sidebarCustomer ? $sidebarCustomer->wishlists()->count() : 0;
+                : null;
+            $wishlistCount = $isLoggedIn ? $sidebarCustomer->wishlists()->count() : 0;
         @endphp
         <div class="flex items-center gap-3.5 mb-6">
             <div class="w-12 h-12 rounded-full bg-white border border-[#e0ddd8] flex items-center justify-center font-bold text-sm text-[#5a483e] shadow-2xs">
@@ -20,7 +21,9 @@
             </div>
             <div class="min-w-0">
                 <h2 class="font-semibold text-base text-[#2c2420] leading-tight truncate">{{ $fullName }}</h2>
-                <p class="text-xs text-[#7a6f68] mt-0.5">Anggota sejak {{ $joinedDate }}</p>
+                <p class="text-xs text-[#7a6f68] mt-0.5">
+                    {{ $isLoggedIn ? 'Anggota sejak ' . $joinedDate : 'Belum masuk akun' }}
+                </p>
             </div>
         </div>
 
@@ -72,7 +75,8 @@
 
         <div class="h-px bg-[#e5dfd8] my-4"></div>
 
-        <!-- Logout Form -->
+        <!-- Auth Actions -->
+        @auth('customer')
         <form method="POST" action="{{ route('user.logout') }}">
             @csrf
             <button type="submit" class="w-full flex items-center gap-3 px-3.5 py-2 text-sm font-medium text-[#c06547] hover:text-[#a8543b] transition-colors">
@@ -82,5 +86,18 @@
                 <span>Keluar</span>
             </button>
         </form>
+        @else
+        <div class="space-y-2">
+            <a href="{{ route('user.login') }}" class="w-full flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#c06547] text-white text-xs font-semibold hover:bg-[#a8543b] transition-colors shadow-2xs">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                </svg>
+                <span>Masuk ke Akun</span>
+            </a>
+            <a href="{{ route('user.register') }}" class="w-full flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl border border-[#d8cec3] bg-white text-xs font-medium text-[#5e5449] hover:bg-[#faf7f2] transition-colors">
+                <span>Daftar Akun Baru</span>
+            </a>
+        </div>
+        @endauth
     </div>
 </aside>

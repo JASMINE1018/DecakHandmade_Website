@@ -7,13 +7,13 @@
     isEditOpen: false,
     activeTab: 'profile',
     user: {
-        name: '{{ addslashes($customer->name ?? 'Pelanggan') }}',
+        name: '{{ addslashes($customer->name ?? 'Tamu Pengunjung') }}',
         email: '{{ addslashes($customer->email ?? '-') }}',
         phone: '{{ addslashes($customer->phone ?? '-') }}',
-        joined: '{{ $customer->created_at ? $customer->created_at->translatedFormat('F Y') : '-' }}',
+        joined: '{{ ($customer && $customer->created_at) ? $customer->created_at->translatedFormat('F Y') : '-' }}',
         address: '{{ addslashes($primaryAddress->full_address ?? ($customer->address ?? 'Belum ada alamat tersimpan')) }}',
-        city: '{{ addslashes($primaryAddress->city ?? 'Bandung') }}',
-        province: '{{ addslashes($primaryAddress->province ?? 'Jawa Barat') }}',
+        city: '{{ addslashes($primaryAddress->city ?? '-') }}',
+        province: '{{ addslashes($primaryAddress->province ?? '-') }}',
         postalCode: '{{ addslashes($primaryAddress->postal_code ?? '') }}'
     },
     editForm: {
@@ -33,12 +33,42 @@
     <!-- Header Greeting -->
     <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-8">
         <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#2c2420]">
-            Halo, <span>{{ explode(' ', $customer->name ?? 'Pelanggan')[0] }}</span>.
+            Halo, <span>{{ $customer ? explode(' ', $customer->name)[0] : 'Tamu' }}</span>.
         </h1>
         <p class="text-sm text-[#7a6f68]">
             Ruang kecil untuk semua cerita belanja Anda.
         </p>
     </div>
+
+    @guest('customer')
+    <!-- Guest Notification Banner -->
+    <div class="mb-8 rounded-2xl bg-gradient-to-r from-[#f7ede6] via-[#faf2ea] to-[#f4ebe1] border border-[#e8d5c4] p-5 sm:p-6 shadow-xs relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-[#c06547]/5 pointer-events-none"></div>
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 relative z-10">
+            <div class="flex items-start gap-4">
+                <div class="w-11 h-11 rounded-xl bg-[#c06547]/15 border border-[#c06547]/20 flex items-center justify-center shrink-0 text-[#c06547] mt-0.5">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold text-[#2c2420] text-base">Silakan masuk ke akun Anda</h3>
+                    <p class="text-sm text-[#7a6f68] mt-1 leading-relaxed max-w-xl">
+                        Anda saat ini menjelajah sebagai tamu. Masuk atau buat akun untuk melihat riwayat pesanan, mengelola buku alamat, dan menyimpan produk wishlist kerajinan favorit Anda.
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 shrink-0 w-full sm:w-auto">
+                <a href="{{ route('user.login') }}" class="w-full sm:w-auto text-center px-5 py-2.5 rounded-xl bg-[#c06547] text-white text-sm font-semibold hover:bg-[#a8543b] transition-all shadow-xs">
+                    Masuk Akun
+                </a>
+                <a href="{{ route('user.register') }}" class="w-full sm:w-auto text-center px-4 py-2.5 rounded-xl border border-[#c8bcaf] bg-white text-sm font-semibold text-[#4a3f35] hover:bg-[#fbf9f6] transition-all">
+                    Daftar Baru
+                </a>
+            </div>
+        </div>
+    </div>
+    @endguest
 
     @if(session('success'))
     <div class="mb-6 p-4 rounded-xl bg-[#eaf0e7] border border-[#cfdfca] flex items-center gap-2 text-xs text-[#5a7355]">
@@ -84,9 +114,15 @@
                 </div>
 
                 <div class="mt-4">
+                    @auth('customer')
                     <button type="button" @click="isEditOpen = true" class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-[#c06547] text-white text-sm font-semibold hover:bg-[#a8543b] transition-all shadow-xs">
                         Edit informasi
                     </button>
+                    @else
+                    <a href="{{ route('user.login') }}" class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-[#c06547] text-white text-sm font-semibold hover:bg-[#a8543b] transition-all shadow-xs">
+                        Masuk untuk Mengubah Data
+                    </a>
+                    @endauth
                 </div>
             </div>
 

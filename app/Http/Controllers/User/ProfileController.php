@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
-    protected function getCustomer(): Customer
+    protected function getCustomer(): ?Customer
     {
         return Auth::guard('customer')->user() ?? Auth::user();
     }
@@ -17,8 +17,8 @@ class ProfileController extends Controller
     public function index()
     {
         $customer = $this->getCustomer();
-        $primaryAddress = $customer->primaryAddress ?? $customer->addresses()->first();
-        $latestOrder = $customer->orders()->with(['items.product', 'statusHistories'])->latest()->first();
+        $primaryAddress = $customer ? ($customer->primaryAddress ?? $customer->addresses()->first()) : null;
+        $latestOrder = $customer ? $customer->orders()->with(['items.product', 'statusHistories'])->latest()->first() : null;
 
         return view('dashboard-user.profile', compact('customer', 'primaryAddress', 'latestOrder'));
     }
