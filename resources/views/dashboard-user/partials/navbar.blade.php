@@ -13,16 +13,16 @@
         <!-- Navigation Links -->
         <nav class="hidden md:flex items-center gap-8 text-[15px] font-medium text-[#4a4039]">
             <a href="{{ route('user.dashboard') }}" class="transition-colors hover:text-[#c06547] {{ request()->routeIs('user.beranda') ? 'text-[#c06547] font-semibold' : '' }}">
-                Beranda
+                Home
             </a>
             <a href="{{ route('user.dashboard') }}" class="transition-colors hover:text-[#c06547] {{ request()->routeIs('user.katalog') ? 'text-[#c06547] font-semibold' : '' }}">
-                Katalog
+                Catalog
             </a>
             <a href="{{ route('user.dashboard') }}" class="transition-colors hover:text-[#c06547] {{ request()->routeIs('user.cerita') ? 'text-[#c06547] font-semibold' : '' }}">
-                Cerita Kami
+                Our Story
             </a>
             <a href="{{ route('user.dashboard') }}" class="transition-colors hover:text-[#c06547] {{ request()->routeIs('user.dashboard') ? 'text-[#c06547] font-semibold' : '' }}">
-                Akun saya
+                My Account
             </a>
         </nav>
 
@@ -30,11 +30,11 @@
         <div class="flex items-center gap-3">
             @guest('customer')
             <a href="{{ route('user.login') }}" class="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-lg border border-[#c8bcaf] text-[#4a3f35] text-sm font-semibold hover:bg-[#f0ebe3] transition-all">
-                Masuk
+                Sign In
             </a>
             @endguest
             <a href="{{ route('user.cart') }}" class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-[#c06547] text-white text-sm font-semibold hover:bg-[#a8543b] transition-all shadow-sm hover:shadow">
-                Belanja Sekarang
+                Shop Now
             </a>
         </div>
     </div>

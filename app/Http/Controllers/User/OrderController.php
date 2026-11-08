@@ -34,10 +34,10 @@ class OrderController extends Controller
 
         $orders = $query->get()->map(function ($order) {
             $statusLabel = match ($order->status) {
-                'processing' => 'Diproses',
-                'shipped' => 'Dalam pengiriman',
-                'completed' => 'Selesai',
-                'cancelled' => 'Dibatalkan',
+                'processing' => 'Processing',
+                'shipped' => 'In Delivery',
+                'completed' => 'Completed',
+                'cancelled' => 'Cancelled',
                 default => ucfirst($order->status),
             };
 

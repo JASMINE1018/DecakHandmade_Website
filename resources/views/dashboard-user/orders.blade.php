@@ -1,26 +1,26 @@
 @extends('dashboard-user.layouts.app')
 
-@section('title', 'Pesanan Saya - Decak Handmade')
+@section('title', 'My Orders - Decak Handmade')
 
 @section('content')
 <div x-data="ordersPage()">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-xs text-[#7a6f68] mb-3">
-        <a href="{{ route('user.dashboard') }}" class="hover:text-[#2c2420]">Beranda</a>
+        <a href="{{ route('user.dashboard') }}" class="hover:text-[#2c2420]">Home</a>
         <span>/</span>
-        <a href="{{ route('user.dashboard') }}" class="hover:text-[#2c2420]">Akun saya</a>
+        <a href="{{ route('user.dashboard') }}" class="hover:text-[#2c2420]">My account</a>
         <span>/</span>
-        <span class="text-[#2c2420] font-medium">Pesanan saya</span>
+        <span class="text-[#2c2420] font-medium">My orders</span>
     </nav>
 
     <!-- Header Greeting -->
     <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-8">
         <div>
             <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#2c2420]">
-                Pesanan saya
+                My orders
             </h1>
             <p class="text-sm text-[#7a6f68] mt-1">
-                Pantau proses pembuatan, pengemasan, hingga riwayat pengiriman produk kerajinan Anda.
+                Track production, packaging, and real-time delivery status of your handcrafted orders.
             </p>
         </div>
     </div>
@@ -38,22 +38,22 @@
                 <button type="button" @click="activeFilter = 'all'"
                     :class="activeFilter === 'all' ? 'border-[#c06547] text-[#c06547] font-semibold bg-[#faf7f2]' : 'border-transparent text-[#7a6f68] hover:text-[#2c2420]'"
                     class="px-4 py-2 border-b-2 text-sm whitespace-nowrap transition-colors">
-                    Semua
+                    All
                 </button>
                 <button type="button" @click="activeFilter = 'shipping'"
                     :class="activeFilter === 'shipping' ? 'border-[#c06547] text-[#c06547] font-semibold bg-[#faf7f2]' : 'border-transparent text-[#7a6f68] hover:text-[#2c2420]'"
                     class="px-4 py-2 border-b-2 text-sm whitespace-nowrap transition-colors">
-                    Dalam pengiriman
+                    In Delivery
                 </button>
                 <button type="button" @click="activeFilter = 'completed'"
                     :class="activeFilter === 'completed' ? 'border-[#c06547] text-[#c06547] font-semibold bg-[#faf7f2]' : 'border-transparent text-[#7a6f68] hover:text-[#2c2420]'"
                     class="px-4 py-2 border-b-2 text-sm whitespace-nowrap transition-colors">
-                    Selesai
+                    Completed
                 </button>
                 <button type="button" @click="activeFilter = 'cancelled'"
                     :class="activeFilter === 'cancelled' ? 'border-[#c06547] text-[#c06547] font-semibold bg-[#faf7f2]' : 'border-transparent text-[#7a6f68] hover:text-[#2c2420]'"
                     class="px-4 py-2 border-b-2 text-sm whitespace-nowrap transition-colors">
-                    Dibatalkan
+                    Cancelled
                 </button>
             </div>
 
@@ -70,7 +70,7 @@
                                     <span class="text-xs text-[#7a6f68]" x-text="order.date"></span>
                                 </div>
                                 <div class="text-xs text-[#7a6f68] mt-0.5">
-                                    Ekspedisi: <span x-text="order.courier"></span> (<span x-text="order.trackingNumber"></span>)
+                                    Courier: <span x-text="order.courier"></span> (<span x-text="order.trackingNumber"></span>)
                                 </div>
                             </div>
                             <div class="self-start sm:self-auto">
@@ -102,7 +102,7 @@
                         <!-- Footer Order Total & Action Buttons -->
                         <div class="pt-4 border-t border-[#ebdcd0] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                             <div>
-                                <div class="text-xs text-[#7a6f68]">Total belanja</div>
+                                <div class="text-xs text-[#7a6f68]">Order total</div>
                                 <div class="text-lg font-bold text-[#2c2420]" x-text="formatRupiah(order.total)"></div>
                             </div>
 
@@ -110,13 +110,13 @@
                                 <template x-if="order.status === 'shipped'">
                                     <button type="button" @click="openTracking(order)"
                                         class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-[#2c2420] text-[#2c2420] text-sm font-semibold hover:bg-[#f0e8dc] transition-colors">
-                                        Lacak pesanan
+                                        Track order
                                     </button>
                                 </template>
                                 <template x-if="order.status === 'completed'">
                                     <a href="{{ route('user.cart') }}"
                                         class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#c06547] text-white text-sm font-semibold hover:bg-[#a8543b] transition-colors shadow-xs">
-                                        Beli lagi
+                                        Buy again
                                     </a>
                                 </template>
                             </div>
@@ -125,7 +125,7 @@
                 </template>
 
                 <div x-show="filteredOrders.length === 0" class="rounded-2xl border border-dashed border-[#d3c9c1] p-12 text-center bg-white">
-                    <p class="text-sm text-[#7a6f68]">Tidak ada pesanan di kategori ini.</p>
+                    <p class="text-sm text-[#7a6f68]">No orders found in this category.</p>
                 </div>
             </div>
 
@@ -158,7 +158,7 @@
                 
                 <div class="flex items-center justify-between pb-4 border-b border-[#e5dfd8]">
                     <div>
-                        <h3 class="text-lg font-bold text-[#2c2420]">Lacak pengiriman</h3>
+                        <h3 class="text-lg font-bold text-[#2c2420]">Track shipment</h3>
                         <p class="text-xs text-[#7a6f68]" x-text="currentTracking ? currentTracking.id : ''"></p>
                     </div>
                     <button type="button" @click="trackingModal = false" class="text-[#7a6f68] hover:text-[#2c2420] p-1 rounded-lg hover:bg-[#faf7f2] transition-colors">
@@ -169,9 +169,9 @@
                 </div>
 
                 <div class="mt-4 p-3.5 rounded-xl bg-[#faf7f2] border border-[#ebdcd0] text-xs text-[#5e5449] space-y-1">
-                    <div>Kurir: <strong class="text-[#2c2420]" x-text="currentTracking?.courier"></strong></div>
-                    <div>Nomor Resi: <strong class="text-[#2c2420]" x-text="currentTracking?.trackingNumber"></strong></div>
-                    <div>Status Pesanan: <strong class="text-[#c06547]" x-text="currentTracking?.statusLabel"></strong></div>
+                    <div>Courier: <strong class="text-[#2c2420]" x-text="currentTracking?.courier"></strong></div>
+                    <div>Tracking Number: <strong class="text-[#2c2420]" x-text="currentTracking?.trackingNumber"></strong></div>
+                    <div>Order Status: <strong class="text-[#c06547]" x-text="currentTracking?.statusLabel"></strong></div>
                 </div>
 
                 <!-- Timeline -->
@@ -191,7 +191,7 @@
 
                 <div class="mt-8 pt-4 border-t border-[#e5dfd8]">
                     <button type="button" @click="trackingModal = false" class="w-full py-2.5 px-4 rounded-xl bg-[#2c2420] text-white text-xs font-semibold hover:bg-black transition-colors">
-                        Tutup
+                        Close
                     </button>
                 </div>
             </div>

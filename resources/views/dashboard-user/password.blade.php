@@ -1,6 +1,6 @@
 @extends('dashboard-user.layouts.app')
 
-@section('title', 'Ubah Kata Sandi - Decak Handmade')
+@section('title', 'Change Password - Decak Handmade')
 
 @section('content')
 <div x-data="{
@@ -10,21 +10,21 @@
 }">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-2 text-xs text-[#7a6f68] mb-3">
-        <a href="{{ route('user.dashboard') }}" class="hover:text-[#2c2420]">Beranda</a>
+        <a href="{{ route('user.dashboard') }}" class="hover:text-[#2c2420]">Home</a>
         <span>/</span>
-        <a href="{{ route('user.dashboard') }}" class="hover:text-[#2c2420]">Akun saya</a>
+        <a href="{{ route('user.dashboard') }}" class="hover:text-[#2c2420]">My account</a>
         <span>/</span>
-        <span class="text-[#2c2420] font-medium">Ubah kata sandi</span>
+        <span class="text-[#2c2420] font-medium">Change password</span>
     </nav>
 
     <!-- Header Greeting -->
     <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-8">
         <div>
             <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#2c2420]">
-                Ubah kata sandi
+                Change password
             </h1>
             <p class="text-sm text-[#7a6f68] mt-1">
-                Jaga keamanan akun Decak Handmade Anda dengan memperbarui kata sandi secara berkala.
+                Keep your Decak Handmade account safe by updating your password periodically.
             </p>
         </div>
     </div>
@@ -71,10 +71,10 @@
 
                     <!-- Current Password -->
                     <div>
-                        <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Kata sandi saat ini</label>
+                        <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Current password</label>
                         <div class="relative">
                             <input :type="showCurrent ? 'text' : 'password'" name="current_password" required
-                                placeholder="Masukkan kata sandi saat ini"
+                                placeholder="Enter current password"
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none pr-10">
                             <button type="button" @click="showCurrent = !showCurrent" class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#7a6f68] hover:text-[#2c2420]">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,10 +87,10 @@
 
                     <!-- New Password -->
                     <div>
-                        <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Kata sandi baru</label>
+                        <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">New password</label>
                         <div class="relative">
                             <input :type="showNew ? 'text' : 'password'" name="password" required
-                                placeholder="Minimal 8 karakter kombinasi"
+                                placeholder="Minimum 8 characters combination"
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none pr-10">
                             <button type="button" @click="showNew = !showNew" class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#7a6f68] hover:text-[#2c2420]">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,10 +103,10 @@
 
                     <!-- Confirm Password -->
                     <div>
-                        <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Konfirmasi kata sandi baru</label>
+                        <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Confirm new password</label>
                         <div class="relative">
                             <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation" required
-                                placeholder="Ulangi kata sandi baru"
+                                placeholder="Re-enter new password"
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none pr-10">
                             <button type="button" @click="showConfirm = !showConfirm" class="absolute inset-y-0 right-0 flex items-center pr-3 text-[#7a6f68] hover:text-[#2c2420]">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,17 +119,17 @@
 
                     <!-- Security Tips Box -->
                     <div class="rounded-xl bg-[#faf7f2] border border-[#ebdcd0] p-4 text-xs text-[#5e5449] space-y-1.5">
-                        <div class="font-bold text-[#2c2420]">Ketentuan keamanan kata sandi:</div>
+                        <div class="font-bold text-[#2c2420]">Password security guidelines:</div>
                         <ul class="list-disc list-inside space-y-1 text-[#7a6f68]">
-                            <li>Minimal 8 karakter atau lebih.</li>
-                            <li>Kombinasikan huruf besar, kecil, serta angka untuk proteksi optimal.</li>
-                            <li>Hindari menggunakan tanggal lahir atau informasi pribadi yang mudah ditebak.</li>
+                            <li>At least 8 characters or more.</li>
+                            <li>Combine uppercase, lowercase letters, and numbers for optimal security.</li>
+                            <li>Avoid using birth dates or easily guessable personal info.</li>
                         </ul>
                     </div>
 
                     <div class="pt-3">
                         <button type="submit" class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-[#c06547] text-white text-sm font-semibold hover:bg-[#a8543b] transition-all shadow-xs">
-                            Simpan kata sandi
+                            Update password
                         </button>
                     </div>
                 </form>
