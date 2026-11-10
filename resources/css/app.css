@@ -2,6 +2,7 @@
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Fraunces', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
 
     /* Terracotta brand palette */
     --color-brand-50: #fdf3ee;
@@ -30,6 +31,8 @@
     /* Semantic colours from the mockup */
     --color-cream: #faf7f2;
     --color-peach: #f5e3c4;
+    --color-sand: #f3ebdf;
+    --color-sand-deep: #eadcc7;
     --color-ink: #2c2420;
     --color-muted: #7a6f68;
     --color-line: #e0ddd8;
@@ -37,6 +40,39 @@
     --color-danger: #d94648;
     --color-success-soft: #eaf0e7;
     --color-success-ink: #5a7355;
+
+    /* Floating WhatsApp widget animations */
+    --animate-heartbeat: heartbeat 2.6s ease-in-out infinite;
+    --animate-glow: glow 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+
+    @keyframes heartbeat {
+        0%, 100% {
+            transform: scale(1);
+        }
+        12% {
+            transform: scale(1.07);
+        }
+        24% {
+            transform: scale(1);
+        }
+        36% {
+            transform: scale(1.045);
+        }
+        48% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes glow {
+        0% {
+            transform: scale(1);
+            opacity: 0.45;
+        }
+        70%, 100% {
+            transform: scale(1.85);
+            opacity: 0;
+        }
+    }
 }
 
 @layer base {
@@ -180,4 +216,19 @@
 
 [x-cloak] {
     display: none !important;
+}
+
+@layer utilities {
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .hero-arch {
+        border-radius: clamp(5rem, 18vw, 12rem) clamp(5rem, 18vw, 12rem) 1.75rem 1.75rem;
+    }
 }

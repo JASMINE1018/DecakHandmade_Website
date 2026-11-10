@@ -15,9 +15,17 @@ use App\Http\Controllers\Admin\StockAdjustmentController;
 use App\Http\Controllers\Admin\VariantController;
 use App\Http\Controllers\Catalog\CatalogController;
 use App\Http\Controllers\Catalog\DetailCatalogController;
+use App\Http\Controllers\Home\HomeController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/admin');
+
+/*
+|--------------------------------------------------------------------------
+| Landing Page (Storefront)
+|--------------------------------------------------------------------------
+*/
+Route::get('home', [HomeController::class, 'index'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
