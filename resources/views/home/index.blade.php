@@ -1,11 +1,11 @@
 @extends('layouts.catalog')
 
-@section('title', 'Handmade with Love')
+@section('title', 'Made with Love')
 
 @push('head')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -30,11 +30,11 @@
             <div class="relative z-10 min-w-0">
                 <span class="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-600">
                     <span class="h-px w-8 bg-brand-400"></span>
-                    Handmade with love
+                    Made with love
                 </span>
 
-                <h1 class="mt-6 font-serif text-[2.7rem] leading-[1.03] tracking-[-0.02em] text-ink sm:text-6xl lg:text-[4.2rem]">
-                    An Aesthetic Touch <span class="italic text-brand-600">&amp; the Warmth</span> of Handcrafted Pieces for Your Special Moments
+                <h1 class="mt-6 font-lora text-[2.7rem] leading-[1.03] tracking-[-0.02em] text-ink sm:text-6xl lg:text-[4.2rem]">
+                    An Aesthetic Touch <span class="italic">&amp; the Warmth</span> of Handcrafted Pieces for Your Special Moments
                 </h1>
 
                 <p class="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
@@ -54,21 +54,6 @@
                        class="inline-flex items-center justify-center gap-2.5 rounded-full border border-ink/20 bg-transparent px-7 py-3.5 text-sm font-semibold text-ink transition-colors hover:border-brand-500 hover:bg-white/70 hover:text-brand-700">
                         About Decak
                     </a>
-                </div>
-
-                <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted">
-                    <span class="inline-flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4 text-brand-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                        </svg>
-                        Free gift wrapping
-                    </span>
-                    <span class="inline-flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4 text-brand-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                        </svg>
-                        Made in small batches
-                    </span>
                 </div>
 
                 {{-- Slider dots --}}
@@ -131,25 +116,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- Floating hand-finished badge --}}
-                <div class="absolute -left-3 top-16 hidden w-40 -rotate-6 rounded-2xl border border-white/80 bg-white/95 p-3 shadow-xl shadow-ink/10 backdrop-blur sm:block lg:-left-8">
-                    <div class="flex items-center gap-2.5">
-                        <img src="{{ asset('images/home/bag-charm.jpg') }}" alt="Crochet bag charm held in hand"
-                             class="h-14 w-14 rounded-xl object-cover">
-                        <div>
-                            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-brand-600">Hand-finished</p>
-                            <p class="mt-0.5 text-[11px] leading-tight text-muted">Every charm is one of a kind.</p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Floating charm polaroid --}}
-                <div class="absolute -right-2 -bottom-5 hidden w-36 rotate-6 rounded-2xl border border-white/80 bg-white p-2.5 shadow-xl shadow-ink/10 sm:block lg:-right-6">
-                    <img src="{{ asset('images/home/keychain-flower.jpg') }}" alt="Hand-crocheted flower keychain"
-                         class="aspect-square w-full rounded-xl object-cover">
-                    <p class="mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.16em] text-ink">New charm drop</p>
-                </div>
             </div>
         </div>
     </section>
@@ -168,11 +134,6 @@
                          class="aspect-[4/5] w-full object-cover">
                 </div>
 
-                <div class="absolute -bottom-6 left-5 right-5 rounded-2xl border border-brand-100 bg-cream/95 p-4 shadow-lg backdrop-blur sm:left-8 sm:right-8">
-                    <p class="font-serif text-lg leading-snug text-ink">“Made slowly, so it stays with you longer.”</p>
-                    <p class="mt-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-600">Decak Studio · Yogyakarta</p>
-                </div>
-
                 <div aria-hidden="true" class="absolute -right-4 -top-4 -z-10 h-28 w-28 rounded-full bg-peach/80 blur-2xl"></div>
             </div>
 
@@ -188,48 +149,42 @@
                     by people who genuinely love the craft.
                 </p>
 
-                <div class="mt-8 grid gap-4 sm:grid-cols-3">
-                    <div class="rounded-2xl border border-brand-100 bg-sand p-5">
-                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-brand-600 shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                <div class="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-3">
+                    <div>
+                        <span class="flex items-center gap-2.5 text-brand-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 shrink-0">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                             </svg>
+                            <span class="h-px w-8 bg-brand-400"></span>
                         </span>
-                        <h3 class="mt-4 text-sm font-semibold text-ink">Made with Heart</h3>
+                        <h3 class="mt-3 text-sm font-semibold text-ink">Made with Heart</h3>
                         <p class="mt-1.5 text-xs leading-relaxed text-muted">Cut, stitched, and finished by hand — never mass-produced.</p>
                     </div>
 
-                    <div class="rounded-2xl border border-brand-100 bg-sand p-5">
-                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-brand-600 shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                    <div>
+                        <span class="flex items-center gap-2.5 text-brand-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 shrink-0">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
                             </svg>
+                            <span class="h-px w-8 bg-brand-400"></span>
                         </span>
-                        <h3 class="mt-4 text-sm font-semibold text-ink">Meaningful Details</h3>
+                        <h3 class="mt-3 text-sm font-semibold text-ink">Meaningful Details</h3>
                         <p class="mt-1.5 text-xs leading-relaxed text-muted">Tiny embroideries and trims you will not find twice.</p>
                     </div>
 
-                    <div class="rounded-2xl border border-brand-100 bg-sand p-5">
-                        <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-brand-600 shadow-sm">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                    <div>
+                        <span class="flex items-center gap-2.5 text-brand-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 shrink-0">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.05 4.575a1.575 1.575 0 1 0-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 0 1 3.15 0v2.925m-6.3 1.575H5.475a1.575 1.575 0 1 0 0 3.15h1.425m1.575-1.575v-1.5a1.575 1.575 0 0 1 3.15 0v1.5m-4.725 0h4.725m-4.725 0H4.875A2.625 2.625 0 0 0 2.25 15v.75a6.75 6.75 0 0 0 6.75 6.75h5.25A6.75 6.75 0 0 0 21 15.75V15a2.625 2.625 0 0 0-2.625-2.625h-2.1" />
                             </svg>
+                            <span class="h-px w-8 bg-brand-400"></span>
                         </span>
-                        <h3 class="mt-4 text-sm font-semibold text-ink">A Personal Touch</h3>
+                        <h3 class="mt-3 text-sm font-semibold text-ink">A Personal Touch</h3>
                         <p class="mt-1.5 text-xs leading-relaxed text-muted">Add a name, a card, or a palette that feels like you.</p>
                     </div>
                 </div>
 
-                <div class="mt-8 flex flex-wrap items-center gap-4">
-                    <a href="{{ route('catalog.index') }}"
-                       class="inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-semibold text-cream transition-colors hover:bg-brand-700">
-                        Explore the collection
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                        </svg>
-                    </a>
-                    <p class="text-xs text-muted">Every order is wrapped by hand, with a note from our team.</p>
-                </div>
+                <p class="mt-8 text-xs text-muted">Every order is wrapped by hand, with a note from our team.</p>
             </div>
         </div>
     </section>
@@ -243,7 +198,7 @@
         <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h2 class="font-serif text-4xl leading-tight tracking-tight text-ink sm:text-5xl">
+                    <h2 class="font-lora text-4xl leading-tight tracking-tight text-ink sm:text-5xl">
                         Discover Your Favorite Works
                     </h2>
                     <p class="mt-3 max-w-xl text-sm leading-relaxed text-muted">
@@ -336,7 +291,7 @@
     <section id="categories" class="border-y border-line/70 bg-white/50 py-16 sm:py-24">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="max-w-2xl">
-                <h2 class="font-serif text-4xl leading-tight tracking-tight text-ink sm:text-5xl">
+                <h2 class="font-lora text-4xl leading-tight tracking-tight text-ink sm:text-5xl">
                     Explore Decak Categories
                 </h2>
                 <p class="mt-3 text-sm leading-relaxed text-muted">
@@ -378,7 +333,7 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div class="max-w-2xl">
-                    <h2 class="font-serif text-4xl leading-tight tracking-tight text-ink sm:text-5xl">
+                    <h2 class="font-lora text-4xl leading-tight tracking-tight text-ink sm:text-5xl">
                         Exploring Close By, with Wonder
                     </h2>
                     <p class="mt-3 text-sm leading-relaxed text-muted">
