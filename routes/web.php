@@ -13,9 +13,21 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StockAdjustmentController;
 use App\Http\Controllers\Admin\VariantController;
+use App\Http\Controllers\Catalog\CatalogController;
+use App\Http\Controllers\Catalog\DetailCatalogController;
 use Illuminate\Support\Facades\Route;
 
 // Route::redirect('/', '/admin');
+
+/*
+|--------------------------------------------------------------------------
+| Catalog (Storefront)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('catalog')->name('catalog.')->group(function () {
+    Route::get('/', [CatalogController::class, 'index'])->name('index');
+    Route::get('product/{slug}', [DetailCatalogController::class, 'show'])->name('product.show');
+});
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest:admin')->group(function () {

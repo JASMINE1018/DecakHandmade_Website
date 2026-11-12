@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" role="img">
+    
+    <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#F9F4EB" />
+            <stop offset="1" stop-color="#EEE1CF" />
+        </linearGradient>
+        <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#F1E2C8" />
+            <stop offset="1" stop-color="#D9C3A0" />
+        </linearGradient>
+        <linearGradient id="pocket" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#F5E8D3" />
+            <stop offset="1" stop-color="#D9C3A0" />
+        </linearGradient>
+        <filter id="softShadow" x="-30%" y="-30%" width="160%" height="170%">
+            <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#8F7454" flood-opacity=".24" />
+        </filter>
+        <pattern id="weave" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <path d="M0 0H22M0 11H22" stroke="#BDA47D" stroke-width="1" opacity=".16" />
+        </pattern>
+        <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.2" fill="#8B7358" opacity=".13" />
+        </pattern>
+    </defs>
+    
+    <rect width="1200" height="1200" fill="url(#bg)" />
+    <rect width="1200" height="1200" fill="url(#dots)" opacity=".55" />
+    <circle cx="1010" cy="185" r="255" fill="#E7D7C0" opacity=".62" />
+    <circle cx="160" cy="1000" r="235" fill="#EFE3D2" opacity=".65" />
+    <circle cx="965" cy="995" r="120" fill="#E7D7C0" opacity=".38" />
+
+    <ellipse cx="600" cy="990" rx="340" ry="44" fill="#8F7454" opacity=".18" />
+
+    <g filter="url(#softShadow)">
+        <!-- Handles, drawn behind the body -->
+        <g fill="none" stroke-linecap="round">
+            <path d="M438 470 C438 300 470 255 525 255 C580 255 600 300 600 470" stroke="#AD8E65" stroke-width="48" />
+            <path d="M600 470 C600 300 620 255 675 255 C730 255 762 300 762 470" stroke="#AD8E65" stroke-width="48" />
+            <path d="M438 470 C438 300 470 255 525 255 C580 255 600 300 600 470" stroke="#C9AF87" stroke-width="32" />
+            <path d="M600 470 C600 300 620 255 675 255 C730 255 762 300 762 470" stroke="#C9AF87" stroke-width="32" />
+            <path d="M438 470 C438 300 470 255 525 255 C580 255 600 300 600 470" stroke="rgba(168,134,91,.55)" stroke-width="3" stroke-dasharray="10 12" />
+            <path d="M600 470 C600 300 620 255 675 255 C730 255 762 300 762 470" stroke="rgba(168,134,91,.55)" stroke-width="3" stroke-dasharray="10 12" />
+        </g>
+
+        <!-- Tote body -->
+        <path d="M332 420 C332 412 338 406 346 406 H854 C862 406 868 412 868 420 L834 934 C832 948 822 956 808 958 C678 974 522 974 392 958 C378 956 368 948 366 934 Z" fill="url(#body)" stroke="#BDA47D" stroke-width="6" stroke-linejoin="round" />
+        <path d="M332 420 C332 412 338 406 346 406 H854 C862 406 868 412 868 420 L834 934 C832 948 822 956 808 958 C678 974 522 974 392 958 C378 956 368 948 366 934 Z" fill="url(#weave)" opacity=".7" />
+
+        <!-- Top hem -->
+        <path d="M338 418 H862 L856 486 H344 Z" fill="#E7D4B5" opacity=".8" />
+        <line x1="344" y1="486" x2="856" y2="486" stroke="#A8865B" stroke-width="4" stroke-dasharray="12 10" opacity=".9" />
+        <line x1="352" y1="458" x2="848" y2="458" stroke="#BDA47D" stroke-width="2" opacity=".2" />
+
+        <!-- Front pocket -->
+        <path d="M432 594 C432 586 438 580 446 580 H754 C762 580 768 586 768 594 L756 834 C755 846 746 854 734 856 C678 866 522 866 466 856 C454 854 445 846 444 834 Z" fill="url(#pocket)" stroke="#C9AF89" stroke-width="4" stroke-linejoin="round" />
+        <line x1="452" y1="604" x2="748" y2="604" stroke="#A8865B" stroke-width="3.5" stroke-dasharray="11 9" opacity=".85" />
+        <line x1="466" y1="846" x2="734" y2="846" stroke="rgba(168,134,91,.55)" stroke-width="2.5" stroke-dasharray="9 10" />
+
+        <!-- Pocket label -->
+        
+    <rect x="535" y="646" width="130" height="82" rx="10" fill="#FBF3E4" stroke="#C9AF89" stroke-width="3" />
+    <text x="600" y="680" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="20" font-weight="700" letter-spacing="3.5" fill="#7A5E40">DECAK</text>
+    <line x1="561" y1="691" x2="639" y2="691" stroke="#C9AF89" stroke-width="1.5" opacity=".7" />
+    <text x="600" y="710" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="600" letter-spacing="2.4" fill="#7A5E40">HANDMADE</text>
+
+        <!-- Soft fabric creases and side seams -->
+        <path d="M382 520 C398 652 396 790 382 918" fill="none" stroke="#BDA47D" stroke-width="3" opacity=".18" stroke-linecap="round" />
+        <path d="M818 520 C802 652 804 790 818 918" fill="none" stroke="#BDA47D" stroke-width="3" opacity=".18" stroke-linecap="round" />
+        <path d="M410 540 C430 660 428 780 414 880" fill="none" stroke="#FFFFFF" stroke-width="8" opacity=".08" stroke-linecap="round" />
+        <path d="M790 540 C770 660 772 780 786 880" fill="none" stroke="#FFFFFF" stroke-width="8" opacity=".06" stroke-linecap="round" />
+
+        <!-- Handle anchor stitches -->
+        <path d="M455 446 C500 432 555 432 592 446" fill="none" stroke="#A8865B" stroke-width="3" stroke-dasharray="8 8" opacity=".75" />
+        <path d="M608 446 C645 432 700 432 745 446" fill="none" stroke="#A8865B" stroke-width="3" stroke-dasharray="8 8" opacity=".75" />
+    </g>
+
+</svg>
