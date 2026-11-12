@@ -42,7 +42,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#my-account" class="transition-colors hover:text-brand-600 text-ink">
+                    <a href="{{ route('user.dashboard') }}" class="transition-colors hover:text-brand-600 {{ request()->routeIs('user.*') ? 'text-brand-600' : 'text-ink' }}">
                         My Account
                     </a>
                 </li>
@@ -93,7 +93,7 @@
                 <li><a href="{{ url('/') }}" class="block rounded-lg px-3 py-2.5 transition-colors hover:bg-brand-50 {{ request()->is('/') ? 'text-brand-600 bg-brand-50' : 'text-ink' }}">Home</a></li>
                 <li><a href="{{ route('catalog.index') }}" class="block rounded-lg px-3 py-2.5 transition-colors hover:bg-brand-50 {{ request()->routeIs('catalog.*') ? 'text-brand-600 bg-brand-50' : 'text-ink' }}">Catalog</a></li>
                 <li><a href="#our-story" class="block rounded-lg px-3 py-2.5 text-ink transition-colors hover:bg-brand-50">Our Story</a></li>
-                <li><a href="#my-account" class="block rounded-lg px-3 py-2.5 text-ink transition-colors hover:bg-brand-50">My Account</a></li>
+                <li><a href="{{ route('user.dashboard') }}" class="block rounded-lg px-3 py-2.5 transition-colors hover:bg-brand-50 {{ request()->routeIs('user.*') ? 'text-brand-600 bg-brand-50' : 'text-ink' }}">My Account</a></li>
             </ul>
             <a href="{{ route('catalog.index') }}" class="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700">
                 Shop Now

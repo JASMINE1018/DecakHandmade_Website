@@ -12,7 +12,7 @@ export default function Navbar({ cartCount = 0, appUrl = '' }) {
         { label: 'Home', href: href('/') },
         { label: 'Catalog', href: href('/catalog'), active: true },
         { label: 'Our story', href: '#our-story' },
-        { label: 'My account', href: '#my-account' },
+        { label: 'My account', href: href('/user') },
     ];
 
     return (

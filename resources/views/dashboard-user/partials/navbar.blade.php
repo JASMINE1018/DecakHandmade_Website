@@ -15,7 +15,7 @@
             <a href="{{ route('user.dashboard') }}" class="transition-colors hover:text-[#c06547] {{ request()->routeIs('user.beranda') ? 'text-[#c06547] font-semibold' : '' }}">
                 Home
             </a>
-            <a href="{{ route('user.dashboard') }}" class="transition-colors hover:text-[#c06547] {{ request()->routeIs('user.katalog') ? 'text-[#c06547] font-semibold' : '' }}">
+            <a href="{{ route('catalog.index') }}" class="transition-colors hover:text-[#c06547] {{ request()->routeIs('catalog.*') ? 'text-[#c06547] font-semibold' : '' }}">
                 Catalog
             </a>
             <a href="{{ route('user.dashboard') }}" class="transition-colors hover:text-[#c06547] {{ request()->routeIs('user.cerita') ? 'text-[#c06547] font-semibold' : '' }}">
