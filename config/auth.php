@@ -14,12 +14,20 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
+        'customer' => [
+            'driver' => 'session',
+            'provider' => 'customers',
+        ],
     ],
 
     'providers' => [
         'admins' => [
             'driver' => 'eloquent',
             'model' => Admin::class,
+        ],
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => \App\Models\Customer::class,
         ],
     ],
 

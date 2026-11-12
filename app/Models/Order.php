@@ -30,6 +30,8 @@ class Order extends Model
         'source',
         'subtotal',
         'shipping_cost',
+        'courier',
+        'tracking_number',
         'grand_total',
         'customer_note',
         'admin_note',
