@@ -144,9 +144,7 @@
                 </h2>
 
                 <p class="mt-5 max-w-xl text-base leading-relaxed text-muted">
-                    We choose natural fabrics, threads, and trims that feel good to touch and age beautifully.
-                    From the first sketch to the final stitch, each Decak piece is made slowly, in small batches,
-                    by people who genuinely love the craft.
+                    At Decak Handmade, every piece is crafted with precision, creativity, and attention to every detail. We believe that handmade products are more than just items; they are creations that carry a story and meaning.
                 </p>
 
                 <div class="mt-8 grid gap-x-8 gap-y-6 sm:grid-cols-3">
@@ -158,7 +156,7 @@
                             <span class="h-px w-8 bg-brand-400"></span>
                         </span>
                         <h3 class="mt-3 text-sm font-semibold text-ink">Made with Heart</h3>
-                        <p class="mt-1.5 text-xs leading-relaxed text-muted">Cut, stitched, and finished by hand — never mass-produced.</p>
+                        <p class="mt-1.5 text-xs leading-relaxed text-muted">Every product is a reflection of dedication and great care.</p>
                     </div>
 
                     <div>
@@ -169,7 +167,7 @@
                             <span class="h-px w-8 bg-brand-400"></span>
                         </span>
                         <h3 class="mt-3 text-sm font-semibold text-ink">Meaningful Details</h3>
-                        <p class="mt-1.5 text-xs leading-relaxed text-muted">Tiny embroideries and trims you will not find twice.</p>
+                        <p class="mt-1.5 text-xs leading-relaxed text-muted"> Prioritizing the finest details in every process.</p>
                     </div>
 
                     <div>
@@ -179,12 +177,10 @@
                             </svg>
                             <span class="h-px w-8 bg-brand-400"></span>
                         </span>
-                        <h3 class="mt-3 text-sm font-semibold text-ink">A Personal Touch</h3>
-                        <p class="mt-1.5 text-xs leading-relaxed text-muted">Add a name, a card, or a palette that feels like you.</p>
+                        <h3 class="mt-3 text-sm font-semibold text-ink">A Personal Work</h3>
+                        <p class="mt-1.5 text-xs leading-relaxed text-muted">Creating products that align with your unique story.</p>
                     </div>
                 </div>
-
-                <p class="mt-8 text-xs text-muted">Every order is wrapped by hand, with a note from our team.</p>
             </div>
         </div>
     </section>
@@ -202,7 +198,7 @@
                         Discover Your Favorite Works
                     </h2>
                     <p class="mt-3 max-w-xl text-sm leading-relaxed text-muted">
-                        A small rotation of our most-loved pieces — each one finished by hand in our Yogyakarta studio.
+                        Every detail is crafted with love, to accompany your special story.
                     </p>
                 </div>
 
@@ -224,12 +220,6 @@
                                     <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}"
                                          class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105">
                                 </a>
-
-                                @if ($product['badge'])
-                                    <span class="absolute left-3 top-3 rounded-full bg-cream/95 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-brand-700 shadow-sm backdrop-blur">
-                                        {{ $product['badge'] }}
-                                    </span>
-                                @endif
 
                                 <span class="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-ink shadow-sm backdrop-blur transition-colors group-hover:bg-brand-600 group-hover:text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
@@ -295,7 +285,7 @@
                     Explore Decak Categories
                 </h2>
                 <p class="mt-3 text-sm leading-relaxed text-muted">
-                    From everyday bags to the small things that make a house feel like home.
+                    Discover handmade pieces that suit your style and needs.
                 </p>
             </div>
 
@@ -337,7 +327,7 @@
                         Exploring Close By, with Wonder
                     </h2>
                     <p class="mt-3 text-sm leading-relaxed text-muted">
-                        Stories from the studio, places we love, and words from the people who carry Decak home.
+                        Our stories, reviews, collaborations, and journeys.
                     </p>
                 </div>
             </div>
