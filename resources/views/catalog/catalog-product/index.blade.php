@@ -7,17 +7,26 @@
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
 
         {{-- ═══════════════════════════════════════════════════════════ --}}
-        {{--  BREADCRUMB                                                --}}
+        {{--  BREADCRUMB & HEADER                                        --}}
         {{-- ═══════════════════════════════════════════════════════════ --}}
-        <nav class="mb-6 text-sm text-muted">
+        <nav class="mb-3 text-xs text-[#7a6f68]">
             <ol class="flex items-center gap-1.5">
                 <li>
-                    <a href="{{ url('/') }}" class="transition-colors hover:text-brand-600">Home</a>
+                    <a href="{{ route('home') }}" class="transition-colors hover:text-[#c06547]">Beranda</a>
                 </li>
-                <li class="text-line">/</li>
-                <li class="font-medium text-ink">Catalog</li>
+                <li class="text-[#d3c9c1]">/</li>
+                <li class="font-medium text-[#2c2420]">Katalog produk</li>
             </ol>
         </nav>
+
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold tracking-tight text-[#2c2420] sm:text-4xl">
+                Karya untuk keseharian
+            </h1>
+            <p class="mt-2 text-sm text-[#7a6f68]">
+                Dibuat perlahan, dipilih untuk menemani Anda lebih lama.
+            </p>
+        </div>
 
         <form id="catalogFilterForm" action="{{ route('catalog.index') }}" method="GET">
             @include('catalog.search-bar.index')

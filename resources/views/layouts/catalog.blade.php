@@ -20,7 +20,7 @@
         <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
             {{-- ── Left: Logo ── --}}
-            <a href="{{ url('/') }}" class="flex items-center gap-3">
+            <a href="{{ route('home') }}" class="flex items-center gap-3">
                 <span class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white">DH</span>
                 <span class="text-lg font-bold tracking-tight text-ink">Decak <span class="text-brand-600">Handmade</span></span>
             </a>
@@ -49,14 +49,13 @@
 
             {{-- ── Right: Action icons + Shop Now ── --}}
             <div class="flex items-center gap-3">
-                {{-- Cart icon button --}}
-                <button type="button" class="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:bg-brand-50 hover:text-brand-600">
+                {{-- Cart drawer trigger --}}
+                <button type="button" @click="$dispatch('open-cart-drawer')" aria-label="Shopping cart" class="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:bg-brand-50 hover:text-brand-600 cursor-pointer">
                     {{-- Shopping bag icon (Heroicons outline) --}}
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
-                    {{-- Cart badge (optional, shows count) --}}
-                    {{-- <span class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-600 text-[10px] font-bold text-white">3</span> --}}
+                    <span data-cart-badge class="hidden absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-bold text-white">0</span>
                 </button>
 
                 {{-- Shop Now button --}}
@@ -243,6 +242,8 @@
             </div>
         </div>
     </footer>
+
+    <x-cart-drawer />
 
     @stack('floating')
     @stack('scripts')

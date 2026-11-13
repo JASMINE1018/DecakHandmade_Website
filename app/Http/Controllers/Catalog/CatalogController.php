@@ -14,11 +14,15 @@ class CatalogController extends Controller
         FilterBarController $filterBar,
         SortBarController $sortBar,
     ): View {
+        $customer = auth('customer')->user();
+        $wishlistedProductIds = $customer ? $customer->wishlists()->pluck('product_id')->toArray() : [];
+
         return view('catalog.catalog-product.index', [
             'products' => $products->index($request),
             'categories' => $filterBar->categories(),
             'selectedCategories' => $filterBar->selectedCategories($request),
             'sortOptions' => $sortBar->options(),
+            'wishlistedProductIds' => $wishlistedProductIds,
         ]);
     }
 }

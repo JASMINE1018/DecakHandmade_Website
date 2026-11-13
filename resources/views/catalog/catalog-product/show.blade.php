@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ ucwords(str_replace('-', ' ', $slug)) }} — Decak Handmade</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,7 +14,13 @@
         window.__PRODUCT_DETAIL_CONFIG__ = {
             appUrl: @json(url('/')),
             assetUrl: @json(asset('')),
+            csrfToken: @json(csrf_token()),
+            checkoutUrl: @json(route('user.checkout')),
+            catalogUrl: @json(route('catalog.index')),
         };
+        @if(!empty($productPayload))
+        window.__PRODUCT_DETAIL_PRODUCT__ = @json($productPayload);
+        @endif
     </script>
 
     @viteReactRefresh

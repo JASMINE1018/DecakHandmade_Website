@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import CartDrawer from './components/CartDrawer';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
 import ProductGallery from './components/ProductGallery';
@@ -7,18 +8,44 @@ import ProductInfo from './components/ProductInfo';
 import { product as defaultProduct } from './data/product';
 import { resolveAppUrl } from './utils';
 
-/** Start with an empty cart so the badge only appears after the first add-to-cart. */
-const INITIAL_CART_COUNT = 0;
-
 export default function ProductDetailPage({ product = defaultProduct, appUrl = '', assetUrl = '' }) {
-    const [cartCount, setCartCount] = useState(INITIAL_CART_COUNT);
+    const [cart, setCart] = useState({ items: [], subtotal: 0, total_quantity: 0, count: 0 });
+    const [cartOpen, setCartOpen] = useState(false);
+    const [cartLoading, setCartLoading] = useState(false);
+    const [cartError, setCartError] = useState(null);
+
     const [selectedColor, setSelectedColor] = useState(product.colors[0].name);
     const [quantity, setQuantity] = useState(1);
     const [activeImage, setActiveImage] = useState(0);
 
     // Small enhancements that make the demo feel like a real storefront.
-    const [wishlisted, setWishlisted] = useState(false);
+    const [wishlisted, setWishlisted] = useState(Boolean(product.isWishlisted));
+    const [wishlistLoading, setWishlistLoading] = useState(false);
     const [cartNotice, setCartNotice] = useState(null);
+
+    const csrfToken =
+        window.__PRODUCT_DETAIL_CONFIG__?.csrfToken ??
+        document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ??
+        '';
+
+    const fetchCartSummary = useCallback(async () => {
+        try {
+            const res = await fetch(resolveAppUrl(appUrl, '/cart/summary'), {
+                headers: { Accept: 'application/json' },
+            });
+            if (res.ok) {
+                setCart(await res.json());
+            }
+        } catch {
+            // ignore network error on initial load
+        }
+    }, [appUrl]);
+
+    useEffect(() => {
+        fetchCartSummary();
+    }, [fetchCartSummary]);
+
+    const cartCount = cart.total_quantity ?? 0;
 
     const images = useMemo(
         () => product.gallery[selectedColor] ?? product.gallery[product.colors[0].name] ?? [],
@@ -46,21 +73,143 @@ export default function ProductDetailPage({ product = defaultProduct, appUrl = '
         setQuantity(safeQuantity);
     };
 
-    const handleAddToCart = () => {
-        setCartCount((currentCount) => currentCount + quantity);
-        setCartNotice({
-            id: Date.now(),
-            message: `Added ${quantity} × ${product.name} (${selectedColor}) to your cart.`,
-        });
+    const handleAddToCart = async () => {
+        if (!product.id) {
+            setCartNotice({
+                id: Date.now(),
+                message: `Added ${quantity} × ${product.name} (${selectedColor}) to your cart.`,
+            });
+            setCartOpen(true);
+            return;
+        }
+
+        const activeVariant = product.colors.find((c) => c.name === selectedColor);
+        setCartError(null);
+        setCartLoading(true);
+
+        try {
+            const res = await fetch(resolveAppUrl(appUrl, '/cart/items'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: JSON.stringify({
+                    product_id: product.id,
+                    variant_id: activeVariant?.id ?? null,
+                    quantity,
+                }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) {
+                setCartError(data.message ?? 'Gagal menambahkan ke keranjang.');
+                setCartOpen(true);
+                return;
+            }
+
+            setCart(data);
+            setCartNotice({
+                id: Date.now(),
+                message: `Added ${quantity} × ${product.name} (${selectedColor}) to your cart.`,
+            });
+            setCartOpen(true);
+        } catch {
+            setCartError('Terjadi kesalahan jaringan.');
+            setCartOpen(true);
+        } finally {
+            setCartLoading(false);
+        }
     };
 
-    const handleToggleWishlist = () => {
-        setWishlisted((current) => !current);
+    const handleUpdateCartQty = async (key, nextQty) => {
+        setCartError(null);
+        setCartLoading(true);
+        try {
+            const res = await fetch(resolveAppUrl(appUrl, `/cart/items/${encodeURIComponent(key)}`), {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: JSON.stringify({ quantity: nextQty }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setCartError(data.message ?? 'Gagal memperbarui jumlah.');
+            } else {
+                setCart(data);
+            }
+        } catch {
+            setCartError('Terjadi kesalahan jaringan.');
+        } finally {
+            setCartLoading(false);
+        }
+    };
+
+    const handleRemoveCartItem = async (key) => {
+        setCartError(null);
+        setCartLoading(true);
+        try {
+            const res = await fetch(resolveAppUrl(appUrl, `/cart/items/${encodeURIComponent(key)}`), {
+                method: 'DELETE',
+                headers: {
+                    Accept: 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+            });
+            if (res.ok) {
+                setCart(await res.json());
+            }
+        } finally {
+            setCartLoading(false);
+        }
+    };
+
+    const handleToggleWishlist = async () => {
+        if (!product.id || wishlistLoading) {
+            return;
+        }
+
+        setWishlistLoading(true);
+        try {
+            const res = await fetch(resolveAppUrl(appUrl, `/user/wishlist/${product.id}/toggle`), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+            });
+
+            if (res.status === 401) {
+                window.location.href = resolveAppUrl(appUrl, '/user/login');
+                return;
+            }
+
+            if (res.ok) {
+                const data = await res.json();
+                setWishlisted(data.status === 'added');
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setWishlistLoading(false);
+        }
     };
 
     return (
         <div className="flex min-h-screen flex-col bg-cream">
-            <Navbar cartCount={cartCount} appUrl={appUrl} />
+            <Navbar
+                cartCount={cartCount}
+                appUrl={appUrl}
+                onOpenCart={() => {
+                    fetchCartSummary();
+                    setCartOpen(true);
+                }}
+            />
 
             <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
                 {/* Breadcrumb */}
@@ -117,6 +266,17 @@ export default function ProductDetailPage({ product = defaultProduct, appUrl = '
             </main>
 
             <Footer />
+
+            <CartDrawer
+                open={cartOpen}
+                onClose={() => setCartOpen(false)}
+                cart={cart}
+                loading={cartLoading}
+                error={cartError}
+                onUpdateQty={handleUpdateCartQty}
+                onRemoveItem={handleRemoveCartItem}
+                appUrl={appUrl}
+            />
         </div>
     );
 }

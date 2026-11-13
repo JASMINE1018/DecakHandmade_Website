@@ -15,14 +15,14 @@ class FilterBarController extends Controller
      */
     public function categories(): array
     {
-        return [
-            'all' => 'All Products',
-            'handmade-bag' => 'Handmade Bag',
-            'bag-charm' => 'Bag Charm',
-            'pouch' => 'Pouch',
-            'pillow' => 'Pillow',
-            'home-accessories' => 'Home Accessories',
-        ];
+        $dbCategories = \App\Models\Category::query()
+            ->where('is_active', true)
+            ->pluck('name', 'slug')
+            ->toArray();
+
+        return array_merge([
+            'all' => 'Semua produk',
+        ], $dbCategories);
     }
 
     /**

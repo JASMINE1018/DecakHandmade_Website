@@ -54,6 +54,18 @@ class WishlistController extends Controller
     {
         $customer = $this->getCustomer();
 
+        if (! $customer) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'status' => 'unauthenticated',
+                    'message' => 'Please sign in to add this item to your wishlist.',
+                    'login_url' => route('user.login'),
+                ], 401);
+            }
+
+            return redirect()->route('user.login')->with('error', 'Please sign in to add items to your wishlist.');
+        }
+
         $existing = Wishlist::where('customer_id', $customer->id)
             ->where('product_id', $product->id)
             ->first();
@@ -61,14 +73,14 @@ class WishlistController extends Controller
         if ($existing) {
             $existing->delete();
             $status = 'removed';
-            $message = 'Produk dihapus dari wishlist.';
+            $message = 'Item removed from your wishlist.';
         } else {
             Wishlist::create([
                 'customer_id' => $customer->id,
                 'product_id' => $product->id,
             ]);
             $status = 'added';
-            $message = 'Produk ditambahkan ke wishlist.';
+            $message = 'Item added to your wishlist.';
         }
 
         if ($request->wantsJson()) {

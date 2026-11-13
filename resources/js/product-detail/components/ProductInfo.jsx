@@ -32,11 +32,11 @@ export default function ProductInfo({
                 <p className="text-3xl font-bold tracking-tight text-[#C86A4B]">{formatRupiah(product.price)}</p>
 
                 {isAvailable ? (
-                    <span className="text-sm font-semibold text-success-ink">
+                    <span className="text-xs font-medium text-[#7a6f68] bg-[#f5eee6] px-2.5 py-1 rounded-md">
                         In stock · {product.stock} items
                     </span>
                 ) : (
-                    <span className="text-sm font-semibold text-slate-600">Out of stock</span>
+                    <span className="text-xs font-semibold text-rose-600 bg-rose-50 px-2.5 py-1 rounded-md">Out of stock</span>
                 )}
             </div>
 
@@ -81,12 +81,12 @@ export default function ProductInfo({
             {/* Minimalist product specifications */}
             <dl className="mt-7 grid grid-cols-2 gap-x-6 gap-y-4">
                 <div>
-                    <dt className="text-sm font-medium text-muted">Material</dt>
-                    <dd className="mt-1 text-sm font-normal leading-6 text-ink">{product.material}</dd>
+                    <dt className="text-xs font-semibold text-[#5e5449]">Material</dt>
+                    <dd className="mt-1 text-xs text-[#2c2420]">{product.material}</dd>
                 </div>
                 <div>
-                    <dt className="text-sm font-medium text-muted">Size</dt>
-                    <dd className="mt-1 text-sm font-normal leading-6 text-ink">{product.dimensions}</dd>
+                    <dt className="text-xs font-semibold text-[#5e5449]">Size</dt>
+                    <dd className="mt-1 text-xs text-[#2c2420]">{product.dimensions}</dd>
                 </div>
             </dl>
 

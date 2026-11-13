@@ -78,12 +78,15 @@
                             </div>
 
                             <div class="pt-2">
-                                <a href="{{ route('user.cart') }}" class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3.5 rounded-xl bg-[#c06547] text-white font-semibold text-xs hover:bg-[#a8543b] transition-colors shadow-xs">
+                                <button type="button"
+                                        @click="addToCart(item)"
+                                        :disabled="addingId === item.id"
+                                        class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-3.5 rounded-xl bg-[#c06547] text-white font-semibold text-xs hover:bg-[#a8543b] transition-colors shadow-xs disabled:opacity-50 cursor-pointer">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                                     </svg>
-                                    <span>Add to cart</span>
-                                </a>
+                                    <span x-text="addingId === item.id ? 'Adding...' : 'Add to cart'"></span>
+                                </button>
                             </div>
                         </div>
 
@@ -112,8 +115,36 @@
 function wishlistPage() {
     return {
         wishlist: @json($wishlistItems),
+        addingId: null,
         formatRupiah(num) {
             return 'Rp' + Number(num || 0).toLocaleString('id-ID');
+        },
+        async addToCart(item) {
+            if (this.addingId) return;
+            this.addingId = item.id;
+            try {
+                const res = await fetch('{{ route('cart.items.store') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: item.id,
+                        quantity: 1
+                    })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    window.dispatchEvent(new CustomEvent('cart-updated', { detail: data }));
+                    window.dispatchEvent(new CustomEvent('open-cart-drawer'));
+                }
+            } catch (e) {
+                console.error(e);
+            } finally {
+                this.addingId = null;
+            }
         },
         async removeFromWishlist(id) {
             try {

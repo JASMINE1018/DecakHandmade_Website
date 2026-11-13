@@ -51,7 +51,7 @@ class InventoryService
     /**
      * Kurangi stok untuk seluruh item pesanan. Idempoten per pesanan/produk.
      */
-    public function deductForOrder(Order $order, Admin $actor): void
+    public function deductForOrder(Order $order, ?Admin $actor = null): void
     {
         $this->applyForOrder($order, 'sale', 'order', $actor, false);
     }
@@ -59,12 +59,12 @@ class InventoryService
     /**
      * Kembalikan stok pesanan. Idempoten.
      */
-    public function restoreForOrder(Order $order, Admin $actor, string $reason = 'cancel'): void
+    public function restoreForOrder(Order $order, ?Admin $actor = null, string $reason = 'cancel'): void
     {
         $this->applyForOrder($order, 'return', $reason, $actor, true);
     }
 
-    private function applyForOrder(Order $order, string $type, string $reason, Admin $actor, bool $restore): void
+    private function applyForOrder(Order $order, string $type, string $reason, ?Admin $actor, bool $restore): void
     {
         $quantities = $order->items()
             ->selectRaw('product_id, SUM(quantity) as total')

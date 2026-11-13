@@ -42,6 +42,8 @@
 
     @include('dashboard-user.partials.footer')
 
+    <x-cart-drawer />
+
     @stack('modals')
     @stack('scripts')
 </body>

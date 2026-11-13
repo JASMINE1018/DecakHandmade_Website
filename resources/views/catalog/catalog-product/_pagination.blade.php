@@ -29,61 +29,52 @@
     }
 @endphp
 
-<nav class="mt-10 border-t border-line pt-6" aria-label="Pagination">
-        <div x-data="{ currentPage: {{ $currentPage }} }" class="flex flex-row items-center justify-center gap-1.5">
+<nav class="mt-10 border-t border-[#e5dfd8] pt-6" aria-label="Navigasi Halaman">
+    <div x-data="{ currentPage: {{ $currentPage }} }" class="flex flex-wrap items-center justify-center gap-2">
 
-            {{-- Previous --}}
-            @if ($products->onFirstPage())
-                <span aria-disabled="true"
-                      class="inline-flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-none bg-slate-200 text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                    </svg>
+        {{-- Previous --}}
+        @if ($products->onFirstPage())
+            <span aria-disabled="true"
+                  class="inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-medium text-[#a99e96] cursor-not-allowed">
+                ← Sebelumnya
+            </span>
+        @else
+            <a href="{{ $products->previousPageUrl() }}"
+               aria-label="Halaman sebelumnya"
+               class="inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-medium text-[#5e5449] hover:bg-[#f5eee6] hover:text-[#c06547] transition-colors">
+                ← Sebelumnya
+            </a>
+        @endif
+
+        {{-- Page numbers --}}
+        @foreach ($paginationPages as $page)
+            @if ($page === '...')
+                <span class="inline-flex h-9 w-9 items-center justify-center text-xs text-[#7a6f68]">…</span>
+            @elseif ($page === $currentPage)
+                <span aria-current="page"
+                      class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#c06547] text-xs font-bold text-white shadow-xs">
+                    {{ $page }}
                 </span>
             @else
-                <a href="{{ $products->previousPageUrl() }}"
-                   aria-label="Halaman sebelumnya"
-                   class="inline-flex h-10 w-10 items-center justify-center rounded-none bg-slate-400 text-white transition-colors duration-200 hover:bg-slate-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                    </svg>
+                <a href="{{ $products->url($page) }}"
+                   class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#e0ddd8] bg-white text-xs font-medium text-[#2c2420] transition-colors hover:bg-[#f5eee6] hover:border-[#c06547]">
+                    {{ $page }}
                 </a>
             @endif
+        @endforeach
 
-            {{-- Page numbers --}}
-            @foreach ($paginationPages as $page)
-                @if ($page === '...')
-                    <span class="inline-flex h-10 w-10 items-center justify-center text-sm text-muted">…</span>
-                @elseif ($page === $currentPage)
-                    <span aria-current="page"
-                          class="inline-flex h-10 w-10 items-center justify-center rounded-none border border-brand-600 bg-brand-600 text-sm font-semibold text-white">
-                        {{ $page }}
-                    </span>
-                @else
-                    <a href="{{ $products->url($page) }}"
-                       @click="currentPage = {{ $page }}"
-                       class="inline-flex h-10 w-10 items-center justify-center rounded-none border border-line bg-white text-sm font-medium text-ink transition-colors duration-200 hover:bg-brand-50">
-                        {{ $page }}
-                    </a>
-                @endif
-            @endforeach
-
-            {{-- Next --}}
-            @if ($products->hasMorePages())
-                <a href="{{ $products->nextPageUrl() }}"
-                   aria-label="Halaman berikutnya"
-                   class="inline-flex h-10 w-10 items-center justify-center rounded-none border border-line bg-transparent text-muted transition-colors duration-200 hover:bg-brand-50 hover:text-ink">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                    </svg>
-                </a>
-            @else
-                <span aria-disabled="true"
-                      class="inline-flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-none border border-line/60 bg-transparent text-muted/40">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-4 w-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                    </svg>
-                </span>
-            @endif
-        </div>
-    </nav>
+        {{-- Next --}}
+        @if ($products->hasMorePages())
+            <a href="{{ $products->nextPageUrl() }}"
+               aria-label="Halaman berikutnya"
+               class="inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-medium text-[#5e5449] hover:bg-[#f5eee6] hover:text-[#c06547] transition-colors">
+                Selanjutnya →
+            </a>
+        @else
+            <span aria-disabled="true"
+                  class="inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-medium text-[#a99e96] cursor-not-allowed">
+                Selanjutnya →
+            </span>
+        @endif
+    </div>
+</nav>

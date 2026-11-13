@@ -107,14 +107,8 @@
                             </div>
 
                             <div class="flex items-center gap-3">
-                                <template x-if="order.status === 'shipped'">
-                                    <button type="button" @click="openTracking(order)"
-                                        class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-[#2c2420] text-[#2c2420] text-sm font-semibold hover:bg-[#f0e8dc] transition-colors">
-                                        Track order
-                                    </button>
-                                </template>
                                 <template x-if="order.status === 'completed'">
-                                    <a href="{{ route('user.cart') }}"
+                                    <a href="{{ route('catalog.index') }}"
                                         class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#c06547] text-white text-sm font-semibold hover:bg-[#a8543b] transition-colors shadow-xs">
                                         Buy again
                                     </a>

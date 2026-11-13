@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\StockAdjustmentController;
 use App\Http\Controllers\Admin\VariantController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\Catalog\CatalogController;
 use App\Http\Controllers\Catalog\DetailCatalogController;
 use App\Http\Controllers\Home\HomeController;
@@ -26,6 +27,18 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('home', [HomeController::class, 'index'])->name('home');
+
+/*
+|--------------------------------------------------------------------------
+| Cart API (Storefront Session)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('cart')->name('cart.')->group(function () {
+    Route::get('summary', [CartController::class, 'summary'])->name('summary');
+    Route::post('items', [CartController::class, 'store'])->name('items.store');
+    Route::patch('items/{key}', [CartController::class, 'update'])->name('items.update');
+    Route::delete('items/{key}', [CartController::class, 'destroy'])->name('items.destroy');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -97,6 +110,7 @@ use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\User\WishlistController as UserWishlistController;
 use App\Http\Controllers\User\PasswordController as UserPasswordController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
+use App\Http\Controllers\User\CheckoutController as UserCheckoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -115,6 +129,9 @@ Route::prefix('user')->name('user.')->group(function () {
 
     // Public Dashboard / Home (Accessible by guests & customers)
     Route::get('/', [UserProfileController::class, 'index'])->name('dashboard');
+
+    // Wishlist Toggle (Accessible with guest check inside controller)
+    Route::post('/wishlist/{product}/toggle', [UserWishlistController::class, 'toggle'])->name('wishlist.toggle');
 
     // Protected Dashboard Routes (Protected by Sanctum / Customer Auth)
     Route::middleware('auth:sanctum,customer')->group(function () {
@@ -135,20 +152,15 @@ Route::prefix('user')->name('user.')->group(function () {
 
         // Wishlist
         Route::get('/wishlist', [UserWishlistController::class, 'index'])->name('wishlist');
-        Route::post('/wishlist/{product}/toggle', [UserWishlistController::class, 'toggle'])->name('wishlist.toggle');
         Route::delete('/wishlist/{product}', [UserWishlistController::class, 'destroy'])->name('wishlist.destroy');
 
         // Password
         Route::get('/password', [UserPasswordController::class, 'edit'])->name('password');
         Route::put('/password', [UserPasswordController::class, 'update'])->name('password.update');
 
-        // Cart & Checkout (Interactive simulation)
-        Route::get('/cart', function () {
-            return view('dashboard-user.cart');
-        })->name('cart');
-
-        Route::get('/checkout', function () {
-            return view('dashboard-user.checkout');
-        })->name('checkout');
+        // Cart & Checkout
+        Route::get('/cart', [UserCheckoutController::class, 'cart'])->name('cart');
+        Route::get('/checkout', [UserCheckoutController::class, 'index'])->name('checkout');
+        Route::post('/checkout', [UserCheckoutController::class, 'store'])->name('checkout.store');
     });
 });

@@ -3,15 +3,15 @@ import { useState } from 'react';
 import { ArrowRightIcon, CloseIcon, MenuIcon, ShoppingBagIcon } from './icons';
 import { resolveAppUrl } from '../utils';
 
-export default function Navbar({ cartCount = 0, appUrl = '' }) {
+export default function Navbar({ cartCount = 0, appUrl = '', onOpenCart = null }) {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const href = (path) => resolveAppUrl(appUrl, path);
 
     const links = [
-        { label: 'Home', href: href('/') },
+        { label: 'Home', href: href('/home') },
         { label: 'Catalog', href: href('/catalog'), active: true },
-        { label: 'Our story', href: '#our-story' },
+        { label: 'Our story', href: `${href('/home')}#our-story` },
         { label: 'My account', href: href('/user') },
     ];
 
@@ -19,7 +19,7 @@ export default function Navbar({ cartCount = 0, appUrl = '' }) {
         <header className="sticky top-0 z-50 border-b border-line/60 bg-cream/90 backdrop-blur-md">
             <nav aria-label="Main navigation" className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                 {/* Brand */}
-                <a href={href('/')} className="flex items-center gap-3">
+                <a href={href('/home')} className="flex items-center gap-3">
                     <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#C86A4B] text-sm font-bold text-white shadow-sm">
                         DH
                     </span>
@@ -48,8 +48,9 @@ export default function Navbar({ cartCount = 0, appUrl = '' }) {
                 <div className="flex items-center gap-2 sm:gap-3">
                     <button
                         type="button"
+                        onClick={() => (onOpenCart ? onOpenCart() : (window.location.href = href('/user/cart')))}
                         aria-label={`Shopping cart${cartCount > 0 ? `, ${cartCount} item${cartCount === 1 ? '' : 's'}` : ''}`}
-                        className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:bg-brand-50 hover:text-[#C86A4B] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C86A4B]/40"
+                        className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:bg-brand-50 hover:text-[#C86A4B] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C86A4B]/40 cursor-pointer"
                     >
                         <ShoppingBagIcon />
 
