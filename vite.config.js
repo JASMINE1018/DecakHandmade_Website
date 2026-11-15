@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/product-detail/main.jsx',
+                'resources/js/our-story/main.jsx',
             ],
             refresh: true,
             fonts: [

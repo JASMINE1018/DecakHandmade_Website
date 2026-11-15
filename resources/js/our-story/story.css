@@ -1,0 +1,185 @@
+.story-page {
+    --story-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --story-duration: 620ms;
+    --story-image-duration: 1000ms;
+    --story-delay: 0ms;
+}
+
+/* Scroll-triggered reveals */
+.story-page [data-reveal] {
+    opacity: 0;
+    transition:
+        opacity var(--story-duration) var(--story-ease) var(--story-delay),
+        transform var(--story-duration) var(--story-ease) var(--story-delay);
+    will-change: opacity, transform;
+}
+
+.story-page [data-reveal='up'],
+.story-page [data-reveal='image'] {
+    transform: translate3d(0, 18px, 0);
+}
+
+.story-page [data-reveal='line'] {
+    opacity: 1;
+    transform: scaleX(0);
+    transform-origin: left center;
+    will-change: transform;
+}
+
+/* Curtain targets stay observable; only the inner mask is clipped. */
+.story-page [data-reveal^='curtain'] {
+    opacity: 1;
+    will-change: auto;
+}
+
+.story-page [data-reveal] > .story-reveal-mask {
+    width: 100%;
+    height: 100%;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--story-image-duration) var(--story-ease) var(--story-delay);
+    will-change: clip-path;
+}
+
+.story-page [data-reveal='curtain-right'] > .story-reveal-mask {
+    clip-path: inset(0 0 0 100%);
+}
+
+.story-page [data-reveal='curtain-down'] > .story-reveal-mask {
+    clip-path: inset(0 0 100% 0);
+}
+
+.story-page [data-reveal='curtain-up'] > .story-reveal-mask {
+    clip-path: inset(100% 0 0 0);
+}
+
+.story-page [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+}
+
+.story-page [data-reveal='line'].is-revealed {
+    transform: scaleX(1);
+}
+
+.story-page [data-reveal].is-revealed > .story-reveal-mask {
+    clip-path: inset(0 0 0 0);
+    will-change: auto;
+}
+
+/* Images settle inside their reveal mask. */
+.story-page [data-reveal='image'] > img,
+.story-page [data-reveal^='curtain'] > .story-reveal-mask > img {
+    transform: scale(1.035);
+    transition: transform 1400ms var(--story-ease) var(--story-delay);
+    will-change: transform;
+}
+
+.story-page [data-reveal='image'].is-revealed > img,
+.story-page [data-reveal^='curtain'].is-revealed > .story-reveal-mask > img {
+    transform: scale(1);
+    will-change: auto;
+}
+
+/* Hero entrance */
+.story-page .story-header {
+    animation: story-header-in 450ms var(--story-ease) both;
+}
+
+.story-page .story-hero-media img {
+    animation: story-image-settle 1200ms var(--story-ease) 80ms both;
+}
+
+.story-page .story-hero-heading {
+    animation: story-rise 700ms var(--story-ease) 180ms both;
+}
+
+.story-page .story-hero-copy {
+    animation: story-rise 700ms var(--story-ease) 320ms both;
+}
+
+.story-page .story-hero-cta {
+    animation: story-rise 600ms var(--story-ease) 440ms both;
+}
+
+/* Floating action */
+.story-page .story-whatsapp {
+    animation: story-fade-in 320ms var(--story-ease) 1000ms both;
+}
+
+@keyframes story-header-in {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -6px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes story-image-settle {
+    from {
+        opacity: 0;
+        transform: scale(1.04);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes story-rise {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 18px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes story-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Quiet photo hover, only where a precise pointer is available. */
+@media (hover: hover) and (pointer: fine) {
+    .story-page .story-media.is-revealed:hover > img,
+    .story-page .story-media.is-revealed:hover > .story-reveal-mask > img {
+        transform: scale(1.018);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .story-page .story-header,
+    .story-page .story-hero-media img,
+    .story-page .story-hero-heading,
+    .story-page .story-hero-copy,
+    .story-page .story-hero-cta,
+    .story-page .story-whatsapp {
+        animation: none !important;
+    }
+
+    .story-page [data-reveal],
+    .story-page [data-reveal] > img,
+    .story-page [data-reveal] > .story-reveal-mask,
+    .story-page [data-reveal] > .story-reveal-mask > img {
+        opacity: 1 !important;
+        transform: none !important;
+        clip-path: none !important;
+        transition: none !important;
+        will-change: auto !important;
+    }
+
+    .story-page .story-media.is-revealed:hover > img,
+    .story-page .story-media.is-revealed:hover > .story-reveal-mask > img {
+        transform: none !important;
+    }
+}

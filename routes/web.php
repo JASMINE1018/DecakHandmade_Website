@@ -26,6 +26,7 @@ Route::redirect('/', '/admin');
 |--------------------------------------------------------------------------
 */
 Route::get('home', [HomeController::class, 'index'])->name('home');
+Route::view('our-story', 'story.index')->name('story.index');
 
 /*
 |--------------------------------------------------------------------------
