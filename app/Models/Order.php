@@ -18,7 +18,7 @@ class Order extends Model
 
     public const STATUSES = [
         self::STATUS_PROCESSING => 'Diproses',
-        self::STATUS_SHIPPED => 'Dikirim',
+        self::STATUS_SHIPPED => 'In Delivery',
         self::STATUS_COMPLETED => 'Selesai',
         self::STATUS_CANCELLED => 'Dibatalkan',
     ];

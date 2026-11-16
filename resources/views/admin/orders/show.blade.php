@@ -127,49 +127,120 @@
                 </div>
             @endif
 
-            @unless ($order->isFinal())
+            @if ($order->isFinal())
                 <div class="admin-card">
-                    <h2 class="text-sm font-semibold text-ink">Ubah status</h2>
+                    <h2 class="text-sm font-semibold text-ink">Status pesanan</h2>
+                    <div class="mt-3 flex items-center gap-2">
+                        <x-status-badge :status="$order->status" />
+                        <span class="text-xs text-muted">Status sudah final dan tidak dapat diubah lagi.</span>
+                    </div>
+                </div>
+            @else
+                <div class="admin-card" x-data="{
+                    targetStatus: '{{ $order->status === \App\Models\Order::STATUS_PROCESSING ? \App\Models\Order::STATUS_SHIPPED : \App\Models\Order::STATUS_COMPLETED }}'
+                }">
+                    <div class="flex items-center justify-between pb-3 border-b border-line">
+                        <h2 class="text-sm font-semibold text-ink">Ubah status</h2>
+                        <span class="text-xs text-muted">Saat ini: <span class="font-medium text-ink">{{ $order->statusLabel() }}</span></span>
+                    </div>
 
-                    @foreach ($transitions as $to)
-                        @continue($to === 'cancelled')
-                        <form method="POST" action="{{ route('admin.orders.status.update', $order) }}" class="mt-3 space-y-2">
-                            @csrf
-                            @method('PATCH')
-                            <input type="hidden" name="status" value="{{ $to }}">
-                            <input name="note" maxlength="500" placeholder="Catatan (opsional)" class="admin-input">
-                            @if ($order->status === 'shipped' && $to === 'processing')
-                                <p class="text-xs text-amber-600">Koreksi ke Diproses akan dicatat pada riwayat.</p>
-                            @endif
-                            <button class="admin-btn-primary w-full">
-                                Tandai {{ \App\Models\Order::STATUSES[$to] ?? $to }}
-                            </button>
-                        </form>
-                    @endforeach
+                    <form method="POST" action="{{ route('admin.orders.status.update', $order) }}" class="mt-4 space-y-4">
+                        @csrf
+                        @method('PATCH')
 
-                    @if (in_array('cancelled', $transitions, true))
-                        <div class="mt-5 border-t border-line pt-4">
-                            <h3 class="text-sm font-semibold text-danger">Batalkan pesanan</h3>
-                            <form method="POST" action="{{ route('admin.orders.cancel', $order) }}" class="mt-2 space-y-2">
-                                @csrf
-                                <select name="reason" class="admin-input">
-                                    @foreach ($cancelReasons as $value => $label)
-                                        <option value="{{ $value }}">{{ $label }}</option>
-                                    @endforeach
-                                </select>
-                                <textarea name="note" required minlength="10" maxlength="500" rows="2" placeholder="Alasan pembatalan (wajib, min. 10 karakter)" class="admin-input"></textarea>
-                                @if ($order->status === 'shipped')
-                                    <label class="flex items-start gap-2 text-xs text-muted">
-                                        <input type="checkbox" name="returned" value="1" class="mt-0.5 rounded border-line text-brand-600 focus:ring-brand-200">
-                                        Barang sudah kembali / gagal kirim (wajib untuk pesanan Dikirim)
+                        <div class="space-y-2">
+                            <label class="block text-xs font-medium text-slate-700">Pilih status baru:</label>
+
+                            <div class="space-y-2">
+                                {{-- Option: In Delivery --}}
+                                @if ($order->status !== \App\Models\Order::STATUS_SHIPPED)
+                                    <label class="flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-all"
+                                           :class="targetStatus === 'shipped' ? 'border-brand-500 bg-brand-50/70 ring-1 ring-brand-400' : 'border-line hover:border-slate-300 bg-white'">
+                                        <div class="flex items-center gap-3">
+                                            <input type="radio" name="status" value="shipped" x-model="targetStatus"
+                                                   class="h-4 w-4 text-brand-600 focus:ring-brand-200">
+                                            <div>
+                                                <p class="text-sm font-medium text-ink">In Delivery</p>
+                                                <p class="text-xs text-muted">Pesanan dalam pengiriman</p>
+                                            </div>
+                                        </div>
+                                        <span class="admin-badge bg-brand-100 text-brand-800">In Delivery</span>
                                     </label>
                                 @endif
-                                <button class="admin-btn-danger w-full">Batalkan pesanan</button>
-                            </form>
+
+                                {{-- Option: Selesai --}}
+                                @if ($order->status !== \App\Models\Order::STATUS_COMPLETED)
+                                    <label class="flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-all"
+                                           :class="targetStatus === 'completed' ? 'border-emerald-500 bg-emerald-50/70 ring-1 ring-emerald-400' : 'border-line hover:border-slate-300 bg-white'">
+                                        <div class="flex items-center gap-3">
+                                            <input type="radio" name="status" value="completed" x-model="targetStatus"
+                                                   class="h-4 w-4 text-emerald-600 focus:ring-emerald-200">
+                                            <div>
+                                                <p class="text-sm font-medium text-ink">Selesai</p>
+                                                <p class="text-xs text-muted">Pesanan telah selesai diterima</p>
+                                            </div>
+                                        </div>
+                                        <span class="admin-badge bg-success-soft text-success-ink">Selesai</span>
+                                    </label>
+                                @endif
+
+                                {{-- Option: Dibatalkan --}}
+                                @if ($order->status !== \App\Models\Order::STATUS_CANCELLED)
+                                    <label class="flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-all"
+                                           :class="targetStatus === 'cancelled' ? 'border-rose-500 bg-rose-50/70 ring-1 ring-rose-400' : 'border-line hover:border-slate-300 bg-white'">
+                                        <div class="flex items-center gap-3">
+                                            <input type="radio" name="status" value="cancelled" x-model="targetStatus"
+                                                   class="h-4 w-4 text-rose-600 focus:ring-rose-200">
+                                            <div>
+                                                <p class="text-sm font-medium text-ink">Dibatalkan</p>
+                                                <p class="text-xs text-muted">Batalkan pesanan & kembalikan stok</p>
+                                            </div>
+                                        </div>
+                                        <span class="admin-badge bg-danger/10 text-danger">Dibatalkan</span>
+                                    </label>
+                                @endif
+
+                                {{-- Option: Diproses (Koreksi dari status In Delivery jika diperlukan) --}}
+                                @if ($order->status === \App\Models\Order::STATUS_SHIPPED)
+                                    <label class="flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-all"
+                                           :class="targetStatus === 'processing' ? 'border-amber-500 bg-amber-50/70 ring-1 ring-amber-400' : 'border-line hover:border-slate-300 bg-white'">
+                                        <div class="flex items-center gap-3">
+                                            <input type="radio" name="status" value="processing" x-model="targetStatus"
+                                                   class="h-4 w-4 text-amber-600 focus:ring-amber-200">
+                                            <div>
+                                                <p class="text-sm font-medium text-ink">Diproses</p>
+                                                <p class="text-xs text-amber-600">Koreksi kembali ke diproses</p>
+                                            </div>
+                                        </div>
+                                        <span class="admin-badge bg-brand-500 text-white">Diproses</span>
+                                    </label>
+                                @endif
+                            </div>
                         </div>
-                    @endif
+
+                        <div>
+                            <label for="status-note" class="block text-xs font-medium text-slate-700 mb-1">Catatan (opsional)</label>
+                            <input id="status-note" type="text" name="note" maxlength="500" placeholder="Catatan perubahan status..." class="admin-input">
+                        </div>
+
+                        @if ($order->status === \App\Models\Order::STATUS_SHIPPED)
+                            <div x-show="targetStatus === 'cancelled'" x-cloak class="rounded-xl border border-amber-200 bg-amber-50/80 p-3">
+                                <label class="flex items-start gap-2.5 cursor-pointer">
+                                    <input type="checkbox" name="returned" value="1" class="mt-0.5 rounded border-amber-300 text-brand-600 focus:ring-brand-200">
+                                    <span class="text-xs text-amber-900 leading-relaxed">
+                                        Konfirmasi barang sudah kembali / gagal kirim (wajib dicentang untuk pembatalan pesanan In Delivery agar stok dikembalikan).
+                                    </span>
+                                </label>
+                            </div>
+                        @endif
+
+                        <button type="submit"
+                                :class="targetStatus === 'cancelled' ? 'admin-btn-danger w-full' : 'admin-btn-primary w-full'">
+                            <span x-text="targetStatus === 'cancelled' ? 'Batalkan Pesanan' : (targetStatus === 'completed' ? 'Tandai Selesai' : (targetStatus === 'shipped' ? 'Tandai In Delivery' : 'Perbarui Status'))"></span>
+                        </button>
+                    </form>
                 </div>
-            @endunless
+            @endif
         </div>
     </div>
 @endsection
