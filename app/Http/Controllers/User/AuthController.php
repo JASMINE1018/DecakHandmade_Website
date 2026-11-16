@@ -42,7 +42,7 @@ class AuthController extends Controller
         if (Auth::guard('customer')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended(route('user.dashboard'));
+            return redirect()->intended(route('user.checkout'));
         }
 
         return back()
@@ -96,7 +96,7 @@ class AuthController extends Controller
         Auth::guard('customer')->login($customer);
         $request->session()->regenerate();
 
-        return redirect()->route('user.dashboard')->with('success', 'Selamat datang di Decak Handmade! Akun Anda berhasil dibuat.');
+        return redirect()->intended(route('user.checkout'))->with('success', 'Welcome to Decak Handmade! Your account has been created.');
     }
 
     /**

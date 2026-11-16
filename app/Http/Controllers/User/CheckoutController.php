@@ -36,8 +36,8 @@ class CheckoutController extends Controller
         $cart = $this->cart->summary();
 
         if ($cart['items'] === []) {
-            return redirect()->route('user.cart')
-                ->with('error', 'Keranjang belanja Anda masih kosong.');
+            return redirect()->route('catalog.index')
+                ->with('error', 'Your shopping cart is empty.');
         }
 
         $customer = $this->getCustomer();

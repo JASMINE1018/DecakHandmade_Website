@@ -19,14 +19,13 @@ use App\Http\Controllers\Catalog\DetailCatalogController;
 use App\Http\Controllers\Home\HomeController;
 use Illuminate\Support\Facades\Route;
 
-// Route::redirect('/', '/admin');
-
 /*
 |--------------------------------------------------------------------------
 | Landing Page (Storefront)
 |--------------------------------------------------------------------------
 */
-Route::get('home', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('home', fn () => redirect()->route('home'));
 
 /*
 |--------------------------------------------------------------------------
