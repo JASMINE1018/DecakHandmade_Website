@@ -62,21 +62,13 @@ class CartService
             $entry['quantity'] = $quantity;
             $validRaw[$key] = $entry;
 
-            $firstImage = null;
-            if (is_array($product->gallery) && count($product->gallery) > 0) {
-                $path = $product->gallery[0];
-                $firstImage = str_starts_with($path, 'http') || str_starts_with($path, '/')
-                    ? $path
-                    : '/storage/'.ltrim($path, '/');
-            }
-
             $items[] = [
                 'key' => $key,
                 'product_id' => $product->id,
                 'slug' => $product->slug,
                 'name' => $product->name,
                 'sku' => $product->sku,
-                'image' => $firstImage ?? '/images/products/tote-senja.png',
+                'image' => $product->getImageUrl('thumb'),
                 'variant_id' => $line['variant']?->id,
                 'variant_name' => $line['variant']?->name,
                 'customizations' => collect($line['customizations'])->map(fn (array $c) => [

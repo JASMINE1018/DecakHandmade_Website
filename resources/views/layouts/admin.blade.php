@@ -26,7 +26,6 @@
                     ['route' => 'admin.products.index', 'label' => 'Produk', 'active' => 'admin.products.*', 'icon' => 'products'],
                     ['route' => 'admin.orders.index', 'label' => 'Pesanan Masuk', 'active' => 'admin.orders.*', 'icon' => 'orders'],
                     ['route' => 'admin.reports.sales.index', 'label' => 'Rekap Penjualan', 'active' => 'admin.reports.*', 'icon' => 'reports'],
-                    ['route' => 'admin.banners.index', 'label' => 'Promosi & Banner', 'active' => 'admin.banners.*', 'icon' => 'banners'],
                 ];
             @endphp
 

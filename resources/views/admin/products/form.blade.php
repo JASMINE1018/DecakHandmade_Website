@@ -50,21 +50,21 @@
 
                     <div>
                         <label class="mb-1 block text-sm font-medium text-ink">Harga dasar</label>
-                        <input name="base_price" type="number" min="0" value="{{ old('base_price', $product->base_price) }}" required
+                        <input name="base_price" type="number" min="0" max="2000000000" value="{{ old('base_price', $product->base_price) }}" required
                                class="w-full rounded-lg border border-line px-3 py-2 text-sm">
                     </div>
 
                     @if (! $isEdit)
                         <div>
                             <label class="mb-1 block text-sm font-medium text-ink">Stok awal</label>
-                            <input name="stock" type="number" min="0" value="{{ old('stock', 0) }}" required
+                            <input name="stock" type="number" min="0" max="10000000" value="{{ old('stock', 0) }}" required
                                    class="w-full rounded-lg border border-line px-3 py-2 text-sm">
                         </div>
                     @endif
 
                     <div>
                         <label class="mb-1 block text-sm font-medium text-ink">Stok minimum</label>
-                        <input name="min_stock" type="number" min="0" value="{{ old('min_stock', $product->min_stock ?? 0) }}"
+                        <input name="min_stock" type="number" min="0" max="10000000" value="{{ old('min_stock', $product->min_stock ?? 0) }}"
                                class="w-full rounded-lg border border-line px-3 py-2 text-sm">
                     </div>
 

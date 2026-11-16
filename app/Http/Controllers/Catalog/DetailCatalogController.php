@@ -46,7 +46,9 @@ class DetailCatalogController extends Controller
                 ->map(fn ($path, $idx) => [
                     'src' => str_starts_with($path, 'http') || str_starts_with($path, '/')
                         ? ltrim($path, '/')
-                        : 'storage/'.ltrim($path, '/'),
+                        : (preg_match('/\.(webp|jpg|jpeg|png|svg)$/i', $path)
+                            ? 'storage/'.ltrim($path, '/')
+                            : 'storage/'.ltrim($path, '/').'-full.webp'),
                     'alt' => "{$product->name} - view ".($idx + 1),
                     'label' => 'View '.($idx + 1),
                 ])
