@@ -38,7 +38,9 @@
                     </a>
                 </li>
                 <li>
-                    <span class="cursor-default text-ink">Our Story</span>
+                    <a href="{{ route('story.index') }}" class="transition-colors hover:text-brand-600 {{ request()->routeIs('story.*') ? 'text-brand-600' : 'text-ink' }}">
+                        Our Story
+                    </a>
                 </li>
                 <li>
                     <a href="{{ route('user.dashboard') }}" class="transition-colors hover:text-brand-600 {{ request()->routeIs('user.*') ? 'text-brand-600' : 'text-ink' }}">
@@ -90,7 +92,7 @@
             <ul class="space-y-1 pt-3 text-sm font-medium">
                 <li><a href="{{ route('home') }}" class="block rounded-lg px-3 py-2.5 transition-colors hover:bg-brand-50 {{ request()->routeIs('home') ? 'text-brand-600 bg-brand-50' : 'text-ink' }}">Home</a></li>
                 <li><a href="{{ route('catalog.index') }}" class="block rounded-lg px-3 py-2.5 transition-colors hover:bg-brand-50 {{ request()->routeIs('catalog.*') ? 'text-brand-600 bg-brand-50' : 'text-ink' }}">Catalog</a></li>
-                <li><span class="block cursor-default rounded-lg px-3 py-2.5 text-ink">Our Story</span></li>
+                <li><a href="{{ route('story.index') }}" class="block rounded-lg px-3 py-2.5 transition-colors hover:bg-brand-50 {{ request()->routeIs('story.*') ? 'text-brand-600 bg-brand-50' : 'text-ink' }}">Our Story</a></li>
                 <li><a href="{{ route('user.dashboard') }}" class="block rounded-lg px-3 py-2.5 transition-colors hover:bg-brand-50 {{ request()->routeIs('user.*') ? 'text-brand-600 bg-brand-50' : 'text-ink' }}">My Account</a></li>
             </ul>
             <a href="{{ route('catalog.index') }}" class="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700">

@@ -11,7 +11,7 @@ export default function Navbar({ cartCount = 0, appUrl = '', onOpenCart = null }
     const links = [
         { label: 'Home', href: href('/home') },
         { label: 'Catalog', href: href('/catalog'), active: true },
-        { label: 'Our story', href: `${href('/home')}#our-story` },
+        { label: 'Our story', href: href('/our-story') },
         { label: 'My account', href: href('/user') },
     ];
 

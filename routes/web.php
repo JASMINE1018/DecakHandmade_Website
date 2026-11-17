@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('home', fn () => redirect()->route('home'));
+Route::view('our-story', 'story.index')->name('story.index');
 
 /*
 |--------------------------------------------------------------------------
