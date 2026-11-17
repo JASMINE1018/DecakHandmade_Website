@@ -71,6 +71,25 @@ class Product extends Model
         return $query->where('is_active', true);
     }
 
+    public function getImageUrl(string $size = 'card'): string
+    {
+        $first = is_array($this->gallery) && count($this->gallery) > 0 ? $this->gallery[0] : null;
+
+        if (! $first) {
+            return asset('images/products/tote-senja.png');
+        }
+
+        if (str_starts_with($first, 'http://') || str_starts_with($first, 'https://')) {
+            return $first;
+        }
+
+        if (preg_match('/\.(webp|jpg|jpeg|png|svg)$/i', $first)) {
+            return asset('storage/'.ltrim($first, '/'));
+        }
+
+        return asset("storage/{$first}-{$size}.webp");
+    }
+
     public function isLowStock(): bool
     {
         return $this->stock <= $this->min_stock;

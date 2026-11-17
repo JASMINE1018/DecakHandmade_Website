@@ -46,17 +46,6 @@ class ImageStorageService
         return Storage::disk('public')->url("{$base}-{$size}.webp");
     }
 
-    public function storeBannerImage(UploadedFile $file): string
-    {
-        $path = 'banners/'.Str::uuid().'.webp';
-        $source = $this->load($file);
-
-        $this->save($source, $path, 1600, 533, true);
-        unset($source);
-
-        return $path;
-    }
-
     public function storeVariantImage(UploadedFile $file): string
     {
         $path = 'variants/'.Str::uuid().'.webp';

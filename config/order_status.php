@@ -11,7 +11,7 @@ return [
     | Status akhir (completed, cancelled) tidak memiliki transisi keluar.
     */
     'transitions' => [
-        Order::STATUS_PROCESSING => [Order::STATUS_SHIPPED, Order::STATUS_CANCELLED],
+        Order::STATUS_PROCESSING => [Order::STATUS_SHIPPED, Order::STATUS_COMPLETED, Order::STATUS_CANCELLED],
         Order::STATUS_SHIPPED => [Order::STATUS_COMPLETED, Order::STATUS_PROCESSING, Order::STATUS_CANCELLED],
         Order::STATUS_COMPLETED => [],
         Order::STATUS_CANCELLED => [],

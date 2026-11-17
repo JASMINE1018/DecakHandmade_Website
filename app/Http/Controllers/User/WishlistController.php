@@ -20,10 +20,7 @@ class WishlistController extends Controller
     {
         $customer = $this->getCustomer();
         $wishlistItems = $customer->wishlistProducts()->with('variants')->get()->map(function ($product) {
-            $firstImg = null;
-            if (is_array($product->gallery) && count($product->gallery) > 0) {
-                $firstImg = '/storage/' . $product->gallery[0];
-            }
+            $firstImg = $product->getImageUrl('card');
 
             $stockStatus = 'Tersedia';
             $stockBadge = 'bg-[#eaf0e7] text-[#5a7355]';

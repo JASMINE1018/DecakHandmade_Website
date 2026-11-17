@@ -60,16 +60,12 @@ class OrderController extends Controller
                 'trackingNumber' => $order->tracking_number ?? '-',
                 'estimate' => $order->completed_at ? 'Tiba ' . $order->completed_at->translatedFormat('d F Y') : 'Estimasi 2–4 hari kerja',
                 'items' => $order->items->map(function ($item) {
-                    $firstImg = null;
-                    if ($item->product && is_array($item->product->gallery) && count($item->product->gallery) > 0) {
-                        $firstImg = '/storage/' . $item->product->gallery[0];
-                    }
                     return [
                         'title' => $item->product_name,
                         'variant' => 'SKU: ' . ($item->sku ?? '-'),
                         'qty' => $item->quantity,
                         'price' => $item->unit_price,
-                        'image' => $firstImg ?? '/images/products/tote-senja.png',
+                        'image' => $item->product ? $item->product->getImageUrl('thumb') : '/images/products/tote-senja.png',
                     ];
                 }),
                 'history' => $order->statusHistories->map(function ($h) {

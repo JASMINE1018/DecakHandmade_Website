@@ -151,7 +151,7 @@ class OrderService
 
             if ($to === Order::STATUS_CANCELLED && $from === Order::STATUS_SHIPPED && ! $returned) {
                 throw ValidationException::withMessages([
-                    'returned' => 'Pembatalan dari status Dikirim memerlukan konfirmasi barang kembali.',
+                    'returned' => 'Pembatalan dari status In Delivery memerlukan konfirmasi barang kembali.',
                 ]);
             }
 

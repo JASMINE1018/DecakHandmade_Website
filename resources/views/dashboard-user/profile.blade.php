@@ -161,9 +161,7 @@
                             <div class="flex items-center gap-2">
                                 @forelse($latestOrder->items->take(2) as $item)
                                     @php
-                                        $imgUrl = ($item->product && is_array($item->product->gallery) && count($item->product->gallery) > 0)
-                                            ? '/storage/' . $item->product->gallery[0]
-                                            : '/images/products/tote-senja.png';
+                                        $imgUrl = $item->product ? $item->product->getImageUrl('thumb') : '/images/products/tote-senja.png';
                                     @endphp
                                     <img src="{{ $imgUrl }}" alt="{{ $item->product_name }}" class="w-14 h-14 object-cover rounded-xl border border-[#e0ddd8] shadow-2xs">
                                 @empty

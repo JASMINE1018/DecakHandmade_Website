@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomizationOptionController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -89,9 +88,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('reports/sales', [ReportController::class, 'sales'])->name('reports.sales.index');
         Route::get('reports/products', [ReportController::class, 'products'])->name('reports.products.index');
         Route::get('reports/export/{format}', [ReportController::class, 'export'])->name('reports.export');
-
-        Route::resource('banners', BannerController::class)->except(['show']);
-        Route::patch('banners/{banner}/toggle', [BannerController::class, 'toggle'])->name('banners.toggle');
 
         Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('settings', [SettingController::class, 'update'])->name('settings.update');

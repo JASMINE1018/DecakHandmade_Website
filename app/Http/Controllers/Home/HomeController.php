@@ -88,7 +88,7 @@ class HomeController extends Controller
                 'price' => (int) $product->base_price,
                 'category' => $product->category?->name ?? 'Handmade',
                 'image' => $gallery !== []
-                    ? asset('storage/'.$gallery[0])
+                    ? $product->getImageUrl('card')
                     : $this->fallbackImage($product->category?->slug, $index),
                 'url' => route('catalog.product.show', $product->slug),
                 'badge' => $index === 0 ? 'Best Seller' : null,

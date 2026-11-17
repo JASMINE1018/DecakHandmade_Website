@@ -9,16 +9,7 @@
                     ->filter()
                     ->implode(' · ');
 
-                $productImage = null;
-                if ($product->gallery && count($product->gallery) > 0) {
-                    $first = $product->gallery[0];
-                    $productImage = str_starts_with($first, 'http') || str_starts_with($first, '/')
-                        ? $first
-                        : asset('storage/' . ltrim($first, '/'));
-                } else {
-                    $productImage = asset('images/products/tote-senja.png');
-                }
-
+                $productImage = $product->getImageUrl('card');
                 $isWishlisted = in_array($product->id, $wishlistedProductIds ?? [], true);
             @endphp
 

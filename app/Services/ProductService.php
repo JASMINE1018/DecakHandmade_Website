@@ -79,7 +79,7 @@ class ProductService
 
         if ($inActiveOrder) {
             throw ValidationException::withMessages([
-                'product' => 'Produk masih dipakai pada pesanan Diproses atau Dikirim sehingga tidak dapat diarsipkan.',
+                'product' => 'Produk masih dipakai pada pesanan Diproses atau In Delivery sehingga tidak dapat diarsipkan.',
             ]);
         }
 

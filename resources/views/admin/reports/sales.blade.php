@@ -54,24 +54,102 @@
 
     <div class="mt-6 grid gap-6 xl:grid-cols-3">
         <div class="admin-card xl:col-span-2">
-            <h2 class="text-sm font-semibold text-ink">Grafik penjualan harian</h2>
-            <p class="text-xs text-muted">{{ $start }} s.d. {{ $end }}</p>
-
-            <div class="mt-4 flex h-56 items-end gap-1">
-                @foreach ($daily as $day)
-                    <div class="flex flex-1 flex-col items-center gap-1">
-                        <div class="flex w-full flex-1 items-end">
-                            <div class="w-full rounded-t bg-brand-500 transition-colors hover:bg-brand-600" title="{{ rupiah($day['revenue']) }}"
-                                 style="height: {{ max(2, (int) round(($day['revenue'] / $maxRevenue) * 100)) }}%"></div>
-                        </div>
-                        @if ($daily->count() <= 14 || $loop->index % (int) ceil($daily->count() / 10) === 0)
-                            <span class="text-[10px] text-muted">{{ \Carbon\Carbon::parse($day['date'])->format('d/m') }}</span>
-                        @endif
-                    </div>
-                @endforeach
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                    <h2 class="text-sm font-semibold text-ink">Grafik penjualan harian</h2>
+                    <p class="text-xs text-muted">{{ $start }} s.d. {{ $end }}</p>
+                </div>
+                @if ($maxRevenue > 1)
+                    <span class="text-xs font-medium text-muted">Puncak: <strong class="text-ink">{{ rupiah($maxRevenue) }}</strong></span>
+                @endif
             </div>
 
-            <p class="mt-4 text-xs text-muted">Penjualan dihitung dari subtotal produk pada pesanan selesai.</p>
+            @php
+                $count = $daily->count();
+                $hasSales = $daily->sum('revenue') > 0;
+
+                $svgW = 900;
+                $svgH = 220;
+                $padX = 45;
+                $padTop = 25;
+                $padBottom = 35;
+                $chartW = $svgW - ($padX * 2);
+                $chartH = $svgH - $padTop - $padBottom;
+                $baseY = $svgH - $padBottom;
+                $step = $count > 1 ? $chartW / ($count - 1) : 0;
+
+                $coords = [];
+                foreach ($daily->values() as $i => $day) {
+                    $x = (int) round($padX + ($step * $i));
+                    $ratio = $hasSales ? ($day['revenue'] / $maxRevenue) : 0;
+                    $y = (int) round($baseY - ($ratio * $chartH));
+                    $coords[] = [
+                        'x' => $x,
+                        'y' => $y,
+                        'day' => $day,
+                    ];
+                }
+
+                $linePoints = collect($coords)->map(fn ($c) => "{$c['x']},{$c['y']}")->implode(' ');
+                $firstX = $coords[0]['x'] ?? $padX;
+                $lastX = end($coords)['x'] ?? ($svgW - $padX);
+                $areaPath = "M {$firstX},{$baseY} ".collect($coords)->map(fn ($c) => "L {$c['x']},{$c['y']}")->implode(' ')." L {$lastX},{$baseY} Z";
+            @endphp
+
+            <div class="mt-2 w-full overflow-hidden">
+                <svg viewBox="0 0 {{ $svgW }} {{ $svgH }}" class="h-auto w-full" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <linearGradient id="salesLineGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#c86d51" stop-opacity="0.25"/>
+                            <stop offset="100%" stop-color="#c86d51" stop-opacity="0.0"/>
+                        </linearGradient>
+                    </defs>
+
+                    <!-- Horizontal Gridlines -->
+                    @for ($g = 0; $g <= 3; $g++)
+                        @php
+                            $gy = (int) round($padTop + ($chartH * $g / 3));
+                        @endphp
+                        <line x1="{{ $padX }}" y1="{{ $gy }}" x2="{{ $svgW - $padX }}" y2="{{ $gy }}" stroke="#e0ddd8" stroke-dasharray="4 4" stroke-width="1"/>
+                    @endfor
+                    <!-- Baseline -->
+                    <line x1="{{ $padX }}" y1="{{ $baseY }}" x2="{{ $svgW - $padX }}" y2="{{ $baseY }}" stroke="#d3c9c1" stroke-width="1.5"/>
+
+                    @if ($hasSales)
+                        <!-- Area Fill -->
+                        <path d="{{ $areaPath }}" fill="url(#salesLineGrad)"/>
+                        <!-- Line -->
+                        <polyline points="{{ $linePoints }}" fill="none" stroke="#c86d51" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    @else
+                        <!-- Flat zero line -->
+                        <line x1="{{ $firstX }}" y1="{{ $baseY }}" x2="{{ $lastX }}" y2="{{ $baseY }}" stroke="#c86d51" stroke-width="2.5" stroke-linecap="round"/>
+                    @endif
+
+                    <!-- Points & Labels -->
+                    @foreach ($coords as $pt)
+                        @php
+                            $showLabel = $count <= 14 || $loop->index % (int) ceil($count / 10) === 0;
+                        @endphp
+                        <g class="group">
+                            <circle cx="{{ $pt['x'] }}" cy="{{ $pt['y'] }}" r="5" fill="#ffffff" stroke="#c86d51" stroke-width="2.5" class="cursor-pointer transition-all hover:r-7">
+                                <title>{{ rupiah($pt['day']['revenue']) }} ({{ $pt['day']['orders'] }} pesanan) · {{ \Carbon\Carbon::parse($pt['day']['date'])->format('d M Y') }}</title>
+                            </circle>
+                            @if ($showLabel)
+                                <text x="{{ $pt['x'] }}" y="{{ $svgH - 12 }}" text-anchor="middle" font-size="12" fill="#7a6f68" font-weight="500">
+                                    {{ \Carbon\Carbon::parse($pt['day']['date'])->format('d/m') }}
+                                </text>
+                            @endif
+                        </g>
+                    @endforeach
+                </svg>
+            </div>
+
+            <div class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-line/60 pt-3 text-xs text-muted">
+                <span>Penjualan dihitung dari subtotal produk pada pesanan selesai.</span>
+                @unless ($hasSales)
+                    <span class="font-medium text-amber-600">Belum ada pesanan selesai pada rentang tanggal ini.</span>
+                @endunless
+            </div>
         </div>
 
         <div class="admin-card-peach">
