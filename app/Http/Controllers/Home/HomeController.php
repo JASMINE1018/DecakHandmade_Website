@@ -228,7 +228,7 @@ class HomeController extends Controller
             $digits = '6281234567890';
         }
 
-        $message = 'Halo Decak Handmade! Saya ingin bertanya tentang produk handmade-nya.';
+        $message = 'Hello Decak Handmade! I would like to inquire about your handmade products.';
 
         return 'https://wa.me/'.$digits.'?text='.rawurlencode($message);
     }

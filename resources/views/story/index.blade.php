@@ -4,13 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#F9F6F1">
-    <title>Cerita Kami — Decak Handmade</title>
+    <title>Our Story — Decak Handmade</title>
 
     <script>
         window.__OUR_STORY_CONFIG__ = {
             homeUrl: @json(route('home')),
             catalogUrl: @json(route('catalog.index')),
             storyUrl: @json(route('story.index')),
+            userUrl: @json(route('user.dashboard')),
+            cartUrl: @json(route('user.cart')),
             testimonialUrl: @json(route('home').'#testimoni'),
             assetUrl: @json(asset('')),
         };

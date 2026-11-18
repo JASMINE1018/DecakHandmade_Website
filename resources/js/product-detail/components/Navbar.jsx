@@ -1,118 +1,170 @@
 import { useState } from 'react';
 
-import { ArrowRightIcon, CloseIcon, MenuIcon, ShoppingBagIcon } from './icons';
+import { CloseIcon, MenuIcon, SearchIcon, ShoppingBagIcon, UserIcon } from './icons';
 import { resolveAppUrl } from '../utils';
+
+const FOCUS_RING =
+    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#B86B4B]';
+
+function SearchForm({ catalogUrl, inputId = 'detail-nav-search' }) {
+    return (
+        <form action={catalogUrl} method="GET" role="search" className="w-full">
+            <label htmlFor={inputId} className="sr-only">
+                Search products
+            </label>
+            <div className="flex items-center rounded-full border border-[#D6CFC5] bg-transparent px-3.5 py-1.5 text-xs transition-colors focus-within:border-[#B86B4B]">
+                <input
+                    id={inputId}
+                    type="search"
+                    name="search"
+                    placeholder="Search products..."
+                    className="min-w-0 flex-1 appearance-none border-0 bg-transparent p-0 font-[inherit] text-xs text-[#5C554F] shadow-none placeholder:text-[#8C837A] focus:border-0 focus:outline-none focus:ring-0"
+                />
+                <button
+                    type="submit"
+                    aria-label="Search"
+                    className={`ml-2 inline-flex text-[#8C837A] transition-colors hover:text-[#B86B4B] ${FOCUS_RING}`}
+                >
+                    <SearchIcon className="h-3.5 w-3.5" />
+                </button>
+            </div>
+        </form>
+    );
+}
 
 export default function Navbar({ cartCount = 0, appUrl = '', onOpenCart = null }) {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const href = (path) => resolveAppUrl(appUrl, path);
 
-    const links = [
-        { label: 'Home', href: href('/home') },
-        { label: 'Catalog', href: href('/catalog'), active: true },
-        { label: 'Our story', href: href('/our-story') },
-        { label: 'My account', href: href('/user') },
+    const navigation = [
+        { label: 'HOME', href: href('/home'), active: false },
+        { label: 'CATALOG', href: href('/catalog'), active: true },
+        { label: 'OUR STORY', href: href('/our-story'), active: false },
     ];
 
+    const closeMobileMenu = () => setMobileOpen(false);
+
     return (
-        <header className="sticky top-0 z-50 border-b border-line/60 bg-cream/90 backdrop-blur-md">
-            <nav aria-label="Main navigation" className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-                {/* Brand */}
-                <a href={href('/home')} className="flex items-center gap-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#C86A4B] text-sm font-bold text-white shadow-sm">
-                        DH
+        <header className="sticky top-0 z-50 border-b border-[#E5E0D8] bg-[#F9F6F1]/95 backdrop-blur-md">
+            <div className="mx-auto grid h-20 max-w-7xl grid-cols-[1fr_auto] items-center gap-4 px-4 sm:px-6 md:grid-cols-[1fr_auto_1fr] md:px-10 lg:px-16">
+                {/* Logo */}
+                <a
+                    href={href('/home')}
+                    aria-label="Decak Handmade — Home"
+                    className={`flex w-fit flex-col items-start leading-none ${FOCUS_RING}`}
+                >
+                    <span
+                        className="text-[1.75rem] leading-[0.85] tracking-tight text-[#B86B4B]"
+                        style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+                    >
+                        decak
                     </span>
-                    <span className="text-lg font-bold tracking-tight text-ink">
-                        Decak <span className="text-[#C86A4B]">Handmade</span>
+                    <span className="mt-1.5 text-[9px] font-medium uppercase tracking-[0.25em] text-[#B86B4B]">
+                        HANDMADE
                     </span>
                 </a>
 
                 {/* Desktop navigation */}
-                <ul className="hidden items-center gap-8 text-sm font-medium md:flex">
-                    {links.map((link) => (
-                        <li key={link.label}>
-                            <a
-                                href={link.href}
-                                className={`transition-colors hover:text-[#C86A4B] ${
-                                    link.active ? 'text-[#C86A4B]' : 'text-ink'
-                                }`}
-                            >
-                                {link.label}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
+                <nav aria-label="Main navigation" className="hidden md:block md:justify-self-center">
+                    <ul className="flex items-center gap-7 lg:gap-9">
+                        {navigation.map((item) => (
+                            <li key={item.label}>
+                                <a
+                                    href={item.href}
+                                    aria-current={item.active ? 'page' : undefined}
+                                    className={`inline-block border-b pb-1 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${FOCUS_RING} ${
+                                        item.active
+                                            ? 'border-[#B86B4B] text-[#B86B4B]'
+                                            : 'border-transparent text-[#2B2520] hover:text-[#B86B4B]'
+                                    }`}
+                                >
+                                    {item.label}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
 
                 {/* Actions */}
-                <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex items-center justify-self-end gap-3 sm:gap-4 md:gap-5">
+                    <div className="hidden w-28 md:block lg:w-36 xl:w-44">
+                        <SearchForm catalogUrl={href('/catalog')} />
+                    </div>
+
+                    <a
+                        href={href('/user')}
+                        aria-label="My account"
+                        className={`inline-flex p-1 text-[#2B2520] transition-colors hover:text-[#B86B4B] ${FOCUS_RING}`}
+                    >
+                        <UserIcon className="h-[18px] w-[18px]" strokeWidth={1.5} />
+                    </a>
+
                     <button
                         type="button"
                         onClick={() => (onOpenCart ? onOpenCart() : (window.location.href = href('/user/cart')))}
                         aria-label={`Shopping cart${cartCount > 0 ? `, ${cartCount} item${cartCount === 1 ? '' : 's'}` : ''}`}
-                        className="relative inline-flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:bg-brand-50 hover:text-[#C86A4B] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C86A4B]/40 cursor-pointer"
+                        className={`relative inline-flex p-1 text-[#2B2520] transition-colors hover:text-[#B86B4B] cursor-pointer ${FOCUS_RING}`}
                     >
-                        <ShoppingBagIcon />
-
-                        {/* The badge is mounted only when the cart actually has items. */}
+                        <ShoppingBagIcon className="h-[18px] w-[18px]" />
                         {cartCount > 0 && (
                             <span
                                 key={cartCount}
-                                className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#C86A4B] px-1 text-[10px] font-bold leading-none text-white ring-2 ring-cream"
+                                className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#B86B4B] px-1 text-[9px] font-bold leading-none text-white ring-2 ring-[#F9F6F1]"
                             >
                                 {cartCount > 99 ? '99+' : cartCount}
                             </span>
                         )}
                     </button>
 
-                    <a
-                        href={href('/catalog')}
-                        className="hidden items-center gap-2 rounded-full bg-[#C86A4B] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#B85C3F] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C86A4B]/40 focus-visible:ring-offset-2 sm:inline-flex"
-                    >
-                        Shop Now
-                        <ArrowRightIcon />
-                    </a>
-
                     <button
                         type="button"
                         onClick={() => setMobileOpen((open) => !open)}
                         aria-expanded={mobileOpen}
-                        aria-controls="mobile-menu"
+                        aria-controls="detail-mobile-menu"
                         aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-                        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line bg-white text-ink transition-colors hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C86A4B]/40 md:hidden"
+                        className={`inline-flex p-1 text-[#2B2520] transition-colors hover:text-[#B86B4B] md:hidden ${FOCUS_RING}`}
                     >
                         {mobileOpen ? <CloseIcon /> : <MenuIcon />}
                     </button>
                 </div>
-            </nav>
+            </div>
 
             {/* Mobile navigation */}
             {mobileOpen && (
-                <div id="mobile-menu" className="border-t border-line bg-cream px-4 pb-4 md:hidden">
-                    <ul className="space-y-1 pt-3 text-sm font-medium">
-                        {links.map((link) => (
-                            <li key={link.label}>
+                <div id="detail-mobile-menu" className="border-t border-[#E5E0D8] bg-[#F9F6F1] px-6 py-6 md:hidden">
+                    <nav aria-label="Mobile navigation">
+                        <ul className="flex flex-col">
+                            {navigation.map((item) => (
+                                <li key={item.label}>
+                                    <a
+                                        href={item.href}
+                                        onClick={closeMobileMenu}
+                                        aria-current={item.active ? 'page' : undefined}
+                                        className={`flex items-center justify-between border-b border-[#E5E0D8] py-3.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors ${FOCUS_RING} ${
+                                            item.active ? 'text-[#B86B4B]' : 'text-[#2B2520]'
+                                        }`}
+                                    >
+                                        <span>{item.label}</span>
+                                        {item.active && <span aria-hidden="true" className="h-px w-6 bg-[#B86B4B]" />}
+                                    </a>
+                                </li>
+                            ))}
+                            <li>
                                 <a
-                                    href={link.href}
-                                    onClick={() => setMobileOpen(false)}
-                                    className={`block rounded-xl px-3 py-2.5 transition-colors hover:bg-brand-50 hover:text-[#C86A4B] ${
-                                        link.active ? 'bg-brand-50 text-[#C86A4B]' : 'text-ink'
-                                    }`}
+                                    href={href('/user')}
+                                    onClick={closeMobileMenu}
+                                    className={`flex items-center justify-between border-b border-[#E5E0D8] py-3.5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors text-[#2B2520] ${FOCUS_RING}`}
                                 >
-                                    {link.label}
+                                    <span>MY ACCOUNT</span>
                                 </a>
                             </li>
-                        ))}
-                    </ul>
+                        </ul>
+                    </nav>
 
-                    <a
-                        href={href('/catalog')}
-                        onClick={() => setMobileOpen(false)}
-                        className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-[#C86A4B] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#B85C3F]"
-                    >
-                        Shop Now
-                        <ArrowRightIcon />
-                    </a>
+                    <div className="mt-5">
+                        <SearchForm catalogUrl={href('/catalog')} inputId="detail-search-mobile" />
+                    </div>
                 </div>
             )}
         </header>

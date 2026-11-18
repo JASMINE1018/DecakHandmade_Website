@@ -29,20 +29,20 @@
     }
 @endphp
 
-<nav class="mt-10 border-t border-[#e5dfd8] pt-6" aria-label="Navigasi Halaman">
+<nav class="mt-10 border-t border-[#e5dfd8] pt-6" aria-label="Pagination Navigation">
     <div x-data="{ currentPage: {{ $currentPage }} }" class="flex flex-wrap items-center justify-center gap-2">
 
         {{-- Previous --}}
         @if ($products->onFirstPage())
             <span aria-disabled="true"
                   class="inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-medium text-[#a99e96] cursor-not-allowed">
-                ← Sebelumnya
+                ← Previous
             </span>
         @else
             <a href="{{ $products->previousPageUrl() }}"
-               aria-label="Halaman sebelumnya"
+               aria-label="Previous page"
                class="inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-medium text-[#5e5449] hover:bg-[#f5eee6] hover:text-[#c06547] transition-colors">
-                ← Sebelumnya
+                ← Previous
             </a>
         @endif
 
@@ -66,14 +66,14 @@
         {{-- Next --}}
         @if ($products->hasMorePages())
             <a href="{{ $products->nextPageUrl() }}"
-               aria-label="Halaman berikutnya"
+               aria-label="Next page"
                class="inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-medium text-[#5e5449] hover:bg-[#f5eee6] hover:text-[#c06547] transition-colors">
-                Selanjutnya →
+                Next →
             </a>
         @else
             <span aria-disabled="true"
                   class="inline-flex h-9 items-center justify-center rounded-lg px-3 text-xs font-medium text-[#a99e96] cursor-not-allowed">
-                Selanjutnya →
+                Next →
             </span>
         @endif
     </div>

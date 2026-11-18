@@ -23,9 +23,8 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useTailwind();
 
         \Illuminate\Support\Facades\View::composer('dashboard-user.*', function ($view) {
-            $customer = \Illuminate\Support\Facades\Auth::guard('customer')->user()
-                ?? \Illuminate\Support\Facades\Auth::user();
-            $view->with('currentUser', $customer);
+            $customer = \Illuminate\Support\Facades\Auth::guard('customer')->user();
+            $view->with('currentUser', $customer instanceof \App\Models\Customer ? $customer : null);
         });
     }
 }

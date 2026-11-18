@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Catalog;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -15,13 +16,13 @@ class FilterBarController extends Controller
      */
     public function categories(): array
     {
-        $dbCategories = \App\Models\Category::query()
+        $dbCategories = Category::query()
             ->where('is_active', true)
             ->pluck('name', 'slug')
             ->toArray();
 
         return array_merge([
-            'all' => 'Semua produk',
+            'all' => 'All products',
         ], $dbCategories);
     }
 

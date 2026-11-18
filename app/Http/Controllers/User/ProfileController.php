@@ -11,7 +11,9 @@ class ProfileController extends Controller
 {
     protected function getCustomer(): ?Customer
     {
-        return Auth::guard('customer')->user() ?? Auth::user();
+        $user = Auth::guard('customer')->user();
+
+        return $user instanceof Customer ? $user : null;
     }
 
     public function index()

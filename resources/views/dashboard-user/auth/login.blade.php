@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Masuk - Decak Handmade</title>
+    <title>Sign In - Decak Handmade</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -124,14 +124,14 @@
 
                     <!-- Password Field with Toggle -->
                     <div>
-                        <label for="password" class="block text-xs font-semibold text-[#2c2420] mb-1.5">Kata sandi</label>
+                        <label for="password" class="block text-xs font-semibold text-[#2c2420] mb-1.5">Password</label>
                         <div class="relative">
                             <input :type="showPassword ? 'text' : 'password'" id="password" name="password" required autocomplete="current-password"
                                 placeholder="••••••••••••"
                                 class="w-full px-4 py-3 rounded-xl border border-[#c9b8ab] bg-white text-sm text-[#2c2420] placeholder-[#b5aca4] focus:border-[#a04e37] focus:ring-2 focus:ring-[#f0c9b9] outline-none transition-all pr-11">
                             <button type="button" @click="showPassword = !showPassword" 
-                                class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#a04e37] hover:text-[#7f3724] transition-colors focus:outline-none"
-                                title="Lihat/Sembunyikan kata sandi">
+                                class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-[#a04e37] hover:text-[#7f3724] transition-colors focus:outline-none cursor-pointer"
+                                title="Show/Hide password">
                                 <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path>
                                 </svg>
@@ -147,11 +147,11 @@
                         <label class="flex items-center gap-2 cursor-pointer select-none text-[#5e5449]">
                             <input type="checkbox" name="remember" value="1" {{ old('remember', true) ? 'checked' : '' }}
                                 class="w-4 h-4 rounded border-[#dec9ba] text-[#4f90cd] focus:ring-[#4f90cd]/30 accent-[#4f90cd]">
-                            <span>Ingat saya</span>
+                            <span>Remember me</span>
                         </label>
 
                         <a href="{{ route('user.password') }}" class="text-[#4f90cd] hover:underline font-medium">
-                            Lupa kata sandi?
+                            Forgot password?
                         </a>
                     </div>
 

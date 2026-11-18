@@ -70,7 +70,7 @@ function HeroSection({ image }) {
                 {/* Foto: /images/story/hero-keychain-in-hand.jpg */}
                 <img
                     src={image(STORY_IMAGES.hero)}
-                    alt="Tangan memegang gantungan kunci rajutan ungu bermotif bunga karya Decak Handmade"
+                    alt="Hand holding a purple floral crochet keychain by Decak Handmade"
                     className="block h-full w-full object-cover"
                     loading="eager"
                     fetchPriority="high"
@@ -161,7 +161,7 @@ function StartingSection({ image }) {
                     {/* Foto: /images/story/crochet-keychain-flower.jpg */}
                     <img
                         src={image(STORY_IMAGES.keychainFlower)}
-                        alt="Gantungan kunci rajutan hijau zaitun dengan motif bunga merah muda di atas latar netral"
+                        alt="Olive green crochet keychain with pink floral pattern on a neutral background"
                         className="block aspect-square w-full border border-[#DCD5CB] bg-[#E7E1D7] object-cover"
                         loading="lazy"
                         decoding="async"
@@ -182,7 +182,7 @@ function MadeWithHeartSection({ image }) {
                 {/* Foto: /images/story/workshop-tools.jpg */}
                 <img
                     src={image(STORY_IMAGES.workshop)}
-                    alt="Peralatan menjahit dan kerajinan tangan berjajar di atas meja kerja"
+                    alt="Sewing tools and craft supplies neatly arranged on a workbench"
                     className="block h-[360px] w-full object-cover md:h-[420px]"
                     loading="lazy"
                     decoding="async"
@@ -281,7 +281,7 @@ function BentoGallerySection({ image, catalogUrl }) {
                         {/* Foto: /images/story/team-conversation.jpg */}
                         <img
                             src={image(STORY_IMAGES.team)}
-                            alt="Tiga orang berdiskusi di meja kafe dengan laptop dan buku catatan"
+                            alt="Three people discussing around a cafe table with laptops and notebooks"
                             className="block h-full min-h-[380px] w-full object-cover"
                             loading="lazy"
                             decoding="async"
@@ -297,7 +297,7 @@ function BentoGallerySection({ image, catalogUrl }) {
                             {/* Foto: /images/story/living-room.jpg */}
                             <img
                                 src={image(STORY_IMAGES.livingRoom)}
-                                alt="Ruang keluarga bernuansa netral dengan sofa panjang, karpet, dan dekorasi anyaman"
+                                alt="Neutral-toned living room styled with a sofa, rug, and woven decor"
                                 className="block h-[210px] w-full object-cover"
                                 loading="lazy"
                                 decoding="async"
@@ -312,7 +312,7 @@ function BentoGallerySection({ image, catalogUrl }) {
                             {/* Foto: /images/story/clothing-flatlay.jpg */}
                             <img
                                 src={image(STORY_IMAGES.flatlay)}
-                                alt="Pakaian rajut dan jeans ditata di atas seprai putih bersama tangkai bunga tulip"
+                                alt="Knitwear and jeans styled flat on white linen with a tulip stem"
                                 className="block h-[210px] w-full object-cover"
                                 loading="lazy"
                                 decoding="async"
@@ -357,7 +357,7 @@ function KeepCreatingSection({ image }) {
                 {/* Foto: /images/story/kraft-tote.jpg */}
                 <img
                     src={image(STORY_IMAGES.kraftTote)}
-                    alt="Tas tote kraft polos dengan tali jinjing di atas latar abu-abu muda"
+                    alt="Plain kraft tote bag with handles on a light grey background"
                     className="block h-full min-h-[380px] w-full object-cover"
                     loading="lazy"
                     decoding="async"
@@ -401,6 +401,8 @@ export default function OurStoryPage({
     homeUrl = '/home',
     catalogUrl = '/catalog',
     storyUrl = '/our-story',
+    userUrl = '/user',
+    cartUrl = '/user/cart',
     testimonialUrl = '/home#testimoni',
     assetUrl = '/',
 }) {
@@ -417,6 +419,8 @@ export default function OurStoryPage({
                 homeUrl={homeUrl}
                 catalogUrl={catalogUrl}
                 storyUrl={storyUrl}
+                userUrl={userUrl}
+                cartUrl={cartUrl}
             />
 
             <main>

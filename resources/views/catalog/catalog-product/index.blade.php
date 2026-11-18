@@ -12,19 +12,19 @@
         <nav class="mb-3 text-xs text-[#7a6f68]">
             <ol class="flex items-center gap-1.5">
                 <li>
-                    <a href="{{ route('home') }}" class="transition-colors hover:text-[#c06547]">Beranda</a>
+                    <a href="{{ route('home') }}" class="transition-colors hover:text-[#c06547]">Home</a>
                 </li>
                 <li class="text-[#d3c9c1]">/</li>
-                <li class="font-medium text-[#2c2420]">Katalog produk</li>
+                <li class="font-medium text-[#2c2420]">Catalog</li>
             </ol>
         </nav>
 
         <div class="mb-8">
             <h1 class="text-3xl font-bold tracking-tight text-[#2c2420] sm:text-4xl">
-                Karya untuk keseharian
+                Crafts for everyday life
             </h1>
             <p class="mt-2 text-sm text-[#7a6f68]">
-                Dibuat perlahan, dipilih untuk menemani Anda lebih lama.
+                Slowly crafted, chosen to accompany you longer.
             </p>
         </div>
 

@@ -5,13 +5,13 @@
         <div class="flex items-center justify-between pb-3 border-b border-[#e5dfd8]">
             <h3 class="text-sm font-bold text-[#2c2420]">Filter</h3>
             <a href="{{ route('catalog.index') }}" class="text-xs font-medium text-[#7a6f68] transition-colors hover:text-[#c06547]">
-                Atur ulang
+                Reset
             </a>
         </div>
 
         {{-- Category checkboxes --}}
         <div class="pt-4">
-            <h4 class="mb-3 text-xs font-semibold text-[#5e5449]">Kategori</h4>
+            <h4 class="mb-3 text-xs font-semibold text-[#5e5449]">Categories</h4>
             <ul class="space-y-3">
                 @php
                     $isAll = empty($selectedCategories) || in_array('all', $selectedCategories);
@@ -45,12 +45,12 @@
         {{-- Apply Filter button --}}
         <button type="submit"
                 class="mt-6 w-full rounded-xl border border-[#d3c9c1] bg-white px-4 py-2.5 text-xs font-semibold text-[#2c2420] transition-colors hover:bg-[#f5eee6] hover:border-[#c06547] focus:outline-none">
-            Terapkan filter
+            Apply filters
         </button>
     </div>
 
     {{-- Artisan quote badge --}}
     <p class="text-xs text-[#7a6f68] leading-relaxed px-1">
-        Setiap karya punya sedikit perbedaan. Itulah indahnya buatan tangan.
+        Each piece is slightly unique. That is the beauty of handmade.
     </p>
 </div>

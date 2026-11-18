@@ -32,6 +32,12 @@ class Order extends Model
         'shipping_cost',
         'courier',
         'tracking_number',
+        'payment_method',
+        'payment_status',
+        'payment_bank',
+        'payment_va_number',
+        'payment_qris_url',
+        'payment_raw_response',
         'grand_total',
         'customer_note',
         'admin_note',
@@ -46,6 +52,7 @@ class Order extends Model
             'shipping_cost' => 'integer',
             'grand_total' => 'integer',
             'completed_at' => 'datetime',
+            'payment_raw_response' => 'array',
         ];
     }
 

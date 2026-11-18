@@ -19,7 +19,7 @@ export default function CartDrawer({
     const subtotal = cart?.subtotal ?? 0;
 
     return (
-        <div className="relative z-[70]" role="dialog" aria-modal="true" aria-label="Keranjang Belanja">
+        <div className="relative z-[70]" role="dialog" aria-modal="true" aria-label="Shopping Cart">
             <div
                 onClick={onClose}
                 className="fixed inset-0 bg-[#2c2420]/45 backdrop-blur-[2px] transition-opacity"
@@ -29,17 +29,17 @@ export default function CartDrawer({
                 <div className="flex items-start justify-between border-b border-line px-6 py-5">
                     <div>
                         <p className="text-xs font-semibold uppercase tracking-wider text-[#C86A4B]">
-                            Keranjang Belanja
+                            Shopping Cart
                         </p>
                         <h2 className="mt-0.5 text-2xl font-bold text-ink">
-                            {items.length > 0 ? 'Produk' : 'Keranjang Belanja'}
+                            {items.length > 0 ? 'Products' : 'Shopping Cart'}
                         </h2>
                     </div>
                     <button
                         type="button"
                         onClick={onClose}
-                        aria-label="Tutup keranjang"
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-brand-50 hover:text-ink"
+                        aria-label="Close cart"
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-brand-50 hover:text-ink cursor-pointer"
                     >
                         <CloseIcon />
                     </button>
@@ -56,16 +56,16 @@ export default function CartDrawer({
                         <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full border border-line bg-white text-[#C86A4B] shadow-xs">
                             <ShoppingBagIcon />
                         </div>
-                        <h3 className="text-lg font-bold text-ink">Keranjang Kosong</h3>
+                        <h3 className="text-lg font-bold text-ink">Your Cart is Empty</h3>
                         <p className="mt-1.5 text-sm text-muted">
-                            Belum ada produk di keranjang belanja Anda.
+                            Looks like you haven't added any handcrafted pieces yet.
                         </p>
                         <a
                             href={resolveAppUrl(appUrl, '/catalog')}
                             onClick={onClose}
                             className="mt-6 inline-flex w-full max-w-xs items-center justify-center rounded-xl bg-[#C86A4B] px-6 py-3 text-sm font-semibold text-white shadow-xs transition-colors hover:bg-[#b55a3c]"
                         >
-                            Mulai Belanja
+                            Start Shopping
                         </a>
                     </div>
                 ) : (
@@ -85,14 +85,14 @@ export default function CartDrawer({
                                                 type="button"
                                                 onClick={() => onRemoveItem(item.key)}
                                                 disabled={loading}
-                                                aria-label="Hapus item"
-                                                className="shrink-0 text-xs text-muted transition-colors hover:text-[#b93826]"
+                                                aria-label="Remove item"
+                                                className="shrink-0 text-xs text-muted transition-colors hover:text-[#b93826] cursor-pointer"
                                             >
-                                                Hapus
+                                                Remove
                                             </button>
                                         </div>
                                         {item.variant_name && (
-                                            <p className="mt-0.5 text-xs text-muted">Varian: {item.variant_name}</p>
+                                            <p className="mt-0.5 text-xs text-muted">Variant: {item.variant_name}</p>
                                         )}
                                         <div className="mt-3 flex items-center justify-between gap-2">
                                             <span className="text-sm font-bold text-[#C86A4B]">
@@ -103,7 +103,7 @@ export default function CartDrawer({
                                                     type="button"
                                                     onClick={() => onUpdateQty(item.key, item.quantity - 1)}
                                                     disabled={loading}
-                                                    className="flex h-7 w-7 items-center justify-center rounded-l-lg text-sm text-ink hover:bg-brand-50"
+                                                    className="flex h-7 w-7 items-center justify-center rounded-l-lg text-sm text-ink hover:bg-brand-50 cursor-pointer"
                                                 >
                                                     –
                                                 </button>
@@ -114,7 +114,7 @@ export default function CartDrawer({
                                                     type="button"
                                                     onClick={() => onUpdateQty(item.key, item.quantity + 1)}
                                                     disabled={loading || item.quantity >= item.max_stock}
-                                                    className="flex h-7 w-7 items-center justify-center rounded-r-lg text-sm text-ink hover:bg-brand-50 disabled:opacity-40"
+                                                    className="flex h-7 w-7 items-center justify-center rounded-r-lg text-sm text-ink hover:bg-brand-50 disabled:opacity-40 cursor-pointer"
                                                 >
                                                     +
                                                 </button>
@@ -141,9 +141,9 @@ export default function CartDrawer({
                                 <button
                                     type="button"
                                     onClick={onClose}
-                                    className="w-full rounded-xl border border-line bg-white px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-brand-50"
+                                    className="w-full rounded-xl border border-line bg-white px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-brand-50 cursor-pointer"
                                 >
-                                    Lanjut Belanja
+                                    Continue Shopping
                                 </button>
                                 <a
                                     href={resolveAppUrl(appUrl, '/user/checkout')}

@@ -104,7 +104,7 @@ export default function ProductDetailPage({ product = defaultProduct, appUrl = '
 
             const data = await res.json();
             if (!res.ok) {
-                setCartError(data.message ?? 'Gagal menambahkan ke keranjang.');
+                setCartError(data.message ?? 'Failed to add item to cart.');
                 setCartOpen(true);
                 return;
             }

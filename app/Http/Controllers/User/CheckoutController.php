@@ -21,7 +21,10 @@ class CheckoutController extends Controller
 
     protected function getCustomer(): Customer
     {
-        return Auth::guard('customer')->user() ?? Auth::user();
+        /** @var Customer $customer */
+        $customer = Auth::guard('customer')->user();
+
+        return $customer;
     }
 
     public function cart(): View
@@ -56,6 +59,12 @@ class CheckoutController extends Controller
             'order_number' => $order->order_number,
             'grand_total' => $order->grand_total,
             'status' => $order->status,
+            'payment_method' => $order->payment_method ?? 'bank',
+            'payment_status' => $order->payment_status ?? 'pending',
+            'payment_bank' => $order->payment_bank ?? config('midtrans.manual_bank.bank_name', 'BCA'),
+            'payment_va_number' => $order->payment_va_number ?? config('midtrans.manual_bank.account_number', '1234567890'),
+            'payment_holder' => config('midtrans.manual_bank.account_holder', 'Decak Handmade'),
+            'payment_qris_url' => $order->payment_qris_url,
             'orders_url' => route('user.orders'),
         ], 201);
     }

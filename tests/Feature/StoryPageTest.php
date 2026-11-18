@@ -10,7 +10,7 @@ class StoryPageTest extends TestCase
     {
         $this->get(route('story.index'))
             ->assertOk()
-            ->assertSee('<title>Cerita Kami — Decak Handmade</title>', false)
+            ->assertSee('<title>Our Story — Decak Handmade</title>', false)
             ->assertSee('id="our-story-root"', false);
     }
 }

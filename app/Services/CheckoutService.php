@@ -15,6 +15,7 @@ class CheckoutService
         private readonly CartService $cart,
         private readonly PricingService $pricing,
         private readonly InventoryService $inventory,
+        private readonly MidtransService $midtrans,
     ) {}
 
     /**
@@ -44,8 +45,9 @@ class CheckoutService
             $subtotal = $quote['subtotal'];
             $shippingCost = 0;
 
-            $paymentLabel = match ($data['payment_method'] ?? 'bank') {
-                'ewallet' => 'Dompet Digital',
+            $paymentMethod = $data['payment_method'] ?? 'bank';
+            $paymentLabel = match ($paymentMethod) {
+                'ewallet' => 'QRIS / E-Wallet',
                 default => 'Transfer Bank',
             };
 
@@ -70,6 +72,8 @@ class CheckoutService
                 'subtotal' => $subtotal,
                 'shipping_cost' => $shippingCost,
                 'grand_total' => $subtotal + $shippingCost,
+                'payment_method' => $paymentMethod,
+                'payment_status' => 'pending',
                 'customer_note' => mb_substr(implode(' | ', $noteParts), 0, 500),
                 'created_by' => null,
             ]);
@@ -134,6 +138,23 @@ class CheckoutService
                     'subdistrict' => $data['subdistrict'] ?? '',
                     'postal_code' => $data['postal_code'],
                     'is_primary' => true,
+                ]);
+            }
+
+            if ($paymentMethod === 'ewallet') {
+                $paymentRes = $this->midtrans->chargeQris($order);
+                $order->update([
+                    'payment_qris_url' => $paymentRes['qris_url'] ?? null,
+                    'payment_status' => $paymentRes['status'] ?? 'pending',
+                    'payment_raw_response' => $paymentRes['raw'] ?? null,
+                ]);
+            } else {
+                $paymentRes = $this->midtrans->chargeBankTransfer($order, 'bca');
+                $order->update([
+                    'payment_bank' => $paymentRes['bank'] ?? 'BCA',
+                    'payment_va_number' => $paymentRes['va_number'] ?? null,
+                    'payment_status' => $paymentRes['status'] ?? 'pending',
+                    'payment_raw_response' => $paymentRes['raw'] ?? null,
                 ]);
             }
 

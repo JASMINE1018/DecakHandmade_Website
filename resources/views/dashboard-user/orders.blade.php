@@ -106,7 +106,21 @@
                                 <div class="text-lg font-bold text-[#2c2420]" x-text="formatRupiah(order.total)"></div>
                             </div>
 
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <!-- Tombol Payment Details -->
+                                <button type="button" @click="openPayment(order)"
+                                    class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-[#dec9ba] bg-white text-[#2c2420] text-sm font-semibold hover:bg-[#f0e8dc] transition-colors shadow-2xs gap-1.5">
+                                    <svg class="w-4 h-4 text-[#c06547]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                    </svg>
+                                    <span>Payment Info</span>
+                                </button>
+
+                                <button type="button" @click="openTracking(order)"
+                                    class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-[#2c2420] bg-transparent text-[#2c2420] text-sm font-semibold hover:bg-[#2c2420] hover:text-white transition-colors shadow-2xs">
+                                    Track order
+                                </button>
+
                                 <template x-if="order.status === 'completed'">
                                     <a href="{{ route('catalog.index') }}"
                                         class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#c06547] text-white text-sm font-semibold hover:bg-[#a8543b] transition-colors shadow-xs">
@@ -191,6 +205,125 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Detail Pembayaran -->
+    <div x-cloak x-show="paymentModal" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="payment-modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div x-show="paymentModal" 
+            x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            @click="paymentModal = false"
+            class="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Modal Dialog Container -->
+        <div class="relative min-h-screen flex items-center justify-center p-4 text-center sm:p-0">
+            <div x-show="paymentModal"
+                x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="relative bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:max-w-md w-full p-6 sm:p-8 z-10">
+                
+                <div class="flex items-center justify-between pb-4 border-b border-[#e5dfd8]">
+                    <div>
+                        <h3 class="text-lg font-bold text-[#2c2420]" id="payment-modal-title">Payment details</h3>
+                        <p class="text-xs text-[#7a6f68]" x-text="currentPayment ? currentPayment.id : ''"></p>
+                    </div>
+                    <button type="button" @click="paymentModal = false" class="text-[#7a6f68] hover:text-[#2c2420] p-1 rounded-lg hover:bg-[#faf7f2] transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Total Amount Banner -->
+                <div class="mt-4 p-4 rounded-xl bg-[#faf7f2] border border-[#ebdcd0] flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-[#7a6f68]">Total Tagihan</span>
+                        <div class="text-lg font-bold text-[#c06547]" x-text="formatRupiah(currentPayment?.total)"></div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-[#faeee5] text-[#b45339] uppercase"
+                        x-text="currentPayment?.paymentStatus || 'pending'">
+                    </span>
+                </div>
+
+                <!-- Case 1: QRIS / E-Wallet -->
+                <template x-if="currentPayment?.paymentMethod === 'ewallet'">
+                    <div class="mt-6 flex flex-col items-center text-center space-y-4">
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f4ebe1] text-[#7a4836] text-xs font-semibold">
+                            <span>Scan QRIS</span>
+                        </div>
+
+                        <!-- QR Code Container -->
+                        <div class="p-4 bg-white rounded-2xl border-2 border-[#ebdcd0] shadow-sm flex flex-col items-center justify-center">
+                            <template x-if="currentPayment?.paymentQrisUrl">
+                                <img :src="currentPayment.paymentQrisUrl" alt="QRIS Midtrans" class="w-52 h-52 object-contain rounded-lg">
+                            </template>
+                            <template x-if="!currentPayment?.paymentQrisUrl">
+                                <!-- Fallback jika API key belum diset atau QRIS belum generated -->
+                                <div class="w-52 h-52 flex flex-col items-center justify-center p-4 bg-[#f8f6f3] rounded-lg text-center border border-dashed border-[#dec9ba]">
+                                    <svg class="w-12 h-12 text-[#c06547]/60 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                                    </svg>
+                                    <p class="text-xs text-[#5e5449] font-medium">QRIS generated by Midtrans</p>
+                                    <p class="text-[10px] text-[#7a6f68] mt-1">Konfigurasikan MIDTRANS_SERVER_KEY di file .env untuk menampilkan QR live.</p>
+                                </div>
+                            </template>
+                        </div>
+
+                        <p class="text-xs text-[#5e5449] max-w-xs leading-relaxed">
+                            Buka aplikasi BCA Mobile, GoPay, OVO, ShopeePay, DANA, atau mobile banking Anda dan pindai kode QR di atas (berlaku 5 menit).
+                        </p>
+                    </div>
+                </template>
+
+                <!-- Case 2: Bank Transfer -->
+                <template x-if="currentPayment?.paymentMethod !== 'ewallet'">
+                    <div class="mt-6 space-y-4">
+                        <div class="p-4 rounded-xl border border-[#ebdcd0] bg-[#faf7f2] space-y-3">
+                            <div class="flex items-center justify-between pb-2 border-b border-[#e5dfd8]">
+                                <span class="text-xs text-[#7a6f68]">Bank Tujuan</span>
+                                <span class="text-sm font-bold text-[#2c2420]" x-text="currentPayment?.paymentBank || 'BCA'"></span>
+                            </div>
+
+                            <div>
+                                <span class="text-xs text-[#7a6f68]">Nomor Rekening / Virtual Account</span>
+                                <div class="flex items-center justify-between mt-1">
+                                    <span class="text-base sm:text-lg font-mono font-bold text-[#c06547] tracking-wider"
+                                        x-text="currentPayment?.paymentVaNumber || '1234567890'"></span>
+                                    <button type="button" @click="copyToClipboard(currentPayment?.paymentVaNumber)"
+                                        class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white border border-[#dec9ba] text-[#2c2420] hover:bg-[#ebdcd0] transition-colors">
+                                        <span x-text="copied ? 'Tersalin!' : 'Salin'"></span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="pt-2 border-t border-[#e5dfd8] flex items-center justify-between">
+                                <span class="text-xs text-[#7a6f68]">Atas Nama</span>
+                                <span class="text-xs font-medium text-[#2c2420]" x-text="currentPayment?.paymentHolder || 'Decak Handmade'"></span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-lg bg-[#fcf9f5] border border-[#ebdcd0] text-[11px] text-[#7a6f68] leading-relaxed">
+                            Transfer sesuai dengan nominal total tagihan. Verifikasi pembayaran akan diproses secara otomatis setelah transfer berhasil.
+                        </div>
+                    </div>
+                </template>
+
+                <div class="mt-6 pt-4 border-t border-[#e5dfd8]">
+                    <button type="button" @click="paymentModal = false" class="w-full py-2.5 px-4 rounded-xl bg-[#2c2420] text-white text-xs font-semibold hover:bg-black transition-colors">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -200,7 +333,10 @@ function ordersPage() {
     return {
         activeFilter: '{{ $status ?? 'all' }}',
         trackingModal: false,
+        paymentModal: false,
         currentTracking: null,
+        currentPayment: null,
+        copied: false,
         orders: @json($orders),
         formatRupiah(num) {
             return 'Rp' + Number(num || 0).toLocaleString('id-ID');
@@ -208,6 +344,20 @@ function ordersPage() {
         openTracking(order) {
             this.currentTracking = order;
             this.trackingModal = true;
+        },
+        openPayment(order) {
+            this.currentPayment = order;
+            this.copied = false;
+            this.paymentModal = true;
+        },
+        copyToClipboard(text) {
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                this.copied = true;
+                setTimeout(() => {
+                    this.copied = false;
+                }, 2000);
+            });
         },
         get filteredOrders() {
             if (this.activeFilter === 'all') return this.orders;

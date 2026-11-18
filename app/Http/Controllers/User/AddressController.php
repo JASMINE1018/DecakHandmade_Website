@@ -13,7 +13,10 @@ class AddressController extends Controller
 {
     protected function getCustomer(): Customer
     {
-        return Auth::guard('customer')->user() ?? Auth::user();
+        /** @var Customer $customer */
+        $customer = Auth::guard('customer')->user();
+
+        return $customer;
     }
 
     public function index()

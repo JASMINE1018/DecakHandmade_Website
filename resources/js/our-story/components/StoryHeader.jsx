@@ -10,19 +10,19 @@ function SearchForm({ catalogUrl, inputId = 'story-search' }) {
     return (
         <form action={catalogUrl} method="GET" role="search" className="w-full">
             <label htmlFor={inputId} className="sr-only">
-                Cari produk
+                Search products
             </label>
             <div className="flex items-center rounded-full border border-[#D6CFC5] bg-transparent px-4 py-1.5 text-xs transition-colors focus-within:border-[#B86B4B]">
                 <input
                     id={inputId}
                     type="search"
                     name="search"
-                    placeholder="Cari produk..."
+                    placeholder="Search products..."
                     className="min-w-0 flex-1 appearance-none border-0 bg-transparent p-0 font-[inherit] text-xs text-[#5C554F] shadow-none placeholder:text-[#8C837A] focus:border-0 focus:outline-none focus:ring-0"
                 />
                 <button
                     type="submit"
-                    aria-label="Cari"
+                    aria-label="Search"
                     className={`ml-2 inline-flex text-[#8C837A] transition-colors hover:text-[#B86B4B] ${FOCUS_RING}`}
                 >
                     <SearchIcon className="h-[14px] w-[14px]" />
@@ -32,13 +32,13 @@ function SearchForm({ catalogUrl, inputId = 'story-search' }) {
     );
 }
 
-export default function StoryHeader({ homeUrl, catalogUrl, storyUrl }) {
+export default function StoryHeader({ homeUrl, catalogUrl, storyUrl, userUrl = '/user', cartUrl = '/user/cart' }) {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const navigation = [
-        { label: 'Beranda', href: homeUrl, active: false },
-        { label: 'Katalog', href: catalogUrl, active: false },
-        { label: 'Cerita Kami', href: storyUrl, active: true },
+        { label: 'Home', href: homeUrl, active: false },
+        { label: 'Catalog', href: catalogUrl, active: false },
+        { label: 'Our Story', href: storyUrl, active: true },
     ];
 
     const closeMobileMenu = () => setMobileOpen(false);
@@ -49,7 +49,7 @@ export default function StoryHeader({ homeUrl, catalogUrl, storyUrl }) {
                 {/* Logo */}
                 <a
                     href={homeUrl}
-                    aria-label="Decak Handmade — Beranda"
+                    aria-label="Decak Handmade — Home"
                     className={`flex w-fit flex-col items-start leading-none ${FOCUS_RING}`}
                 >
                     <span
@@ -64,7 +64,7 @@ export default function StoryHeader({ homeUrl, catalogUrl, storyUrl }) {
                 </a>
 
                 {/* Desktop navigation */}
-                <nav aria-label="Navigasi utama" className="hidden md:block md:justify-self-center">
+                <nav aria-label="Main navigation" className="hidden md:block md:justify-self-center">
                     <ul className="flex items-center gap-7 lg:gap-9">
                         {navigation.map((item) => (
                             <li key={item.label}>
@@ -91,16 +91,16 @@ export default function StoryHeader({ homeUrl, catalogUrl, storyUrl }) {
                     </div>
 
                     <a
-                        href="#akun"
-                        aria-label="Akun saya"
+                        href={userUrl}
+                        aria-label="My account"
                         className={`inline-flex text-[#2B2520] transition-colors hover:text-[#B86B4B] ${FOCUS_RING}`}
                     >
                         <UserIcon className="h-[18px] w-[18px]" strokeWidth={1.5} />
                     </a>
 
                     <a
-                        href="#keranjang"
-                        aria-label="Keranjang belanja"
+                        href={cartUrl}
+                        aria-label="Shopping cart"
                         className={`inline-flex text-[#2B2520] transition-colors hover:text-[#B86B4B] ${FOCUS_RING}`}
                     >
                         <ShoppingBagIcon className="h-[18px] w-[18px]" strokeWidth={1.5} />
@@ -111,7 +111,7 @@ export default function StoryHeader({ homeUrl, catalogUrl, storyUrl }) {
                         onClick={() => setMobileOpen((open) => !open)}
                         aria-expanded={mobileOpen}
                         aria-controls="story-mobile-menu"
-                        aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'}
+                        aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
                         className={`inline-flex text-[#2B2520] transition-colors hover:text-[#B86B4B] md:hidden ${FOCUS_RING}`}
                     >
                         {mobileOpen ? <CloseIcon /> : <MenuIcon />}
@@ -122,7 +122,7 @@ export default function StoryHeader({ homeUrl, catalogUrl, storyUrl }) {
             {/* Mobile navigation */}
             {mobileOpen && (
                 <div id="story-mobile-menu" className="border-t border-[#E5E0D8] bg-[#F9F6F1] px-6 py-6 md:hidden">
-                    <nav aria-label="Navigasi seluler">
+                    <nav aria-label="Mobile navigation">
                         <ul className="flex flex-col">
                             {navigation.map((item) => (
                                 <li key={item.label}>

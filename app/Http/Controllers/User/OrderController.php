@@ -5,14 +5,22 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Services\MidtransService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    public function __construct(
+        protected MidtransService $midtransService
+    ) {}
+
     protected function getCustomer(): Customer
     {
-        return Auth::guard('customer')->user() ?? Auth::user();
+        /** @var Customer $customer */
+        $customer = Auth::guard('customer')->user();
+
+        return $customer;
     }
 
     public function index(Request $request)
@@ -49,6 +57,27 @@ class OrderController extends Controller
                 default => 'bg-[#ede6dc] text-[#5e5449]',
             };
 
+            $paymentMethod = $order->payment_method ?? 'bank';
+            $paymentBank = $order->payment_bank ?? config('midtrans.manual_bank.bank_name', 'BCA');
+            $paymentVaNumber = $order->payment_va_number ?? config('midtrans.manual_bank.account_number', '1234567890');
+            $paymentHolder = config('midtrans.manual_bank.account_holder', 'Decak Handmade');
+            $paymentQrisUrl = $order->payment_qris_url;
+
+            // Generate QRIS live jika metode ewallet tapi QRIS URL belum tersedia
+            if ($paymentMethod === 'ewallet' && empty($paymentQrisUrl) && in_array($order->status, [Order::STATUS_PROCESSING, 'pending'], true)) {
+                if ($this->midtransService->isConfigured()) {
+                    $paymentRes = $this->midtransService->chargeQris($order);
+                    if (! empty($paymentRes['qris_url'])) {
+                        $paymentQrisUrl = $paymentRes['qris_url'];
+                        $order->update([
+                            'payment_qris_url' => $paymentQrisUrl,
+                            'payment_status' => $paymentRes['status'] ?? $order->payment_status,
+                            'payment_raw_response' => $paymentRes['raw'] ?? null,
+                        ]);
+                    }
+                }
+            }
+
             return [
                 'id' => $order->order_number,
                 'date' => $order->created_at->translatedFormat('d F Y'),
@@ -59,6 +88,12 @@ class OrderController extends Controller
                 'courier' => $order->courier ?? 'Kurir Decak',
                 'trackingNumber' => $order->tracking_number ?? '-',
                 'estimate' => $order->completed_at ? 'Tiba ' . $order->completed_at->translatedFormat('d F Y') : 'Estimasi 2–4 hari kerja',
+                'paymentMethod' => $paymentMethod,
+                'paymentStatus' => $order->payment_status ?? 'pending',
+                'paymentBank' => $paymentBank,
+                'paymentVaNumber' => $paymentVaNumber,
+                'paymentHolder' => $paymentHolder,
+                'paymentQrisUrl' => $paymentQrisUrl,
                 'items' => $order->items->map(function ($item) {
                     return [
                         'title' => $item->product_name,

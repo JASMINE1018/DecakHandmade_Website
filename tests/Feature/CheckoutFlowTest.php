@@ -135,7 +135,8 @@ class CheckoutFlowTest extends TestCase
 
         $response->assertCreated()
             ->assertJsonPath('grand_total', 320000)
-            ->assertJsonPath('status', Order::STATUS_PROCESSING);
+            ->assertJsonPath('status', Order::STATUS_PROCESSING)
+            ->assertJsonPath('payment_method', 'bank');
 
         $orderNumber = $response->json('order_number');
         $this->assertNotEmpty($orderNumber);

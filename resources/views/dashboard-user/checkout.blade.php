@@ -24,6 +24,38 @@
     isSubmitting: false,
     orderSuccess: false,
     createdOrder: null,
+    copied: false,
+    expirySeconds: 300,
+    isExpired: false,
+    timerDisplay: '05:00',
+    timerInterval: null,
+    startTimer() {
+        this.expirySeconds = 300;
+        this.isExpired = false;
+        if (this.timerInterval) clearInterval(this.timerInterval);
+        const update = () => {
+            const m = String(Math.floor(this.expirySeconds / 60)).padStart(2, '0');
+            const s = String(this.expirySeconds % 60).padStart(2, '0');
+            this.timerDisplay = `${m}:${s}`;
+        };
+        update();
+        this.timerInterval = setInterval(() => {
+            if (this.expirySeconds > 0) {
+                this.expirySeconds--;
+                update();
+            } else {
+                this.isExpired = true;
+                clearInterval(this.timerInterval);
+            }
+        }, 1000);
+    },
+    copyToClipboard(text) {
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            this.copied = true;
+            setTimeout(() => { this.copied = false; }, 2000);
+        });
+    },
     csrf: document.querySelector('meta[name=csrf-token]')?.content ?? '',
     applyAddress(id) {
         const addr = this.addresses.find(a => String(a.id) === String(id));
@@ -74,6 +106,9 @@
             }
             this.createdOrder = data;
             this.orderSuccess = true;
+            if (data.payment_method === 'ewallet') {
+                this.startTimer();
+            }
             window.dispatchEvent(new CustomEvent('cart-updated', { detail: { items: [], subtotal: 0, total_quantity: 0, count: 0 } }));
         } catch (_) {
             this.generalError = 'Network error occurred. Please try again.';
@@ -286,34 +321,140 @@
 
     </div>
 
-    <!-- Order Success Modal (Step 3: Complete) -->
+    <!-- Modal Detail Pembayaran setelah Place Order -->
     <div x-cloak x-show="orderSuccess" class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
         <div x-show="orderSuccess"
             x-transition:enter="ease-out duration-300"
             x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100"
             class="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"></div>
 
-        <div class="relative min-h-screen flex items-center justify-center p-4 text-center">
+        <!-- Modal Dialog Container -->
+        <div class="relative min-h-screen flex items-center justify-center p-4 text-center sm:p-0">
             <div x-show="orderSuccess"
                 x-transition:enter="ease-out duration-300"
-                x-transition:enter-start="opacity-0 scale-95"
-                x-transition:enter-end="opacity-100 scale-100"
-                class="relative bg-white rounded-2xl max-w-md w-full p-6 sm:p-8 text-center shadow-2xl space-y-4 z-10">
-                <div class="w-16 h-16 mx-auto rounded-full bg-[#fdf3ee] text-[#c06547] flex items-center justify-center text-2xl font-bold">
-                    ✓
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                class="relative bg-white rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:max-w-md w-full p-6 sm:p-8 z-10">
+
+                <div class="flex items-center justify-between pb-4 border-b border-[#e5dfd8]">
+                    <div>
+                        <h3 class="text-lg font-bold text-[#2c2420]">Payment details</h3>
+                        <p class="text-xs text-[#7a6f68]" x-text="createdOrder?.order_number"></p>
+                    </div>
+                    <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Order Placed
+                    </span>
                 </div>
-                <h3 class="text-2xl font-bold text-[#2c2420]">Order Placed Successfully!</h3>
-                <p class="text-sm text-[#7a6f68] leading-relaxed">
-                    Order Number: <strong class="text-[#2c2420]" x-text="createdOrder?.order_number"></strong><br>
-                    Total Amount: <strong class="text-[#c06547]" x-text="formatRupiah(createdOrder?.grand_total)"></strong>
-                </p>
-                <div class="pt-2 flex flex-col gap-2">
-                    <a :href="createdOrder?.orders_url || '{{ route('user.orders') }}'" class="w-full py-2.5 px-4 rounded-xl bg-[#c06547] text-white font-semibold text-sm hover:bg-[#a8543b] transition-colors shadow-xs">
-                        View My Orders
+
+                <!-- Total Amount Banner -->
+                <div class="mt-4 p-4 rounded-xl bg-[#faf7f2] border border-[#ebdcd0] flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-[#7a6f68]">Total Tagihan</span>
+                        <div class="text-lg font-bold text-[#c06547]" x-text="formatRupiah(createdOrder?.grand_total)"></div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-md text-xs font-semibold bg-[#faeee5] text-[#b45339] uppercase"
+                        x-text="createdOrder?.payment_status || 'PENDING'">
+                    </span>
+                </div>
+
+                <!-- Case 1: QRIS / E-Wallet -->
+                <template x-if="createdOrder?.payment_method === 'ewallet'">
+                    <div class="mt-5 flex flex-col items-center text-center space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f4ebe1] text-[#7a4836] text-xs font-semibold">
+                                Scan QRIS
+                            </span>
+                            <!-- Countdown Badge -->
+                            <template x-if="!isExpired">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#fdf3ee] text-[#b93826] text-xs font-semibold animate-pulse">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span x-text="timerDisplay"></span>
+                                </span>
+                            </template>
+                            <template x-if="isExpired">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
+                                    Expired
+                                </span>
+                            </template>
+                        </div>
+
+                        <!-- QR Code Container -->
+                        <div class="relative p-4 bg-white rounded-2xl border-2 border-[#ebdcd0] shadow-sm flex flex-col items-center justify-center">
+                            <template x-if="createdOrder?.payment_qris_url">
+                                <div class="relative">
+                                    <img :src="createdOrder.payment_qris_url" alt="QRIS Midtrans"
+                                        class="w-52 h-52 object-contain rounded-lg transition-all"
+                                        :class="isExpired ? 'opacity-20 grayscale' : ''">
+                                    <template x-if="isExpired">
+                                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-2">
+                                            <p class="text-xs font-bold text-red-600">Kode QR Kedaluwarsa</p>
+                                            <p class="text-[10px] text-[#7a6f68] mt-1">Batas waktu 5 menit telah habis.</p>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                            <template x-if="!createdOrder?.payment_qris_url">
+                                <div class="w-52 h-52 flex flex-col items-center justify-center p-4 bg-[#f8f6f3] rounded-lg text-center border border-dashed border-[#dec9ba]">
+                                    <p class="text-xs text-[#5e5449] font-medium">QRIS generated by Midtrans</p>
+                                </div>
+                            </template>
+                        </div>
+
+                        <p class="text-xs text-[#5e5449] max-w-xs leading-relaxed" x-show="!isExpired">
+                            Buka aplikasi BCA Mobile, GoPay, OVO, ShopeePay, DANA, atau mobile banking Anda dan pindai kode QR di atas (berlaku 5 menit).
+                        </p>
+                    </div>
+                </template>
+
+                <!-- Case 2: Bank Transfer -->
+                <template x-if="createdOrder?.payment_method !== 'ewallet'">
+                    <div class="mt-5 space-y-3">
+                        <div class="p-4 rounded-xl border border-[#ebdcd0] bg-[#faf7f2] space-y-3">
+                            <div class="flex items-center justify-between pb-2 border-b border-[#e5dfd8]">
+                                <span class="text-xs text-[#7a6f68]">Bank Tujuan</span>
+                                <span class="text-sm font-bold text-[#2c2420]" x-text="createdOrder?.payment_bank || 'BCA'"></span>
+                            </div>
+
+                            <div>
+                                <span class="text-xs text-[#7a6f68]">Nomor Rekening / Virtual Account</span>
+                                <div class="flex items-center justify-between mt-1">
+                                    <span class="text-base sm:text-lg font-mono font-bold text-[#c06547] tracking-wider"
+                                        x-text="createdOrder?.payment_va_number || '1234567890'"></span>
+                                    <button type="button" @click="copyToClipboard(createdOrder?.payment_va_number)"
+                                        class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white border border-[#dec9ba] text-[#2c2420] hover:bg-[#ebdcd0] transition-colors">
+                                        <span x-text="copied ? 'Tersalin!' : 'Salin'"></span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="pt-2 border-t border-[#e5dfd8] flex items-center justify-between">
+                                <span class="text-xs text-[#7a6f68]">Atas Nama</span>
+                                <span class="text-xs font-medium text-[#2c2420]" x-text="createdOrder?.payment_holder || 'Decak Handmade'"></span>
+                            </div>
+                        </div>
+
+                        <div class="p-3 rounded-lg bg-[#fcf9f5] border border-[#ebdcd0] text-[11px] text-[#7a6f68] leading-relaxed">
+                            Transfer sesuai dengan nominal total tagihan. Verifikasi pembayaran akan diproses secara otomatis setelah transfer berhasil.
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Action Buttons -->
+                <div class="mt-6 pt-4 border-t border-[#e5dfd8] flex flex-col gap-2">
+                    <a :href="createdOrder?.orders_url || '{{ route('user.orders') }}'"
+                        class="w-full py-2.5 px-4 rounded-xl bg-[#2c2420] text-white text-xs font-semibold hover:bg-black transition-colors text-center">
+                        Lihat Daftar Pesanan
                     </a>
-                    <a href="{{ route('catalog.index') }}" class="w-full py-2.5 px-4 rounded-xl border border-[#d3c9c1] text-[#2c2420] font-semibold text-sm hover:bg-[#f5eee6] transition-colors">
-                        Continue Shopping
+                    <a href="{{ route('catalog.index') }}"
+                        class="w-full py-2 px-4 rounded-xl border border-[#d3c9c1] text-[#2c2420] text-xs font-semibold hover:bg-[#f5eee6] transition-colors text-center">
+                        Lanjut Belanja
                     </a>
                 </div>
             </div>

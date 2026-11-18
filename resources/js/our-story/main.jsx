@@ -15,6 +15,8 @@ if (rootElement) {
                 homeUrl={config.homeUrl ?? '/home'}
                 catalogUrl={config.catalogUrl ?? '/catalog'}
                 storyUrl={config.storyUrl ?? '/our-story'}
+                userUrl={config.userUrl ?? '/user'}
+                cartUrl={config.cartUrl ?? '/user/cart'}
                 testimonialUrl={config.testimonialUrl ?? '/home#testimoni'}
                 assetUrl={config.assetUrl ?? '/'}
             />
