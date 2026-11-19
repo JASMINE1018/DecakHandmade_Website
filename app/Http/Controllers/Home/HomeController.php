@@ -47,19 +47,19 @@ class HomeController extends Controller
     {
         return [
             [
-                'image' => asset('images/home/hero-bag.jpg'),
+                'image' => asset('images/home/hero-display.webp'),
+                'title' => 'Cekik Bag Series',
+                'caption' => '100% Handmade Batik Fabric Strap',
+            ],
+            [
+                'image' => asset('images/home/Rectangle.webp'),
                 'title' => 'The Bunga Series',
                 'caption' => 'Hand-stitched floral tote, one stitch at a time.',
             ],
             [
-                'image' => asset('images/home/story-bag.jpg'),
-                'title' => 'The Senja Series',
+                'image' => asset('images/home/story-materials.webp'),
+                'title' => 'Selected Materials',
                 'caption' => 'Woven textures that carry the warmth of home.',
-            ],
-            [
-                'image' => asset('images/home/kraft-tote.jpg'),
-                'title' => 'The Rumah Series',
-                'caption' => 'An everyday canvas tote, made to be lived in.',
             ],
         ];
     }
@@ -85,7 +85,8 @@ class HomeController extends Controller
 
             return [
                 'name' => $product->name,
-                'price' => (int) $product->base_price,
+                'price' => 'Rp'.number_format((int) $product->base_price, 0, ',', '.'),
+                'raw_price' => (int) $product->base_price,
                 'category' => $product->category?->name ?? 'Handmade',
                 'image' => $gallery !== []
                     ? $product->getImageUrl('card')
@@ -115,42 +116,38 @@ class HomeController extends Controller
 
         return [
             [
-                'name' => 'Senja Woven Tote',
-                'price' => 185000,
-                'category' => 'Handmade Bag',
-                'image' => asset('images/home/story-bag.jpg'),
-                'url' => $catalogUrl,
-                'badge' => 'Signature',
-            ],
-            [
-                'name' => 'Bunga Patchwork Pouch',
-                'price' => 95000,
-                'category' => 'Pouch',
-                'image' => asset('images/home/hero-bag.jpg'),
-                'url' => $catalogUrl,
-                'badge' => null,
-            ],
-            [
-                'name' => 'Lavender Charm Keychain',
-                'price' => 45000,
+                'name' => 'Bag Charm Cekik Keychain Gantungan Kunci Gajah Bebek Kelinci Batik',
+                'price' => 'Rp70.000',
+                'raw_price' => 70000,
                 'category' => 'Bag Charm',
-                'image' => asset('images/home/bag-charm.jpg'),
+                'image' => asset('images/home/prod-bag-charm.webp'),
                 'url' => $catalogUrl,
-                'badge' => 'New',
+                'badge' => 'Best Seller',
             ],
             [
-                'name' => 'Rumah Linen Pillow',
-                'price' => 135000,
+                'name' => 'Decak Bantal Leher Travel Batik DuoTone',
+                'price' => 'Rp102.500',
+                'raw_price' => 102500,
                 'category' => 'Pillow',
-                'image' => asset('images/home/pillow.jpg'),
+                'image' => asset('images/home/prod-neck-pillow.webp'),
                 'url' => $catalogUrl,
                 'badge' => null,
             ],
             [
-                'name' => 'Tanah Ceramic Cup Set',
-                'price' => 120000,
-                'category' => 'Home Accessories',
-                'image' => asset('images/home/ceramics.jpg'),
+                'name' => 'Mukena Travel Mini + Mogu Pouch Mini Batik',
+                'price' => 'Rp200.000',
+                'raw_price' => 200000,
+                'category' => 'Pouch',
+                'image' => asset('images/home/prod-mukena-pouch.webp'),
+                'url' => $catalogUrl,
+                'badge' => null,
+            ],
+            [
+                'name' => 'Cushion Cover Patchwork Ecoprint Natural Pastel',
+                'price' => 'Rp275.000 - Rp1.275.000',
+                'raw_price' => 275000,
+                'category' => 'Pillow',
+                'image' => asset('images/home/prod-cushion-patchwork.jpg'),
                 'url' => $catalogUrl,
                 'badge' => null,
             ],
@@ -172,17 +169,17 @@ class HomeController extends Controller
         ];
 
         $images = [
-            'handmade-bag' => 'images/home/hero-bag.jpg',
-            'bag-charm' => 'images/home/bag-charm.jpg',
-            'pillow' => 'images/home/pillow.jpg',
-            'home-accessories' => 'images/home/ceramics.jpg',
+            'handmade-bag' => 'images/home/cat-bag.jpg',
+            'bag-charm' => 'images/home/cat-bag-hanger.jpg',
+            'pillow' => 'images/home/cat-pillow.jpg',
+            'home-accessories' => 'images/home/cat-house-accessories.jpg',
         ];
 
         $names = [
             'handmade-bag' => 'Bag',
             'bag-charm' => 'Bag Hanger',
             'pillow' => 'Pillow',
-            'home-accessories' => 'Home Accessories',
+            'home-accessories' => 'House Accessories',
         ];
 
         return collect($summaries)

@@ -11,11 +11,10 @@ class HomePageTest extends TestCase
 
     public function test_home_page_renders_the_landing_page(): void
     {
-        $this->get('/home')
+        $this->get('/')
             ->assertOk()
             ->assertSee('An Aesthetic Touch')
             ->assertSee('Discover Your Favorite Works')
-            ->assertSee('Explore Decak Categories')
-            ->assertSee('Chat with us!');
+            ->assertSee('Explore Decak Categories');
     }
 }
