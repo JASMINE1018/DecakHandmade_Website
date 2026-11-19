@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title', 'Edit Pesanan '.$order->order_number)
-@section('subtitle', 'Hanya catatan dan ongkir yang dapat diubah. Perubahan item dilakukan dengan membatalkan lalu membuat pesanan baru.')
+@section('subtitle', 'Catatan, ongkir, kurir, dan nomor resi dapat diubah di sini. Perubahan item dilakukan dengan membatalkan lalu membuat pesanan baru.')
 
 @section('content')
     <form method="POST" action="{{ route('admin.orders.update', $order) }}" class="admin-card max-w-2xl">
@@ -9,6 +9,18 @@
         @method('PUT')
 
         <div class="space-y-4">
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-ink">Kurir / Ekspedisi</label>
+                    <input name="courier" type="text" maxlength="60" value="{{ old('courier', $order->courier) }}" placeholder="Contoh: JNE, J&T, SiCepat" class="admin-input">
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-medium text-ink">Nomor Resi Pengiriman</label>
+                    <input name="tracking_number" type="text" maxlength="100" value="{{ old('tracking_number', $order->tracking_number) }}" placeholder="Contoh: JP1234567890" class="admin-input">
+                </div>
+            </div>
+
             <div>
                 <label class="mb-1 block text-sm font-medium text-ink">Ongkos kirim</label>
                 <input name="shipping_cost" type="number" min="0" value="{{ old('shipping_cost', $order->shipping_cost) }}" class="admin-input">

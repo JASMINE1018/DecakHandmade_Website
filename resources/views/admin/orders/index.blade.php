@@ -53,7 +53,12 @@
                                 <p class="text-xs text-slate-400">{{ $order->customer?->phone }}</p>
                             </td>
                             <td class="text-slate-600">{{ rupiah($order->grand_total) }}</td>
-                            <td><x-status-badge :status="$order->status" /></td>
+                            <td>
+                                <x-status-badge :status="$order->status" />
+                                <span class="mt-1 block text-xs {{ $order->isPaid() ? 'text-emerald-700 font-medium' : 'text-amber-700' }}">
+                                    ● {{ $order->paymentStatusLabel() }}
+                                </span>
+                            </td>
                             <td>
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.orders.show', $order) }}"

@@ -7,12 +7,14 @@
     <div class="grid gap-6 xl:grid-cols-3" x-data="{
         editModalOpen: false,
         editAction: '',
+        isSelf: false,
         editAdmin: {
             name: '',
             email: '',
             is_active: true
         },
         openEdit(admin, updateUrl) {
+            this.isSelf = (admin.id === {{ auth('admin')->id() }});
             this.editAdmin = {
                 name: admin.name,
                 email: admin.email,
@@ -131,11 +133,14 @@
                             <label class="block text-xs font-semibold text-slate-600 mb-1">Konfirmasi kata sandi baru</label>
                             <input name="password_confirmation" type="password" placeholder="Ulangi kata sandi" class="admin-input">
                         </div>
-                        <label class="flex items-center gap-2 text-sm text-muted pt-1">
-                            <input type="hidden" name="is_active" value="0">
-                            <input type="checkbox" name="is_active" value="1" x-model="editAdmin.is_active" class="rounded border-line text-brand-600 focus:ring-brand-200">
-                            Aktif
-                        </label>
+                        <div>
+                            <label class="flex items-center gap-2 text-sm text-muted pt-1">
+                                <input type="hidden" name="is_active" :value="isSelf ? 1 : 0">
+                                <input type="checkbox" name="is_active" value="1" x-model="editAdmin.is_active" :disabled="isSelf" class="rounded border-line text-brand-600 focus:ring-brand-200 disabled:opacity-50">
+                                Aktif
+                            </label>
+                            <p x-show="isSelf" class="mt-1 text-xs text-amber-600">Akun yang sedang digunakan tidak dapat dinonaktifkan.</p>
+                        </div>
                         <div class="flex items-center justify-end gap-2 pt-3 border-t border-line">
                             <button type="button" @click="editModalOpen = false" class="admin-btn-secondary">Batal</button>
                             <button type="submit" class="admin-btn-primary">Simpan perubahan</button>

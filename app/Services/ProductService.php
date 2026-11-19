@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Admin;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Setting;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -25,7 +26,7 @@ class ProductService
             'description' => $data['description'] ?? null,
             'base_price' => (int) $data['base_price'],
             'stock' => 0,
-            'min_stock' => (int) ($data['min_stock'] ?? 0),
+            'min_stock' => isset($data['min_stock']) && $data['min_stock'] !== '' ? (int) $data['min_stock'] : (int) Setting::get('low_stock_threshold', 3),
             'is_active' => (bool) ($data['is_active'] ?? true),
         ]);
 

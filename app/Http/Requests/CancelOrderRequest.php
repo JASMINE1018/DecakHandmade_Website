@@ -15,7 +15,7 @@ class CancelOrderRequest extends FormRequest
     {
         return [
             'reason' => ['required', 'in:customer_request,out_of_stock,mistake,other'],
-            'note' => ['required', 'string', 'min:10', 'max:500'],
+            'note' => ['nullable', 'string', 'max:500'],
             'returned' => ['nullable', 'boolean'],
         ];
     }

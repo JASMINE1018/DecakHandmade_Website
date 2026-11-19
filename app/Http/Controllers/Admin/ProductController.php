@@ -7,6 +7,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Services\ImageStorageService;
 use App\Services\ProductService;
 use Illuminate\Http\RedirectResponse;
@@ -28,6 +29,7 @@ class ProductController extends Controller
             })
             ->when($request->filled('category'), fn ($q) => $q->where('category_id', $request->integer('category')))
             ->when($request->filled('status'), fn ($q) => $q->where('is_active', $request->string('status')->toString() === 'active'))
+            ->when($request->query('stock') === 'low', fn ($q) => $q->whereColumn('stock', '<=', 'min_stock'))
             ->latest('id')
             ->paginate(15)
             ->withQueryString();
@@ -44,8 +46,10 @@ class ProductController extends Controller
 
     public function create(): View
     {
+        $defaultMin = (int) Setting::get('low_stock_threshold', 3);
+
         return view('admin.products.form', [
-            'product' => new Product(['is_active' => true, 'min_stock' => 0]),
+            'product' => new Product(['is_active' => true, 'min_stock' => $defaultMin]),
             'categories' => Category::active()->orderBy('name')->get(),
         ]);
     }

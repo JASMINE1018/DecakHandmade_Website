@@ -29,7 +29,7 @@
         <div class="admin-card-peach">
             <p class="text-xs font-medium uppercase tracking-wide text-ink/70">Stok menipis</p>
             <p class="mt-2 text-2xl font-semibold text-ink">{{ $data['low_stock'] }} produk</p>
-            <a href="{{ route('admin.products.index') }}" class="mt-1 inline-block text-xs font-semibold text-brand-700 hover:underline">Buka daftar produk</a>
+            <a href="{{ route('admin.products.index', ['stock' => 'low']) }}" class="mt-1 inline-block text-xs font-semibold text-brand-700 hover:underline">Buka produk stok menipis</a>
         </div>
     </div>
 

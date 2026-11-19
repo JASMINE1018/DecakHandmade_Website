@@ -115,4 +115,16 @@ class CategoryManagementTest extends TestCase
 
         $this->assertDatabaseHas('categories', ['id' => $category->id]);
     }
+
+    public function test_category_name_must_be_unique(): void
+    {
+        Category::create(['name' => 'Rajut', 'slug' => 'rajut', 'is_active' => true]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->post(route('admin.categories.store'), [
+                'name' => 'Rajut',
+                'is_active' => 1,
+            ])
+            ->assertSessionHasErrors('name');
+    }
 }

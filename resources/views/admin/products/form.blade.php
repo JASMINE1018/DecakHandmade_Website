@@ -9,7 +9,53 @@
         $images = app(\App\Services\ImageStorageService::class);
     @endphp
 
-    <div class="grid gap-6 xl:grid-cols-3">
+    <div class="grid gap-6 xl:grid-cols-3" x-data="{
+        variantModalOpen: false,
+        variantAction: '',
+        variant: {
+            name: '',
+            type: 'color',
+            color_hex: '#c86d51',
+            sku: '',
+            price_adjustment: 0,
+            is_active: true
+        },
+        openVariantEdit(data, url) {
+            this.variant = {
+                name: data.name,
+                type: data.type || 'color',
+                color_hex: data.color_hex || '#c86d51',
+                sku: data.sku || '',
+                price_adjustment: data.price_adjustment || 0,
+                is_active: Boolean(data.is_active)
+            };
+            this.variantAction = url;
+            this.variantModalOpen = true;
+        },
+
+        optionModalOpen: false,
+        optionAction: '',
+        option: {
+            name: '',
+            input_type: 'text',
+            price: 0,
+            max_length: '',
+            is_required: false,
+            is_active: true
+        },
+        openOptionEdit(data, url) {
+            this.option = {
+                name: data.name,
+                input_type: data.input_type || 'text',
+                price: data.price || 0,
+                max_length: data.max_length || '',
+                is_required: Boolean(data.is_required),
+                is_active: Boolean(data.is_active)
+            };
+            this.optionAction = url;
+            this.optionModalOpen = true;
+        }
+    }">
         <div class="space-y-6 xl:col-span-2">
             <form method="POST" action="{{ $isEdit ? route('admin.products.update', $product) : route('admin.products.store') }}"
                   enctype="multipart/form-data" class="admin-card">
@@ -133,30 +179,11 @@
                                         <td class="py-2">{{ rupiah($variant->price_adjustment) }}</td>
                                         <td class="py-2">{{ $variant->is_active ? 'Aktif' : 'Nonaktif' }}</td>
                                         <td class="py-2 text-right">
-                                            <details class="relative inline-block text-left">
-                                                <summary class="cursor-pointer text-xs font-medium text-brand-700 hover:underline">Edit</summary>
-                                                <div class="absolute right-0 z-20 mt-2 w-64 rounded-xl border border-line bg-white p-3 text-left shadow-lg">
-                                                    <form method="POST" action="{{ route('admin.products.variants.update', [$product, $variant]) }}" enctype="multipart/form-data" class="space-y-2">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input name="name" value="{{ $variant->name }}" required maxlength="100" class="w-full rounded-lg border border-line px-3 py-2 text-sm">
-                                                        <select name="type" class="w-full rounded-lg border border-line px-3 py-2 text-sm">
-                                                            <option value="color" @selected($variant->type === 'color')>Warna</option>
-                                                            <option value="motif" @selected($variant->type === 'motif')>Motif</option>
-                                                        </select>
-                                                        <input name="color_hex" type="color" value="{{ $variant->color_hex ?? '#0d9488' }}" class="h-9 w-full rounded-lg border border-line">
-                                                        <input name="sku" value="{{ $variant->sku }}" placeholder="SKU variasi" class="w-full rounded-lg border border-line px-3 py-2 text-sm">
-                                                        <input name="price_adjustment" type="number" min="0" value="{{ $variant->price_adjustment }}" class="w-full rounded-lg border border-line px-3 py-2 text-sm">
-                                                        <input type="file" name="image" accept="image/jpeg,image/png" class="w-full rounded-lg border border-line px-3 py-2 text-sm">
-                                                        <label class="flex items-center gap-2 text-xs text-slate-600">
-                                                            <input type="hidden" name="is_active" value="0">
-                                                            <input type="checkbox" name="is_active" value="1" @checked($variant->is_active) class="rounded border-line text-brand-600">
-                                                            Aktif
-                                                        </label>
-                                                        <button class="admin-btn-primary w-full text-xs">Simpan</button>
-                                                    </form>
-                                                </div>
-                                            </details>
+                                            <button type="button"
+                                                    @click="openVariantEdit({{ Js::from($variant) }}, '{{ route('admin.products.variants.update', [$product, $variant]) }}')"
+                                                    class="text-xs font-medium text-brand-700 hover:underline">
+                                                Edit
+                                            </button>
 
                                             <form method="POST" action="{{ route('admin.products.variants.destroy', [$product, $variant]) }}" class="ml-3 inline" onsubmit="return confirm('Hapus variasi ini?')">
                                                 @csrf
@@ -212,33 +239,11 @@
                                         <td class="py-2">{{ rupiah($option->price) }}</td>
                                         <td class="py-2">{{ $option->is_required ? 'Ya' : 'Tidak' }}</td>
                                         <td class="py-2 text-right">
-                                            <details class="relative inline-block text-left">
-                                                <summary class="cursor-pointer text-xs font-medium text-brand-700 hover:underline">Edit</summary>
-                                                <div class="absolute right-0 z-20 mt-2 w-64 rounded-xl border border-line bg-white p-3 text-left shadow-lg">
-                                                    <form method="POST" action="{{ route('admin.products.customization-options.update', [$product, $option]) }}" class="space-y-2">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input name="name" value="{{ $option->name }}" required maxlength="100" class="w-full rounded-lg border border-line px-3 py-2 text-sm">
-                                                        <select name="input_type" class="w-full rounded-lg border border-line px-3 py-2 text-sm">
-                                                            <option value="text" @selected($option->input_type === 'text')>Teks</option>
-                                                            <option value="select" @selected($option->input_type === 'select')>Pilihan</option>
-                                                        </select>
-                                                        <input name="price" type="number" min="0" value="{{ $option->price }}" class="w-full rounded-lg border border-line px-3 py-2 text-sm">
-                                                        <input name="max_length" type="number" min="1" max="200" value="{{ $option->max_length }}" placeholder="Maks karakter" class="w-full rounded-lg border border-line px-3 py-2 text-sm">
-                                                        <label class="flex items-center gap-2 text-xs text-slate-600">
-                                                            <input type="hidden" name="is_required" value="0">
-                                                            <input type="checkbox" name="is_required" value="1" @checked($option->is_required) class="rounded border-line text-brand-600">
-                                                            Wajib
-                                                        </label>
-                                                        <label class="flex items-center gap-2 text-xs text-slate-600">
-                                                            <input type="hidden" name="is_active" value="0">
-                                                            <input type="checkbox" name="is_active" value="1" @checked($option->is_active) class="rounded border-line text-brand-600">
-                                                            Aktif
-                                                        </label>
-                                                        <button class="admin-btn-primary w-full text-xs">Simpan</button>
-                                                    </form>
-                                                </div>
-                                            </details>
+                                            <button type="button"
+                                                    @click="openOptionEdit({{ Js::from($option) }}, '{{ route('admin.products.customization-options.update', [$product, $option]) }}')"
+                                                    class="text-xs font-medium text-brand-700 hover:underline">
+                                                Edit
+                                            </button>
 
                                             <form method="POST" action="{{ route('admin.products.customization-options.destroy', [$product, $option]) }}" class="ml-3 inline" onsubmit="return confirm('Hapus opsi ini?')">
                                                 @csrf
@@ -319,5 +324,134 @@
                 </div>
             @endif
         </div>
+
+        @if ($isEdit)
+            <!-- Modal Edit Variasi -->
+            <div x-cloak x-show="variantModalOpen" class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+                <div x-show="variantModalOpen"
+                     x-transition.opacity.duration.200ms
+                     @click="variantModalOpen = false"
+                     class="fixed inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+                <div class="relative flex min-h-screen items-center justify-center p-4">
+                    <div x-show="variantModalOpen"
+                         x-transition.duration.200ms
+                         class="relative z-10 w-full max-w-md rounded-2xl border border-line bg-white p-6 shadow-2xl">
+                        <div class="flex items-center justify-between pb-3 border-b border-line">
+                            <h3 class="text-base font-semibold text-ink">Edit Variasi</h3>
+                            <button type="button" @click="variantModalOpen = false" class="text-muted hover:text-ink">
+                                <x-icon name="x" class="h-5 w-5" />
+                            </button>
+                        </div>
+
+                        <form method="POST" :action="variantAction" enctype="multipart/form-data" class="mt-4 space-y-3">
+                            @csrf
+                            @method('PUT')
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama variasi</label>
+                                <input name="name" x-model="variant.name" required maxlength="100" class="admin-input">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tipe</label>
+                                    <select name="type" x-model="variant.type" class="admin-input">
+                                        <option value="color">Warna</option>
+                                        <option value="motif">Motif</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Warna Hex</label>
+                                    <input name="color_hex" type="color" x-model="variant.color_hex" class="h-10 w-full rounded-lg border border-line">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">SKU variasi (opsional)</label>
+                                <input name="sku" x-model="variant.sku" class="admin-input">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Tambahan harga</label>
+                                <input name="price_adjustment" type="number" min="0" x-model="variant.price_adjustment" class="admin-input">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Foto variasi baru (opsional)</label>
+                                <input type="file" name="image" accept="image/jpeg,image/png" class="admin-input">
+                            </div>
+                            <label class="flex items-center gap-2 text-sm text-muted pt-1">
+                                <input type="hidden" name="is_active" value="0">
+                                <input type="checkbox" name="is_active" value="1" x-model="variant.is_active" class="rounded border-line text-brand-600 focus:ring-brand-200">
+                                Aktif
+                            </label>
+                            <div class="flex items-center justify-end gap-2 pt-3 border-t border-line">
+                                <button type="button" @click="variantModalOpen = false" class="admin-btn-secondary">Batal</button>
+                                <button type="submit" class="admin-btn-primary">Simpan variasi</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Edit Opsi Personalisasi -->
+            <div x-cloak x-show="optionModalOpen" class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+                <div x-show="optionModalOpen"
+                     x-transition.opacity.duration.200ms
+                     @click="optionModalOpen = false"
+                     class="fixed inset-0 bg-black/40 backdrop-blur-sm"></div>
+
+                <div class="relative flex min-h-screen items-center justify-center p-4">
+                    <div x-show="optionModalOpen"
+                         x-transition.duration.200ms
+                         class="relative z-10 w-full max-w-md rounded-2xl border border-line bg-white p-6 shadow-2xl">
+                        <div class="flex items-center justify-between pb-3 border-b border-line">
+                            <h3 class="text-base font-semibold text-ink">Edit Opsi Personalisasi</h3>
+                            <button type="button" @click="optionModalOpen = false" class="text-muted hover:text-ink">
+                                <x-icon name="x" class="h-5 w-5" />
+                            </button>
+                        </div>
+
+                        <form method="POST" :action="optionAction" class="mt-4 space-y-3">
+                            @csrf
+                            @method('PUT')
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Nama opsi</label>
+                                <input name="name" x-model="option.name" required maxlength="100" class="admin-input">
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tipe input</label>
+                                    <select name="input_type" x-model="option.input_type" class="admin-input">
+                                        <option value="text">Teks</option>
+                                        <option value="select">Pilihan</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Biaya tambahan</label>
+                                    <input name="price" type="number" min="0" x-model="option.price" class="admin-input">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Maksimal karakter (untuk teks)</label>
+                                <input name="max_length" type="number" min="1" max="200" x-model="option.max_length" class="admin-input">
+                            </div>
+                            <div class="flex items-center gap-4 pt-1">
+                                <label class="flex items-center gap-2 text-sm text-muted">
+                                    <input type="hidden" name="is_required" value="0">
+                                    <input type="checkbox" name="is_required" value="1" x-model="option.is_required" class="rounded border-line text-brand-600 focus:ring-brand-200">
+                                    Wajib diisi
+                                </label>
+                                <label class="flex items-center gap-2 text-sm text-muted">
+                                    <input type="hidden" name="is_active" value="0">
+                                    <input type="checkbox" name="is_active" value="1" x-model="option.is_active" class="rounded border-line text-brand-600 focus:ring-brand-200">
+                                    Aktif
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-end gap-2 pt-3 border-t border-line">
+                                <button type="button" @click="optionModalOpen = false" class="admin-btn-secondary">Batal</button>
+                                <button type="submit" class="admin-btn-primary">Simpan opsi</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 @endsection

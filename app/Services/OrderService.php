@@ -113,12 +113,20 @@ class OrderService
                 ]);
             }
 
-            $before = $locked->only(['customer_note', 'admin_note', 'shipping_cost', 'grand_total']);
+            $before = $locked->only(['customer_note', 'admin_note', 'shipping_cost', 'grand_total', 'courier', 'tracking_number']);
 
             $locked->fill([
                 'customer_note' => $data['customer_note'] ?? null,
                 'admin_note' => $data['admin_note'] ?? null,
             ]);
+
+            if (array_key_exists('courier', $data)) {
+                $locked->courier = $data['courier'];
+            }
+
+            if (array_key_exists('tracking_number', $data)) {
+                $locked->tracking_number = $data['tracking_number'];
+            }
 
             if (isset($data['shipping_cost'])) {
                 $shipping = max(0, (int) $data['shipping_cost']);
@@ -134,9 +142,16 @@ class OrderService
         });
     }
 
-    public function transition(Order $order, string $to, ?string $note, Admin $admin, bool $returned = false): Order
-    {
-        return DB::transaction(function () use ($order, $to, $note, $admin, $returned) {
+    public function transition(
+        Order $order,
+        string $to,
+        ?string $note,
+        Admin $admin,
+        bool $returned = false,
+        ?string $courier = null,
+        ?string $trackingNumber = null,
+    ): Order {
+        return DB::transaction(function () use ($order, $to, $note, $admin, $returned, $courier, $trackingNumber) {
             /** @var Order $locked */
             $locked = Order::query()->lockForUpdate()->findOrFail($order->id);
             $from = $locked->status;
@@ -161,6 +176,14 @@ class OrderService
                 $locked->completed_at = $locked->completed_at ?? now();
             }
 
+            if ($courier !== null) {
+                $locked->courier = $courier;
+            }
+
+            if ($trackingNumber !== null) {
+                $locked->tracking_number = $trackingNumber;
+            }
+
             $locked->save();
 
             if ($to === Order::STATUS_CANCELLED) {
@@ -177,6 +200,31 @@ class OrderService
             ]);
 
             $this->audit->record('order.status_changed', $locked, ['status' => $from], ['status' => $to, 'note' => $note], $admin);
+
+            return $locked->fresh();
+        });
+    }
+
+    public function markAsPaid(Order $order, Admin $admin): Order
+    {
+        return DB::transaction(function () use ($order, $admin) {
+            /** @var Order $locked */
+            $locked = Order::query()->lockForUpdate()->findOrFail($order->id);
+
+            $before = $locked->payment_status;
+            $locked->payment_status = 'settlement';
+            $locked->save();
+
+            OrderStatusHistory::create([
+                'order_id' => $locked->id,
+                'from_status' => $locked->status,
+                'to_status' => $locked->status,
+                'note' => 'Pembayaran dikonfirmasi manual oleh admin (Lunas)',
+                'changed_by' => $admin->id,
+                'created_at' => now(),
+            ]);
+
+            $this->audit->record('order.payment_confirmed', $locked, ['payment_status' => $before], ['payment_status' => 'settlement'], $admin);
 
             return $locked->fresh();
         });

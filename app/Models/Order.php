@@ -91,9 +91,31 @@ class Order extends Model
         return $query->whereIn('status', [self::STATUS_PROCESSING, self::STATUS_SHIPPED]);
     }
 
+    public const PAYMENT_STATUSES = [
+        'pending' => 'Menunggu Pembayaran',
+        'settlement' => 'Lunas',
+        'paid' => 'Lunas',
+        'capture' => 'Lunas',
+        'expire' => 'Kedaluwarsa',
+        'cancel' => 'Dibatalkan',
+        'failure' => 'Gagal',
+    ];
+
     public function statusLabel(): string
     {
         return self::STATUSES[$this->status] ?? $this->status;
+    }
+
+    public function paymentStatusLabel(): string
+    {
+        $status = strtolower((string) ($this->payment_status ?: 'pending'));
+
+        return self::PAYMENT_STATUSES[$status] ?? ucfirst($status);
+    }
+
+    public function isPaid(): bool
+    {
+        return in_array(strtolower((string) $this->payment_status), ['settlement', 'paid', 'capture'], true);
     }
 
     public function isFinal(): bool

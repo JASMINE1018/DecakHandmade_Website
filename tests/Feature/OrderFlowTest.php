@@ -250,6 +250,64 @@ class OrderFlowTest extends TestCase
         $this->assertDatabaseMissing('order_status_histories', ['order_id' => $order->id]);
     }
 
+    public function test_courier_and_tracking_number_can_be_set_when_status_updated_to_shipped(): void
+    {
+        $order = $this->createOrder(1);
+
+        $this->actingAs($this->admin, 'admin')
+            ->patch(route('admin.orders.status.update', $order), [
+                'status' => 'shipped',
+                'courier' => 'JNE Express',
+                'tracking_number' => 'JNE1234567890',
+            ])
+            ->assertRedirect(route('admin.orders.show', $order))
+            ->assertSessionHas('success');
+
+        $order->refresh();
+
+        $this->assertSame(Order::STATUS_SHIPPED, $order->status);
+        $this->assertSame('JNE Express', $order->courier);
+        $this->assertSame('JNE1234567890', $order->tracking_number);
+    }
+
+    public function test_admin_can_mark_order_as_paid(): void
+    {
+        $order = $this->createOrder(1);
+        $this->assertFalse($order->isPaid());
+
+        $this->actingAs($this->admin, 'admin')
+            ->patch(route('admin.orders.payment.update', $order))
+            ->assertRedirect(route('admin.orders.show', $order))
+            ->assertSessionHas('success');
+
+        $order->refresh();
+
+        $this->assertTrue($order->isPaid());
+        $this->assertSame('settlement', $order->payment_status);
+        $this->assertSame('Lunas', $order->paymentStatusLabel());
+    }
+
+    public function test_order_can_be_cancelled_with_reason(): void
+    {
+        $order = $this->createOrder(1);
+
+        $this->actingAs($this->admin, 'admin')
+            ->patch(route('admin.orders.status.update', $order), [
+                'status' => 'cancelled',
+                'reason' => 'out_of_stock',
+                'note' => 'Bahan habis di gudang',
+            ])
+            ->assertRedirect(route('admin.orders.show', $order))
+            ->assertSessionHas('success');
+
+        $order->refresh();
+
+        $this->assertSame(Order::STATUS_CANCELLED, $order->status);
+        $latestHistory = $order->statusHistories()->first();
+        $this->assertStringContainsString('Stok tidak tersedia', $latestHistory->note);
+        $this->assertStringContainsString('Bahan habis di gudang', $latestHistory->note);
+    }
+
     private function createOrder(int $quantity): Order
     {
         $this->actingAs($this->admin, 'admin')->post(route('admin.orders.store'), [

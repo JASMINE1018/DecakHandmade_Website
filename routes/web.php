@@ -84,6 +84,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('orders', OrderController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
         Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status.update');
+        Route::patch('orders/{order}/payment', [OrderController::class, 'markAsPaid'])->name('orders.payment.update');
         Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 
         Route::get('reports/sales', [ReportController::class, 'sales'])->name('reports.sales.index');

@@ -15,6 +15,8 @@ class UpdateOrderRequest extends FormRequest
     {
         return [
             'shipping_cost' => ['nullable', 'integer', 'min:0', 'max:100000000'],
+            'courier' => ['nullable', 'string', 'max:60'],
+            'tracking_number' => ['nullable', 'string', 'max:100'],
             'customer_note' => ['nullable', 'string', 'max:500'],
             'admin_note' => ['nullable', 'string', 'max:500'],
         ];

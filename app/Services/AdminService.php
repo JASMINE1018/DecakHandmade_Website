@@ -26,12 +26,24 @@ class AdminService
 
     public function update(Admin $admin, array $data, Admin $actor): Admin
     {
+        $newActive = (bool) ($data['is_active'] ?? true);
+
+        if ($admin->is_active && ! $newActive) {
+            if ($admin->is($actor)) {
+                throw ValidationException::withMessages(['is_active' => 'Tidak dapat menonaktifkan akun sendiri.']);
+            }
+
+            if ($admin->isLastActiveAdmin()) {
+                throw ValidationException::withMessages(['is_active' => 'Minimal satu admin aktif harus tersedia.']);
+            }
+        }
+
         $before = $admin->only(['name', 'email', 'is_active']);
 
         $admin->fill([
             'name' => $data['name'],
             'email' => $data['email'],
-            'is_active' => (bool) ($data['is_active'] ?? true),
+            'is_active' => $newActive,
         ]);
 
         if (! empty($data['password'])) {

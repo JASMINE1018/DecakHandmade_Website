@@ -115,6 +115,69 @@
                 @endif
             </div>
 
+            <div class="admin-card">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-semibold text-ink">Pengiriman</h2>
+                    @unless ($order->isFinal())
+                        <a href="{{ route('admin.orders.edit', $order) }}" class="text-xs font-semibold text-brand-700 hover:underline">Edit resi</a>
+                    @endunless
+                </div>
+                <div class="mt-3 space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-muted">Kurir:</span>
+                        <span class="font-medium text-ink">{{ $order->courier ?: 'Belum ditentukan' }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-muted">No. Resi:</span>
+                        <span class="font-mono font-medium text-ink">{{ $order->tracking_number ?: 'Belum ada' }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-sm font-semibold text-ink">Pembayaran</h2>
+                    <span class="admin-badge {{ $order->isPaid() ? 'admin-badge-success' : 'bg-amber-100 text-amber-800' }}">
+                        {{ $order->paymentStatusLabel() }}
+                    </span>
+                </div>
+                <div class="mt-3 space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-muted">Metode:</span>
+                        <span class="font-medium text-ink">
+                            @if ($order->payment_method === 'ewallet')
+                                QRIS / E-Wallet
+                            @elseif ($order->payment_method === 'bank')
+                                Transfer Bank
+                            @else
+                                {{ ucfirst($order->payment_method ?? 'Manual') }}
+                            @endif
+                        </span>
+                    </div>
+                    @if ($order->payment_bank || $order->payment_va_number)
+                        <div class="flex justify-between">
+                            <span class="text-muted">{{ $order->payment_bank ?: 'Bank' }}:</span>
+                            <span class="font-mono text-ink">{{ $order->payment_va_number ?: '-' }}</span>
+                        </div>
+                    @endif
+                    <div class="flex justify-between border-t border-line pt-2 font-semibold">
+                        <span class="text-ink">Total Tagihan:</span>
+                        <span class="text-brand-700">{{ rupiah($order->grand_total) }}</span>
+                    </div>
+                </div>
+
+                @unless ($order->isPaid() || $order->status === \App\Models\Order::STATUS_CANCELLED)
+                    <form method="POST" action="{{ route('admin.orders.payment.update', $order) }}" class="mt-4 pt-3 border-t border-line" onsubmit="return confirm('Konfirmasi bahwa pembayaran pesanan ini telah diterima / lunas?')">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="admin-btn-secondary w-full text-xs">
+                            <x-icon name="check" class="h-4 w-4 text-emerald-600" />
+                            Konfirmasi Pembayaran (Tandai Lunas)
+                        </button>
+                    </form>
+                @endunless
+            </div>
+
             @if ($order->customer_note || $order->admin_note)
                 <div class="admin-card">
                     <h2 class="text-sm font-semibold text-ink">Catatan</h2>
@@ -218,9 +281,34 @@
                             </div>
                         </div>
 
+                        <div x-show="targetStatus === 'shipped'" x-cloak class="rounded-xl border border-brand-200 bg-brand-50/60 p-3 space-y-3">
+                            <p class="text-xs font-semibold text-brand-900">Detail Pengiriman (In Delivery):</p>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Kurir / Ekspedisi</label>
+                                <input type="text" name="courier" value="{{ old('courier', $order->courier) }}" placeholder="Contoh: JNE, J&T, SiCepat" class="admin-input">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Nomor Resi Pengiriman</label>
+                                <input type="text" name="tracking_number" value="{{ old('tracking_number', $order->tracking_number) }}" placeholder="Contoh: JP1234567890" class="admin-input">
+                            </div>
+                        </div>
+
+                        <div x-show="targetStatus === 'cancelled'" x-cloak class="rounded-xl border border-rose-200 bg-rose-50/70 p-3 space-y-3">
+                            <p class="text-xs font-semibold text-rose-900">Alasan Pembatalan Pesanan:</p>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Alasan <span class="text-rose-600">*</span></label>
+                                <select name="reason" class="admin-input" :required="targetStatus === 'cancelled'">
+                                    <option value="">Pilih alasan pembatalan</option>
+                                    @foreach ($cancelReasons as $key => $label)
+                                        <option value="{{ $key }}">{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div>
-                            <label for="status-note" class="block text-xs font-medium text-slate-700 mb-1">Catatan (opsional)</label>
-                            <input id="status-note" type="text" name="note" maxlength="500" placeholder="Catatan perubahan status..." class="admin-input">
+                            <label for="status-note" class="block text-xs font-medium text-slate-700 mb-1" x-text="targetStatus === 'cancelled' ? 'Keterangan pembatalan (opsional)' : 'Catatan (opsional)'"></label>
+                            <input id="status-note" type="text" name="note" maxlength="500" :placeholder="targetStatus === 'cancelled' ? 'Detail tambahan alasan pembatalan...' : 'Catatan perubahan status...'" class="admin-input">
                         </div>
 
                         @if ($order->status === \App\Models\Order::STATUS_SHIPPED)

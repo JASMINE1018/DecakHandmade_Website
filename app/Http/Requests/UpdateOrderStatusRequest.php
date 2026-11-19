@@ -18,6 +18,9 @@ class UpdateOrderStatusRequest extends FormRequest
             'status' => ['required', 'in:'.implode(',', array_keys(Order::STATUSES))],
             'note' => ['nullable', 'string', 'max:500'],
             'returned' => ['nullable', 'boolean'],
+            'reason' => ['nullable', 'string', 'in:customer_request,out_of_stock,mistake,other'],
+            'courier' => ['nullable', 'string', 'max:60'],
+            'tracking_number' => ['nullable', 'string', 'max:100'],
         ];
     }
 }

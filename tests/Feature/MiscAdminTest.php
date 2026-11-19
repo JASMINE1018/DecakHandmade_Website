@@ -6,7 +6,6 @@ use App\Models\Admin;
 use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Order;
-use App\Models\Product;
 use App\Models\Setting;
 use App\Services\OrderService;
 use App\Services\ProductService;
@@ -57,6 +56,8 @@ class MiscAdminTest extends TestCase
         $this->actingAs($this->admin, 'admin')
             ->put(route('admin.orders.update', $order), [
                 'shipping_cost' => 25000,
+                'courier' => 'SiCepat',
+                'tracking_number' => '00123456789',
                 'customer_note' => 'Kirim ke kantor',
                 'admin_note' => 'Sudah dikonfirmasi',
             ])
@@ -66,6 +67,8 @@ class MiscAdminTest extends TestCase
 
         $this->assertSame(25000, $order->shipping_cost);
         $this->assertSame(225000, $order->grand_total);
+        $this->assertSame('SiCepat', $order->courier);
+        $this->assertSame('00123456789', $order->tracking_number);
         $this->assertSame('Kirim ke kantor', $order->customer_note);
     }
 
@@ -112,6 +115,20 @@ class MiscAdminTest extends TestCase
             ->from(route('admin.admins.index'))
             ->delete(route('admin.admins.destroy', $this->admin))
             ->assertSessionHasErrors('admin');
+
+        $this->assertTrue($this->admin->fresh()->is_active);
+    }
+
+    public function test_admin_cannot_deactivate_self_via_update(): void
+    {
+        $this->actingAs($this->admin, 'admin')
+            ->from(route('admin.admins.index'))
+            ->put(route('admin.admins.update', $this->admin), [
+                'name' => 'Admin Tetap',
+                'email' => $this->admin->email,
+                'is_active' => 0,
+            ])
+            ->assertSessionHasErrors('is_active');
 
         $this->assertTrue($this->admin->fresh()->is_active);
     }

@@ -44,7 +44,16 @@
                 <option value="active" @selected(request('status') === 'active')>Aktif</option>
                 <option value="inactive" @selected(request('status') === 'inactive')>Nonaktif</option>
             </select>
+            <select name="stock" class="rounded-lg border border-brand-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200">
+                <option value="">Semua stok</option>
+                <option value="low" @selected(request('stock') === 'low')>Stok menipis (≤ batas)</option>
+            </select>
             <button class="admin-btn-secondary">Terapkan</button>
+            @if (request('stock') === 'low')
+                <a href="{{ route('admin.products.index', request()->except('stock')) }}" class="rounded-full border border-danger/30 bg-danger/10 px-3 py-1.5 text-xs font-medium text-danger hover:bg-danger/20">
+                    ✕ Reset filter stok menipis
+                </a>
+            @endif
         </form>
 
         <a href="{{ route('admin.products.create') }}" class="admin-btn-primary">

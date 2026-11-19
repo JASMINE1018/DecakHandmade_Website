@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Admin;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Services\ImageStorageService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -139,6 +140,54 @@ class ProductCrudTest extends TestCase
             ->assertSessionHasErrors('updated_at_token');
 
         $this->assertSame('Tas Rajut', $product->fresh()->name);
+    }
+
+    public function test_product_list_can_be_filtered_by_low_stock(): void
+    {
+        $normalProduct = Product::create([
+            'category_id' => $this->category->id,
+            'name' => 'Produk Aman',
+            'slug' => 'produk-aman',
+            'sku' => 'SKU-SAFE',
+            'base_price' => 50000,
+            'stock' => 10,
+            'min_stock' => 2,
+            'is_active' => true,
+        ]);
+
+        $lowProduct = Product::create([
+            'category_id' => $this->category->id,
+            'name' => 'Produk Hampir Habis',
+            'slug' => 'produk-hampir-habis',
+            'sku' => 'SKU-LOW',
+            'base_price' => 50000,
+            'stock' => 1,
+            'min_stock' => 3,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($this->admin, 'admin')
+            ->get(route('admin.products.index', ['stock' => 'low']))
+            ->assertOk()
+            ->assertSee($lowProduct->name)
+            ->assertDontSee($normalProduct->name);
+    }
+
+    public function test_product_creation_defaults_min_stock_to_setting_threshold(): void
+    {
+        Setting::create(['key' => 'low_stock_threshold', 'value' => '5', 'group' => 'store']);
+
+        $this->actingAs($this->admin, 'admin')->post(route('admin.products.store'), [
+            'name' => 'Produk Baru Tanpa Min Stock',
+            'category_id' => $this->category->id,
+            'sku' => 'SKU-NOMIN',
+            'base_price' => 100000,
+            'stock' => 2,
+            'is_active' => 1,
+        ])->assertRedirect();
+
+        $product = Product::where('sku', 'SKU-NOMIN')->firstOrFail();
+        $this->assertSame(5, $product->min_stock);
     }
 
     private function createProduct(): Product

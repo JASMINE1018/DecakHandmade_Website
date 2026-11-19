@@ -96,15 +96,36 @@ class OrderController extends Controller
     {
         $data = $request->validated();
 
+        if ($data['status'] === Order::STATUS_CANCELLED && ! empty($data['reason'])) {
+            $service->cancel(
+                $order,
+                $data['reason'],
+                $data['note'] ?? '',
+                $request->user('admin'),
+                $request->boolean('returned'),
+            );
+
+            return redirect()->route('admin.orders.show', $order)->with('success', 'Pesanan dibatalkan.');
+        }
+
         $service->transition(
             $order,
             $data['status'],
             $data['note'] ?? null,
             $request->user('admin'),
             $request->boolean('returned'),
+            $data['courier'] ?? null,
+            $data['tracking_number'] ?? null,
         );
 
         return redirect()->route('admin.orders.show', $order)->with('success', 'Status pesanan diperbarui.');
+    }
+
+    public function markAsPaid(Order $order, OrderService $service, Request $request): RedirectResponse
+    {
+        $service->markAsPaid($order, $request->user('admin'));
+
+        return redirect()->route('admin.orders.show', $order)->with('success', 'Status pembayaran pesanan '.$order->order_number.' berhasil diperbarui menjadi Lunas.');
     }
 
     public function cancel(CancelOrderRequest $request, Order $order, OrderService $service): RedirectResponse
@@ -114,7 +135,7 @@ class OrderController extends Controller
         $service->cancel(
             $order,
             $data['reason'],
-            $data['note'],
+            $data['note'] ?? '',
             $request->user('admin'),
             $request->boolean('returned'),
         );

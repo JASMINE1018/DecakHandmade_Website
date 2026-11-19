@@ -15,7 +15,7 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:120'],
+            'name' => ['required', 'string', 'max:120', Rule::unique('categories', 'name')->ignore($this->route('category'))],
             'is_active' => ['nullable', 'boolean'],
         ];
     }
