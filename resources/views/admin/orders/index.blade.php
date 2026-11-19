@@ -55,12 +55,23 @@
                             <td class="text-slate-600">{{ rupiah($order->grand_total) }}</td>
                             <td><x-status-badge :status="$order->status" /></td>
                             <td>
-                                <div class="flex justify-end">
+                                <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.orders.show', $order) }}"
                                        class="admin-icon-btn admin-icon-btn-neutral"
                                        title="Lihat pesanan {{ $order->order_number }}" aria-label="Lihat pesanan {{ $order->order_number }}">
                                         <x-icon name="eye" class="h-4 w-4" />
                                     </a>
+                                    @if ($order->isFinal())
+                                        <form method="POST" action="{{ route('admin.orders.destroy', $order) }}" onsubmit="return confirm('Hapus catatan pesanan {{ $order->order_number }}?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="admin-icon-btn admin-icon-btn-danger"
+                                                    title="Hapus pesanan {{ $order->order_number }}" aria-label="Hapus pesanan {{ $order->order_number }}">
+                                                <x-icon name="trash" class="h-4 w-4" />
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

@@ -224,6 +224,32 @@ class OrderFlowTest extends TestCase
         $this->assertStringStartsWith('DHP-', $order->order_number);
     }
 
+    public function test_completed_or_cancelled_order_can_be_deleted(): void
+    {
+        $order = $this->createOrder(1);
+
+        // Cannot delete while in processing
+        $this->actingAs($this->admin, 'admin')
+            ->delete(route('admin.orders.destroy', $order))
+            ->assertSessionHasErrors('order');
+
+        $this->assertDatabaseHas('orders', ['id' => $order->id]);
+
+        // Complete order
+        $this->actingAs($this->admin, 'admin')
+            ->patch(route('admin.orders.status.update', $order), ['status' => 'completed']);
+
+        // Now delete should succeed
+        $this->actingAs($this->admin, 'admin')
+            ->delete(route('admin.orders.destroy', $order))
+            ->assertRedirect(route('admin.orders.index'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseMissing('orders', ['id' => $order->id]);
+        $this->assertDatabaseMissing('order_items', ['order_id' => $order->id]);
+        $this->assertDatabaseMissing('order_status_histories', ['order_id' => $order->id]);
+    }
+
     private function createOrder(int $quantity): Order
     {
         $this->actingAs($this->admin, 'admin')->post(route('admin.orders.store'), [

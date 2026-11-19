@@ -121,4 +121,15 @@ class OrderController extends Controller
 
         return redirect()->route('admin.orders.show', $order)->with('success', 'Pesanan dibatalkan.');
     }
+
+    public function destroy(Order $order, OrderService $service, Request $request): RedirectResponse
+    {
+        if (! $order->isFinal()) {
+            return back()->withErrors(['order' => 'Hanya pesanan berstatus Selesai atau Dibatalkan yang dapat dihapus.']);
+        }
+
+        $service->delete($order, $request->user('admin'));
+
+        return redirect()->route('admin.orders.index')->with('success', 'Catatan pesanan '.$order->order_number.' berhasil dihapus.');
+    }
 }

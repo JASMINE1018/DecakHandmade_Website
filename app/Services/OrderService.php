@@ -221,4 +221,17 @@ class OrderService
             'address' => $data['customer_address'] ?? null,
         ]);
     }
+
+    public function delete(Order $order, ?Admin $admin = null): void
+    {
+        if (! $order->isFinal()) {
+            throw ValidationException::withMessages(['order' => 'Hanya pesanan berstatus Selesai atau Dibatalkan yang dapat dihapus.']);
+        }
+
+        DB::transaction(function () use ($order, $admin) {
+            $order->statusHistories()->delete();
+            $this->audit->record('order.deleted', $order, ['order_number' => $order->order_number, 'status' => $order->status], null, $admin);
+            $order->delete();
+        });
+    }
 }

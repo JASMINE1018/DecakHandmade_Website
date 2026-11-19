@@ -82,7 +82,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
 
-        Route::resource('orders', OrderController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update']);
+        Route::resource('orders', OrderController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
         Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status.update');
         Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 
@@ -100,13 +100,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
-use App\Http\Controllers\User\ProfileController as UserProfileController;
 use App\Http\Controllers\User\AddressController as UserAddressController;
-use App\Http\Controllers\User\OrderController as UserOrderController;
-use App\Http\Controllers\User\WishlistController as UserWishlistController;
-use App\Http\Controllers\User\PasswordController as UserPasswordController;
 use App\Http\Controllers\User\AuthController as UserAuthController;
 use App\Http\Controllers\User\CheckoutController as UserCheckoutController;
+use App\Http\Controllers\User\OrderController as UserOrderController;
+use App\Http\Controllers\User\PasswordController as UserPasswordController;
+use App\Http\Controllers\User\ProfileController as UserProfileController;
+use App\Http\Controllers\User\WishlistController as UserWishlistController;
 
 /*
 |--------------------------------------------------------------------------
