@@ -233,4 +233,52 @@
     .hero-arch {
         border-radius: clamp(5rem, 18vw, 12rem) clamp(5rem, 18vw, 12rem) 1.75rem 1.75rem;
     }
+
+    /* Scroll reveal animations (Safe, with instant initial-viewport fallback) */
+    .reveal-on-scroll {
+        opacity: 0;
+        transform: translate3d(0, 24px, 0);
+        transition: opacity 800ms cubic-bezier(0.16, 1, 0.3, 1), transform 800ms cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+    }
+
+    .reveal-on-scroll.is-revealed {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+
+    /* Soft entrance for story image */
+    .img-reveal {
+        opacity: 0;
+        transform: scale(1.04);
+        transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1), transform 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+    }
+
+    .img-reveal.is-revealed {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* Decorative line accent expand */
+    .line-expand {
+        display: inline-block;
+        transform: scaleX(0);
+        transform-origin: left center;
+        transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .line-expand.is-revealed {
+        transform: scaleX(1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal-on-scroll,
+        .img-reveal,
+        .line-expand {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+        }
+    }
 }

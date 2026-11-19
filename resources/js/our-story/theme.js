@@ -1,5 +1,5 @@
 export const FONTS = {
-    display: "'Playfair Display', Georgia, 'Times New Roman', serif",
+    display: "'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
     body: "'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
 };
 

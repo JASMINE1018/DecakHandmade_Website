@@ -18,7 +18,7 @@
              x-data="heroCarousel({{ count($heroSlides) }})">
 
             {{-- ── Left: Copy ── --}}
-            <div class="flex flex-col justify-center px-6 py-12 sm:px-10 md:py-16 lg:px-20 xl:px-24">
+            <div class="reveal-on-scroll flex flex-col justify-center px-6 py-12 sm:px-10 md:py-16 lg:px-20 xl:px-24">
                 <span class="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-brand-600">
                     <span class="h-px w-8 bg-brand-400"></span>
                     Made with love
@@ -34,12 +34,12 @@
 
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                     <a href="{{ route('catalog.index') }}"
-                       class="inline-flex items-center justify-center rounded-[4px] bg-[#B86B4B] px-6 py-3 text-xs font-medium text-white transition-colors hover:bg-[#9E583B]">
+                       class="inline-flex items-center justify-center rounded-[4px] bg-[#B86B4B] px-6 py-3 text-xs font-medium text-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#9E583B] hover:shadow-md hover:shadow-[#B86B4B]/20">
                         View catalog
                     </a>
 
                     <a href="#our-story"
-                       class="inline-flex items-center justify-center rounded-[4px] border border-[#B86B4B]/50 bg-white/60 px-6 py-3 text-xs font-medium text-[#B86B4B] transition-colors hover:border-[#B86B4B] hover:bg-white">
+                       class="inline-flex items-center justify-center rounded-[4px] border border-[#B86B4B]/50 bg-white/60 px-6 py-3 text-xs font-medium text-[#B86B4B] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#B86B4B] hover:bg-white hover:shadow-sm">
                         About Decak
                     </a>
                 </div>
@@ -50,30 +50,31 @@
                         <button type="button"
                                 @click="go({{ $index }})"
                                 aria-label="Go to slide {{ $index + 1 }}"
-                                :class="active === {{ $index }} ? 'w-5 bg-[#B86B4B]' : 'w-2 bg-[#D1C7BD] hover:bg-[#B8ADA2]'"
-                                class="h-2 rounded-full transition-all duration-300 {{ $index === 0 ? 'w-5 bg-[#B86B4B]' : 'w-2 bg-[#D1C7BD]' }}"></button>
+                                :class="active === {{ $index }} ? 'w-6 bg-[#B86B4B]' : 'w-2 bg-[#D1C7BD] hover:bg-[#B8ADA2]'"
+                                class="h-2 rounded-full transition-all duration-500 ease-out {{ $index === 0 ? 'w-6 bg-[#B86B4B]' : 'w-2 bg-[#D1C7BD]' }}"></button>
                     @endforeach
                 </div>
             </div>
 
             {{-- ── Right: Image carousel (Full width/height on its column like our-story) ── --}}
-            <div class="relative min-h-[360px] w-full overflow-hidden bg-[#E7E1D7] md:min-h-full">
+            <div class="relative min-h-[360px] w-full overflow-hidden bg-[#E7E1D7] md:min-h-full"
+                 @mouseenter="stopAutoplay()" @mouseleave="startAutoplay()">
                 @foreach ($heroSlides as $index => $slide)
                     <img src="{{ $slide['image'] }}"
                          alt="{{ $slide['title'] }} — {{ $slide['caption'] }}"
-                         class="absolute inset-0 block h-full w-full object-cover transition-opacity duration-700 ease-out {{ $index === 0 ? 'opacity-100' : 'opacity-0' }}"
-                         :class="active === {{ $index }} ? 'opacity-100' : 'opacity-0'">
+                         class="absolute inset-0 block h-full w-full object-cover transition-all duration-1000 ease-out {{ $index === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none' }}"
+                         :class="active === {{ $index }} ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'">
                 @endforeach
 
                 {{-- Next / previous controls positioned at middle sides --}}
                 <button type="button" @click="prev()" aria-label="Previous slide"
-                        class="absolute left-4 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-ink shadow backdrop-blur transition-colors hover:bg-white">
+                        class="absolute left-4 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-ink shadow backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-white">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                 </button>
                 <button type="button" @click="next()" aria-label="Next slide"
-                        class="absolute right-4 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-ink shadow backdrop-blur transition-colors hover:bg-white">
+                        class="absolute right-4 top-1/2 -translate-y-1/2 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-ink shadow backdrop-blur transition-all duration-300 hover:scale-105 hover:bg-white">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="h-4 w-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
@@ -88,15 +89,15 @@
     <section id="our-story" class="relative overflow-hidden bg-[#F9F6F1]">
         <div class="grid min-h-[500px] grid-cols-1 md:grid-cols-2">
 
-            {{-- Left image (Full column like our-story) --}}
+            {{-- Left image (Full column edge-to-edge like our-story) --}}
             <div class="relative min-h-[360px] w-full overflow-hidden bg-[#E7E1D7] md:min-h-full">
-                <img src="{{ asset('images/home/Rectangle (1).webp') }}"
+                <img src="{{ asset('images/home/story-materials.webp') }}"
                      alt="Handmade bag with selected materials and batik details"
-                     class="block h-full w-full object-cover">
+                     class="img-reveal block h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-105">
             </div>
 
             {{-- Right copy --}}
-            <div class="flex flex-col justify-center px-6 py-12 sm:px-10 md:py-16 lg:px-20 xl:px-24">
+            <div class="reveal-on-scroll flex flex-col justify-center px-6 py-12 sm:px-10 md:py-16 lg:px-20 xl:px-24">
                 <h2 class="max-w-xl text-3xl font-semibold leading-[1.12] tracking-tight text-ink sm:text-4xl lg:text-5xl">
                     Made Wholeheartedly from Selected Materials
                 </h2>
@@ -106,34 +107,34 @@
                 </p>
 
                 <div class="mt-8 grid gap-x-6 gap-y-6 sm:grid-cols-3">
-                    <div>
+                    <div class="group">
                         <span class="flex items-center gap-2.5 text-[#B86B4B]">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:scale-110">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                             </svg>
-                            <span class="h-px w-6 bg-[#B86B4B]/40"></span>
+                            <span class="line-expand h-px w-6 bg-[#B86B4B]/40"></span>
                         </span>
                         <h3 class="mt-3 text-xs font-semibold text-ink">Made with Heart</h3>
                         <p class="mt-1 text-xs leading-relaxed text-muted">Every product is a reflection of dedication and great care.</p>
                     </div>
 
-                    <div>
+                    <div class="group">
                         <span class="flex items-center gap-2.5 text-[#B86B4B]">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:scale-110">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 0 0-2.456 2.456Z" />
                             </svg>
-                            <span class="h-px w-6 bg-[#B86B4B]/40"></span>
+                            <span class="line-expand h-px w-6 bg-[#B86B4B]/40"></span>
                         </span>
                         <h3 class="mt-3 text-xs font-semibold text-ink">Meaningful Details</h3>
                         <p class="mt-1 text-xs leading-relaxed text-muted">Prioritizing the finest details in every process.</p>
                     </div>
 
-                    <div>
+                    <div class="group">
                         <span class="flex items-center gap-2.5 text-[#B86B4B]">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:scale-110">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.05 4.575a1.575 1.575 0 1 0-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 0 1 3.15 0v2.925m-6.3 1.575H5.475a1.575 1.575 0 1 0 0 3.15h1.425m1.575-1.575v-1.5a1.575 1.575 0 0 1 3.15 0v1.5m-4.725 0h4.725m-4.725 0H4.875A2.625 2.625 0 0 0 2.25 15v.75a6.75 6.75 0 0 0 6.75 6.75h5.25A6.75 6.75 0 0 0 21 15.75V15a2.625 2.625 0 0 0-2.625-2.625h-2.1" />
                             </svg>
-                            <span class="h-px w-6 bg-[#B86B4B]/40"></span>
+                            <span class="line-expand h-px w-6 bg-[#B86B4B]/40"></span>
                         </span>
                         <h3 class="mt-3 text-xs font-semibold text-ink">A Personal Work</h3>
                         <p class="mt-1 text-xs leading-relaxed text-muted">Creating products that align with your unique story.</p>
@@ -150,7 +151,7 @@
         <div aria-hidden="true" class="pointer-events-none absolute -right-24 top-10 h-80 w-80 rounded-full bg-brand-50 blur-3xl"></div>
 
         <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div class="reveal-on-scroll flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <h2 class="text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl">
                         Discover Your Favorite Works
@@ -172,22 +173,22 @@
                 <div x-ref="track" @scroll.debounce.100ms="onScroll()"
                      class="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2">
                     @foreach ($featuredProducts as $product)
-                        <article data-product-card class="group flex w-[82%] shrink-0 flex-col snap-start sm:w-[calc(50%-12px)] xl:w-[calc(25%-18px)]">
-                            <div class="relative overflow-hidden rounded-[1.25rem] bg-sand">
+                        <article data-product-card style="transition-delay: {{ $loop->index * 120 }}ms" class="reveal-on-scroll group flex w-[82%] shrink-0 flex-col snap-start transition-all duration-300 sm:w-[calc(50%-12px)] xl:w-[calc(25%-18px)] hover:-translate-y-2">
+                            <div class="relative overflow-hidden rounded-[1.25rem] bg-sand shadow-sm transition-shadow duration-300 group-hover:shadow-md">
                                 <a href="{{ $product['url'] }}" class="block aspect-square overflow-hidden" aria-label="View {{ $product['name'] }}">
                                     <img src="{{ $product['image'] }}" alt="{{ $product['name'] }}"
-                                         class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105">
+                                         class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105">
                                 </a>
                             </div>
 
                             <div class="mt-4 flex flex-1 flex-col justify-between px-0.5">
                                 <div>
-                                    <h3 class="line-clamp-2 text-xs font-semibold leading-snug text-ink">{{ $product['name'] }}</h3>
+                                    <h3 class="line-clamp-2 text-xs font-semibold leading-snug text-ink transition-colors group-hover:text-[#B86B4B]">{{ $product['name'] }}</h3>
                                     <p class="mt-2 text-xs font-semibold text-brand-600">{{ is_numeric($product['price']) ? 'Rp'.number_format($product['price'], 0, ',', '.') : $product['price'] }}</p>
                                 </div>
 
                                 <a href="{{ $product['url'] }}"
-                                   class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-[#C16D54] px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-[#a85942]">
+                                   class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-[#C16D54] px-4 py-2.5 text-xs font-medium text-white shadow-sm transition-all duration-300 hover:bg-[#a85942] hover:shadow-md hover:shadow-[#C16D54]/25">
                                     View more
                                 </a>
                             </div>
@@ -229,7 +230,7 @@
     {{-- ═══════════════════════════════════════════════════════════ --}}
     <section id="categories" class="border-y border-line/70 bg-white/50 py-16 sm:py-24">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="max-w-2xl">
+            <div class="reveal-on-scroll max-w-2xl">
                 <h2 class="text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl">
                     Explore Decak Categories
                 </h2>
@@ -239,17 +240,19 @@
             </div>
 
             <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                @foreach ($categories as $category)
-                    <a href="{{ $category['url'] }}" class="group block overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+                @foreach ($categories as $index => $category)
+                    <a href="{{ $category['url'] }}"
+                       style="transition-delay: {{ $index * 100 }}ms"
+                       class="reveal-on-scroll group block overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-md">
                         <div class="overflow-hidden">
                             <img src="{{ $category['image'] }}" alt="{{ $category['name'] }}"
-                                 class="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105">
+                                 class="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105">
                         </div>
 
                         <div class="flex items-center justify-between px-3.5 py-3">
-                            <h3 class="text-xs font-semibold text-ink">{{ $category['name'] }}</h3>
+                            <h3 class="text-xs font-semibold text-ink transition-colors group-hover:text-[#B86B4B]">{{ $category['name'] }}</h3>
 
-                            <span class="text-[#B86B4B] transition-transform group-hover:translate-x-0.5">
+                            <span class="text-[#B86B4B] transition-transform duration-300 group-hover:translate-x-1.5">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-3.5 w-3.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
                                 </svg>
@@ -267,7 +270,7 @@
     <section id="journal" class="py-16 sm:py-24">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <div class="max-w-2xl">
+                <div class="reveal-on-scroll max-w-2xl">
                     <h2 class="text-3xl font-semibold leading-tight tracking-tight text-ink sm:text-4xl">
                         Exploring Close By, with Wonder
                     </h2>
@@ -279,10 +282,10 @@
 
             <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 {{-- Card 1: What they say about Decak --}}
-                <article class="flex flex-col overflow-hidden rounded-xl bg-white shadow-sm">
+                <article style="transition-delay: 0ms" class="reveal-on-scroll flex flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md">
                     <div class="overflow-hidden">
                         <img src="{{ asset('images/home/testimonial-lalisa.webp') }}" alt="Customer product Decak Handmade"
-                             class="aspect-[16/10] w-full object-cover">
+                             class="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out hover:scale-105">
                     </div>
                     <div class="flex flex-1 flex-col p-4">
                         <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#B86B4B]">WHAT THEY SAY ABOUT DECAK</p>
@@ -294,10 +297,10 @@
                 </article>
 
                 {{-- Card 2: Our Customers --}}
-                <article class="flex flex-col overflow-hidden rounded-xl bg-white shadow-sm">
+                <article style="transition-delay: 120ms" class="reveal-on-scroll flex flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md">
                     <div class="overflow-hidden">
                         <img src="{{ asset('images/home/customer-terry.webp') }}" alt="Customer portrait"
-                             class="aspect-[16/10] w-full object-cover">
+                             class="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out hover:scale-105">
                     </div>
                     <div class="flex flex-1 flex-col p-4">
                         <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#B86B4B]">OUR CUSTOMERS</p>
@@ -309,10 +312,10 @@
                 </article>
 
                 {{-- Card 3: Let's Collaborate --}}
-                <article class="flex flex-col overflow-hidden rounded-xl bg-white shadow-sm">
+                <article style="transition-delay: 240ms" class="reveal-on-scroll flex flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md">
                     <div class="overflow-hidden">
                         <img src="{{ asset('images/home/collab-workshop.jpg') }}" alt="Collaboration workshop with Decak Handmade"
-                             class="aspect-[16/10] w-full object-cover">
+                             class="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out hover:scale-105">
                     </div>
                     <div class="flex flex-1 flex-col p-4">
                         <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#B86B4B]">LET'S COLLABORATE</p>
@@ -321,7 +324,7 @@
                         </p>
                         <div class="mt-4">
                             <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener"
-                               class="inline-flex rounded-xl bg-[#C16D54] px-5 py-2 text-xs font-medium text-white transition-colors hover:bg-[#a85942]">
+                               class="inline-flex rounded-xl bg-[#C16D54] px-5 py-2 text-xs font-medium text-white shadow-sm transition-all duration-300 hover:bg-[#a85942] hover:shadow-md hover:shadow-[#C16D54]/25">
                                 Contact us
                             </a>
                         </div>
@@ -329,10 +332,10 @@
                 </article>
 
                 {{-- Card 4: Our Milestone --}}
-                <article class="flex flex-col overflow-hidden rounded-xl bg-white shadow-sm">
+                <article style="transition-delay: 360ms" class="reveal-on-scroll flex flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md">
                     <div class="overflow-hidden">
                         <img src="{{ asset('images/home/milestone-podcast.webp') }}" alt="Decak Handmade journey and milestone"
-                             class="aspect-[16/10] w-full object-cover">
+                             class="aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out hover:scale-105">
                     </div>
                     <div class="flex flex-1 flex-col p-4">
                         <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#B86B4B]">OUR MILESTONE</p>
@@ -357,26 +360,32 @@
                     </svg>
                 </button>
             </div>
-            </div>
         </div>
     </section>
 
 @endsection
 
 @push('floating')
-    {{-- ── Floating WhatsApp chat widget ── --}}
+    {{-- ── Floating WhatsApp chat widget with pulse animation ── --}}
     <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener" aria-label="Contact Us via WhatsApp"
        class="group fixed bottom-6 right-6 z-50 inline-flex items-center gap-2.5">
         {{-- Tooltip label --}}
-        <span class="rounded-lg bg-[#241F1E] px-3.5 py-1.5 text-xs font-medium text-white shadow-lg transition-transform duration-200 group-hover:scale-105">
+        <span class="rounded-lg bg-[#241F1E] px-3.5 py-1.5 text-xs font-medium text-white shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:bg-[#1a1615]">
             Contact Us via WhatsApp
         </span>
 
-        {{-- WhatsApp action button --}}
-        <span class="relative inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-[#25D366]/40 transition-transform duration-200 group-hover:scale-105">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
-            </svg>
+        {{-- WhatsApp action button with breathing ring --}}
+        <span class="relative inline-flex h-12 w-12 shrink-0 items-center justify-center">
+            <span aria-hidden="true"
+                  class="absolute inset-0 animate-glow rounded-full bg-[#25D366]/40 motion-reduce:animate-none group-hover:[animation-play-state:paused]"></span>
+            <span aria-hidden="true"
+                  class="absolute inset-0 animate-glow rounded-full bg-[#25D366]/25 [animation-delay:1.2s] motion-reduce:animate-none group-hover:[animation-play-state:paused]"></span>
+
+            <span class="relative inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-[#25D366]/40 transition-transform duration-300 group-hover:scale-110">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-6 w-6">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+                </svg>
+            </span>
         </span>
     </a>
 @endpush

@@ -102,6 +102,25 @@ window.heroCarousel = function (total) {
     return {
         active: 0,
         total: Math.max(1, Number(total) || 1),
+        timer: null,
+
+        init() {
+            this.startAutoplay();
+        },
+
+        startAutoplay() {
+            this.stopAutoplay();
+            this.timer = setInterval(() => {
+                this.next();
+            }, 6000);
+        },
+
+        stopAutoplay() {
+            if (this.timer) {
+                clearInterval(this.timer);
+                this.timer = null;
+            }
+        },
 
         next() {
             this.active = (this.active + 1) % this.total;
@@ -184,6 +203,51 @@ window.productCarousel = function (total) {
         },
     };
 };
+
+// Safe Scroll Reveal Observer
+function initScrollReveal() {
+    const targets = document.querySelectorAll('.reveal-on-scroll, .img-reveal, .line-expand');
+    if (!targets.length) {
+        return;
+    }
+
+    if (!('IntersectionObserver' in window)) {
+        targets.forEach((el) => el.classList.add('is-revealed'));
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-revealed');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.08,
+        rootMargin: '0px 0px -20px 0px'
+    });
+
+    const windowH = window.innerHeight || document.documentElement.clientHeight;
+    targets.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        // If already in viewport or above it (e.g. Hero on page load), reveal immediately
+        if (rect.top <= windowH) {
+            requestAnimationFrame(() => {
+                el.classList.add('is-revealed');
+            });
+        } else {
+            observer.observe(el);
+        }
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScrollReveal);
+} else {
+    initScrollReveal();
+}
+window.addEventListener('load', initScrollReveal);
 
 Alpine.start();
 
