@@ -175,12 +175,14 @@
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Recipient name</label>
                             <input type="text" x-model="form.recipient_name"
+                                @input="form.recipient_name = form.recipient_name.replace(/[^a-zA-Z\s.,'-]/g, '')"
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                             <p x-show="errors.recipient_name" class="mt-1 text-xs text-[#b93826]" x-text="errors.recipient_name?.[0]"></p>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Phone number / WhatsApp</label>
-                            <input type="text" x-model="form.phone"
+                            <input type="tel" x-model="form.phone"
+                                @input="form.phone = form.phone.replace(/[^0-9+\-\s()]/g, '')"
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                             <p x-show="errors.phone" class="mt-1 text-xs text-[#b93826]" x-text="errors.phone?.[0]"></p>
                         </div>
@@ -197,18 +199,21 @@
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Province</label>
                             <input type="text" x-model="form.province"
+                                @input="form.province = form.province.replace(/[^a-zA-Z\s.,'-]/g, '')"
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                             <p x-show="errors.province" class="mt-1 text-xs text-[#b93826]" x-text="errors.province?.[0]"></p>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">City / Regency</label>
                             <input type="text" x-model="form.city"
+                                @input="form.city = form.city.replace(/[^a-zA-Z\s.,'-]/g, '')"
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                             <p x-show="errors.city" class="mt-1 text-xs text-[#b93826]" x-text="errors.city?.[0]"></p>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Postal code</label>
-                            <input type="text" x-model="form.postal_code"
+                            <input type="text" x-model="form.postal_code" maxlength="5"
+                                @input="form.postal_code = form.postal_code.replace(/\D/g, '').slice(0, 5)"
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                             <p x-show="errors.postal_code" class="mt-1 text-xs text-[#b93826]" x-text="errors.postal_code?.[0]"></p>
                         </div>

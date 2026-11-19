@@ -33,12 +33,12 @@ class AddressController extends Controller
 
         $validated = $request->validate([
             'label' => ['required', 'string', 'max:60'],
-            'recipient_name' => ['required', 'string', 'max:120'],
-            'phone' => ['required', 'string', 'max:25'],
+            'recipient_name' => ['required', 'string', 'max:120', 'regex:/^[a-zA-Z\s\.,\'-]+$/'],
+            'phone' => ['required', 'string', 'regex:/^[0-9+\-\s()]{8,20}$/'],
             'full_address' => ['required', 'string', 'max:1000'],
-            'city' => ['nullable', 'string', 'max:100'],
-            'province' => ['nullable', 'string', 'max:100'],
-            'postal_code' => ['nullable', 'string', 'max:10'],
+            'city' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z\s\.,\'-]+$/'],
+            'province' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z\s\.,\'-]+$/'],
+            'postal_code' => ['nullable', 'digits:5'],
             'is_primary' => ['nullable', 'boolean'],
         ]);
 
@@ -79,12 +79,12 @@ class AddressController extends Controller
 
         $validated = $request->validate([
             'label' => ['required', 'string', 'max:60'],
-            'recipient_name' => ['required', 'string', 'max:120'],
-            'phone' => ['required', 'string', 'max:25'],
+            'recipient_name' => ['required', 'string', 'max:120', 'regex:/^[a-zA-Z\s\.,\'-]+$/'],
+            'phone' => ['required', 'string', 'regex:/^[0-9+\-\s()]{8,20}$/'],
             'full_address' => ['required', 'string', 'max:1000'],
-            'city' => ['nullable', 'string', 'max:100'],
-            'province' => ['nullable', 'string', 'max:100'],
-            'postal_code' => ['nullable', 'string', 'max:10'],
+            'city' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z\s\.,\'-]+$/'],
+            'province' => ['nullable', 'string', 'max:100', 'regex:/^[a-zA-Z\s\.,\'-]+$/'],
+            'postal_code' => ['nullable', 'digits:5'],
             'is_primary' => ['nullable', 'boolean'],
         ]);
 

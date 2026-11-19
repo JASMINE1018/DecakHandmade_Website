@@ -256,11 +256,13 @@
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Recipient name</label>
                             <input type="text" name="recipient_name" x-model="form.recipient_name" required
+                                @input="form.recipient_name = form.recipient_name.replace(/[^a-zA-Z\s.,'-]/g, '')"
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Phone number</label>
-                            <input type="text" name="phone" x-model="form.phone" required
+                            <input type="tel" name="phone" x-model="form.phone" required
+                                @input="form.phone = form.phone.replace(/[^0-9+\-\s()]/g, '')"
                                 class="w-full px-3.5 py-2.5 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                         </div>
                     </div>
@@ -275,16 +277,19 @@
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Province</label>
                             <input type="text" name="province" x-model="form.province" required
+                                @input="form.province = form.province.replace(/[^a-zA-Z\s.,'-]/g, '')"
                                 class="w-full px-3.5 py-2 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">City</label>
                             <input type="text" name="city" x-model="form.city" required
+                                @input="form.city = form.city.replace(/[^a-zA-Z\s.,'-]/g, '')"
                                 class="w-full px-3.5 py-2 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-[#5e5449] mb-1.5">Postal code</label>
-                            <input type="text" name="postal_code" x-model="form.postal_code" required
+                            <input type="text" name="postal_code" x-model="form.postal_code" required maxlength="5"
+                                @input="form.postal_code = form.postal_code.replace(/\D/g, '').slice(0, 5)"
                                 class="w-full px-3.5 py-2 rounded-lg border border-[#e0ddd8] bg-white text-sm text-[#2c2420] focus:border-[#c06547] focus:ring-2 focus:ring-[#f0c9b9] outline-none">
                         </div>
                     </div>
