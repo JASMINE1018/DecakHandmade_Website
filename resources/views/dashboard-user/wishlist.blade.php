@@ -101,7 +101,7 @@
                 </svg>
                 <h3 class="text-base font-bold text-[#2c2420]">Your wishlist is empty</h3>
                 <p class="text-xs text-[#7a6f68] mt-1 mb-4">Discover your favorite local artisan crafts in our catalog.</p>
-                <a href="{{ route('user.dashboard') }}" class="inline-flex px-4 py-2 rounded-lg bg-[#c06547] text-white text-xs font-semibold hover:bg-[#a8543b]">
+                <a href="{{ route('catalog.index') }}" class="inline-flex px-4 py-2 rounded-lg bg-[#c06547] text-white text-xs font-semibold hover:bg-[#a8543b]">
                     Explore catalog
                 </a>
             </div>
